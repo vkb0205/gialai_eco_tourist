@@ -1,0 +1,6 @@
+{
+  "name": "Bromo Travel Agency",
+  "description": "Unforgettable Mount Bromo Sunrise Tour, curated vacation guides, travel plans, and luxury tour bookings.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
