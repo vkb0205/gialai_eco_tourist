@@ -1,1 +1,0 @@
-# gialai_eco_tourist
