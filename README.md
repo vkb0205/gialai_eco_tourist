@@ -1,20 +1,35 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Gia Lai Eco Tourist
 
-# Run and deploy your AI Studio app
+A Vite + React + TypeScript landing page for Gia Lai eco-tour experiences.
 
-This contains everything you need to run your app locally.
+## Project structure
 
-View your app in AI Studio: https://ai.studio/apps/ca160833-3c24-4347-a693-7e9e61f87ea2
+```text
+src/
+  assets/        Static images imported by the app
+  data/          Page content and marketing data
+  App.tsx        Main landing page component
+  index.css      Tailwind theme and global styles
+  main.tsx       React app entry point
+```
 
-## Run Locally
+## Requirements
 
-**Prerequisites:**  Node.js
+- Node.js 20+
+- npm
 
+## Scripts
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+```bash
+npm install
+npm run dev
+npm run lint
+npm run build
+npm run preview
+```
+
+## Notes
+
+- The `@/*` import alias points to `src/*`.
+- App content lives in `src/data/homepage.ts` so marketing copy can be maintained separately from the main component.
+- Project governance lives in `.specify/memory/constitution.md`; changes must preserve eco-tourism positioning, accessibility, responsive performance, and validation with `npm run lint` plus `npm run build`.

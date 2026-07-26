@@ -1,6 +1,5 @@
 {
-  "name": "Bromo Travel Agency",
-  "description": "Unforgettable Mount Bromo Sunrise Tour, curated vacation guides, travel plans, and luxury tour bookings.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "name": "Gia Lai Eco Tourist",
+  "description": "Slow, local eco tours through Gia Lai's forests, crater lakes, coffee farms, waterfalls, and village craft routes.",
+  "requestFramePermissions": []
 }

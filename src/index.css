@@ -54,9 +54,141 @@ body::before {
     transition: transform 200ms ease;
   }
 
-  .skip-link:focus {
-    transform: translateY(0);
-    outline: 3px solid #d9a441;
+
+  .explore-vietnam-map {
+    transform-origin: 0 0;
+    transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+
+  .explore-vietnam-map svg {
+    display: block;
+    height: 100%;
+    width: 100%;
+    overflow: visible;
+    filter: drop-shadow(0 26px 42px rgba(32, 56, 40, 0.22));
+  }
+
+  .explore-vietnam-map svg path {
+    fill: #9fb58f;
+    stroke: rgba(255, 250, 240, 0.84);
+    stroke-width: 0.9;
+    pointer-events: none;
+    transition: fill 260ms ease, opacity 260ms ease, stroke 260ms ease, stroke-width 260ms ease, filter 260ms ease;
+  }
+
+  .explore-vietnam-map svg path.is-unavailable {
+    fill: #c8c7ad;
+    opacity: 0.46;
+  }
+
+  .explore-vietnam-map svg path.is-selected-region,
+  .explore-vietnam-map svg path.is-active-region {
+    fill: #d9a441;
+    opacity: 1;
+    stroke: #203828;
+    stroke-width: 1.55;
+    filter: drop-shadow(0 5px 0 rgba(32, 56, 40, 0.22));
+  }
+
+  .explore-vietnam-map svg path.is-hovered-region {
+    fill: #f2c86d;
+    opacity: 1;
+    stroke: #8a5a16;
+    stroke-dasharray: 3 2;
+    stroke-width: 1.35;
+  }
+
+  .explore-vietnam-map svg #points {
+    display: none;
+  }
+
+  .explore-vietnam-map svg #label_points {
+    display: block;
+    pointer-events: none;
+  }
+
+  .explore-vietnam-map svg #label_points circle {
+    r: 4.8px;
+    fill: #fffaf0;
+    stroke: #203828;
+    stroke-width: 1.6;
+    opacity: 0.92;
+    pointer-events: none;
+    transition: fill 200ms ease, opacity 200ms ease, r 200ms ease, stroke 200ms ease, filter 200ms ease;
+  }
+
+  .explore-vietnam-map svg #label_points circle.is-unavailable {
+    opacity: 0.2;
+  }
+
+  .explore-vietnam-map svg #label_points circle.is-clickable {
+    cursor: pointer;
+    fill: #fffaf0;
+    pointer-events: auto;
+  }
+
+  .explore-vietnam-map svg #label_points circle.is-clickable:hover,
+  .explore-vietnam-map svg #label_points circle.is-clickable:focus,
+  .explore-vietnam-map svg #label_points circle.is-clickable:focus-visible {
+    r: 7px;
+    fill: #d9a441;
+    opacity: 1;
+    outline: none;
+    stroke: #203828;
+    stroke-width: 2;
+    filter: drop-shadow(0 6px 9px rgba(32, 56, 40, 0.34));
+  }
+
+  .explore-vietnam-map svg #label_points circle.is-hovered-region {
+    r: 7px;
+    fill: #f2c86d;
+    opacity: 1;
+    stroke: #8a5a16;
+    stroke-width: 2;
+    stroke-dasharray: 2 1;
+  }
+
+  .explore-vietnam-map svg #label_points circle.is-selected-region,
+  .explore-vietnam-map svg #label_points circle.is-active-region {
+    r: 6.4px;
+    fill: #d9a441;
+    opacity: 1;
+    stroke: #203828;
+    stroke-width: 2;
+  }
+
+  .map-direction-button {
+    display: grid;
+    place-items: center;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 250, 240, 0.22);
+    background: #fffaf0;
+    color: #203828;
+    font-weight: 900;
+    transition: transform 180ms ease, background 180ms ease, opacity 180ms ease, box-shadow 180ms ease;
+  }
+
+  .map-direction-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: #d9a441;
+  }
+
+  .map-direction-button:focus-visible {
+    outline: 3px solid rgba(217, 164, 65, 0.75);
     outline-offset: 3px;
+  }
+
+  .map-direction-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.42;
+  }
+
+  .map-direction-button.is-boundary:not(:disabled) {
+    background: #8a5a16;
+    color: #fffaf0;
+    box-shadow: 0 0 0 3px rgba(217, 164, 65, 0.35);
   }
 }

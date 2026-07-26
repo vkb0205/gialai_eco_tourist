@@ -3,127 +3,24 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect, useState } from 'react';
-import { ArrowRight, ArrowUpRight, CalendarDays, ChevronLeft, ChevronRight, Coffee, Globe, MapPinned, Play, Route, Star } from 'lucide-react';
-import heroImage from '../assets/bien_ho_2.jpeg_2K_202607252001.jpeg';
-import glecoLogo from '../assets/gleco_logo.png';
-import glecoLogoOrg from '../assets/gleco_logo_org.png';
-
-const navLinks = [
-  { label: 'Khám phá', href: '#tour-details' },
-  { label: 'Lên kế hoạch', href: '#travel-plan' },
-  { label: 'Trải nghiệm', href: '#guides' },
-  { label: 'Cảm nhận du khách', href: '#testimonials' },
-];
-
-const destinations = [
-  {
-    title: 'Đi bộ giữa rừng Kon Ka Kinh',
-    location: 'Huyện Kbang',
-    category: 'Rừng nguyên sinh',
-    duration: '3–4 giờ',
-    pace: 'Dễ',
-    price: '$42.00',
-    image: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&q=80',
-    copy: 'Cung đường mát rượi dưới những tán cây cổ thụ, tiếng chim rừng và một điểm dừng picnic bên dòng suối trong.',
-  },
-  {
-    title: 'Bình minh trên Biển Hồ T’Nưng',
-    location: 'Cao nguyên Pleiku',
-    category: 'Hồ núi lửa',
-    duration: '2–3 giờ',
-    pace: 'Rất dễ',
-    price: '$28.50',
-    image: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&q=80',
-    copy: 'Khởi hành trước nắng sớm, băng qua những triền thông rồi thưởng thức cà phê tại quán nhỏ ven hồ của người địa phương.',
-  },
-  {
-    title: 'Cung đường núi lửa Chư Đăng Ya',
-    location: 'Huyện Chư Păh',
-    category: 'Núi lửa',
-    duration: '4 giờ',
-    pace: 'Vừa phải',
-    price: '$31.75',
-    image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80',
-    copy: 'Bước trên nền đất đỏ mềm, đi qua những cánh đồng hoa theo mùa và phóng tầm mắt về cao nguyên bazan.',
-  },
-  {
-    title: 'Thăm làng dệt Jrai',
-    location: 'Huyện Ia Grai',
-    category: 'Làng nghề Jrai',
-    duration: '2 giờ',
-    pace: 'Trải nghiệm',
-    price: '$24.00',
-    image: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80',
-    copy: 'Gặp gỡ nghệ nhân, tìm hiểu ý nghĩa hoa văn và lắng nghe những câu chuyện bình dị bên nhà rông.',
-  },
-  {
-    title: 'Vòng cung thác Phú Cường',
-    location: 'Huyện Chư Sê',
-    category: 'Thác nước',
-    duration: '3–4 giờ',
-    pace: 'Dễ',
-    price: '$36.20',
-    image: 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&q=80',
-    copy: 'Sương mát, những bậc đá phủ dương xỉ và hành trình thong thả qua vườn tiêu, rừng cao su.',
-  },
-  {
-    title: 'Một ngày cùng cà phê Pleiku',
-    location: 'Nông trại ven thành phố',
-    category: 'Cà phê cao nguyên',
-    duration: '3 giờ',
-    pace: 'Thưởng thức',
-    price: '$19.80',
-    image: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&q=80',
-    copy: 'Hái quả chín đúng mùa, xem mẻ rang thủ công và nếm Robusta theo ba cách pha của người địa phương.',
-  },
-];
-
-const testimonials = [
-  {
-    name: 'Maya Santoso',
-    role: 'Du khách gia đình từ Bandung',
-    rating: 4.7,
-    image: 'https://i.pravatar.cc/150?u=gialai-maya',
-    quote: 'Lịch trình rất thư thả, không hề vội vã. Hướng dẫn viên kể về rừng tự nhiên và đầy cuốn hút.',
-  },
-  {
-    name: 'Duc Anh Tran',
-    role: 'Nhiếp ảnh gia từ Đà Nẵng',
-    rating: 4.9,
-    image: 'https://i.pravatar.cc/150?u=gialai-duc-anh',
-    quote: 'Họ biết chính xác nơi ánh sáng chạm mặt hồ T’Nưng và dẫn chúng tôi đến những góc ngắm yên tĩnh hơn.',
-  },
-  {
-    name: 'Elena Park',
-    role: 'Du khách tự do từ Busan',
-    rating: 4.8,
-    image: 'https://i.pravatar.cc/150?u=gialai-elena',
-    quote: 'Tôi rất trân trọng các chi tiết thiết thực: điểm tiếp nước, giờ đón rõ ràng và tư vấn chân thành về độ khó của cung đường.',
-  },
-];
-
-const smallCards = [
-  { title: 'Nông trại cà phê', image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&q=80' },
-  { title: 'Cung đường bazan', image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80' },
-  { title: 'Sớm mai bên hồ', image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80' },
-  { title: 'Nghề thủ công làng', image: 'https://images.unsplash.com/photo-1493106819501-66d381c466f1?auto=format&fit=crop&q=80' },
-];
-
-const partners = [
-  { name: 'K-Tech', mark: '✦' },
-  { name: 'travel GiaLai', mark: '◆' },
-  { name: 'ELARIVER', mark: '▰' },
-  { name: 'LeoNEX', mark: '◖' },
-  { name: 'cloogle tours', mark: '✤' },
-  { name: 'tahlex', mark: '◒' },
-  { name: 'Surx', mark: '✧' },
-];
+import { useEffect, useState } from 'react';
+import { ArrowRight, CalendarDays, ChevronLeft, ChevronRight, Coffee, Globe, MapPinned, Play, Route, Star } from 'lucide-react';
+import heroImage from './assets/bien_ho_2.jpeg_2K_202607252001.jpeg';
+import glecoLogo from './assets/gleco_logo.png';
+import ExplorePage from './components/ExplorePage';
+import Navbar, { type PageName } from './components/Navbar';
+import { destinations, partners, smallCards, testimonials } from './data/homepage';
 
 export default function App() {
+  const [activePage, setActivePage] = useState<PageName>('home');
   const [isOverHero, setIsOverHero] = useState(true);
 
   useEffect(() => {
+    if (activePage !== 'home') {
+      setIsOverHero(false);
+      return;
+    }
+
     const hero = document.getElementById('hero');
 
     if (!hero) {
@@ -143,32 +40,32 @@ export default function App() {
       window.removeEventListener('scroll', updateNavbarSurface);
       window.removeEventListener('resize', updateNavbarSurface);
     };
-  }, []);
+  }, [activePage]);
 
-  const navbarRowSurfaceClass = isOverHero
-    ? 'bg-transparent'
-    : 'bg-[#8FA28A]/60 shadow-[0_18px_70px_rgba(45,58,42,0.12)] ring-1 ring-[#203828]/7 backdrop-blur-2xl';
-  const navSurfaceClass = isOverHero
-    ? 'border-white/18 bg-white/10 text-[#fffaf0] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_18px_70px_rgba(3,12,18,0.18)]'
-    : 'border-[#203828]/10 bg-[#fffaf0]/92 text-[#203828] shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_18px_70px_rgba(45,58,42,0.14)]';
-  const inactiveNavLinkClass = isOverHero
-    ? 'hover:bg-white/14 hover:text-white'
-    : 'hover:bg-[#203828]/8 hover:text-[#203828]';
-  const activeNavLinkClass = isOverHero
-    ? 'bg-[#fffaf0] text-[#1e2528] shadow-[0_10px_26px_rgba(255,255,255,0.16)]'
-    : 'bg-[#203828] text-[#fffaf0] shadow-[0_10px_26px_rgba(32,56,40,0.14)]';
-  const ctaSurfaceClass = isOverHero
-    ? 'border-white/18 bg-white/10 text-[#fffaf0] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_18px_60px_rgba(3,12,18,0.20)] hover:bg-white/18 focus:ring-white/40'
-    : 'border-[#203828]/10 bg-[#fffaf0]/94 text-[#203828] shadow-[inset_0_1px_0_rgba(255,255,255,0.65),0_18px_60px_rgba(45,58,42,0.12)] hover:bg-white focus:ring-[#d9a441]/35';
-  const ctaIconClass = isOverHero
-    ? 'bg-[#fffaf0] text-[#1e2528]'
-    : 'bg-[#203828] text-[#fffaf0]';
+  const handleNavigate = (page: PageName, href?: string) => {
+    setActivePage(page);
+
+    window.setTimeout(() => {
+      if (href) {
+        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 0);
+  };
 
   return (
     <div className="min-h-screen bg-[#f2efe7] text-[#203828] font-sans selection:bg-[#d9a441]/30">
       <a href="#main-content" className="skip-link">Đến nội dung chính</a>
 
-      <div id="hero" className="relative w-full min-h-[100dvh] overflow-hidden rounded-b-[2rem] bg-[#17261d] md:rounded-b-[3rem]">
+      <Navbar isOverHero={isOverHero} activePage={activePage} onNavigate={handleNavigate} />
+
+      {activePage === 'explore' ? (
+        <ExplorePage onBackHome={() => handleNavigate('home')} />
+      ) : (
+        <>
+          <div id="hero" className="relative w-full min-h-[100dvh] overflow-hidden rounded-b-[2rem] bg-[#17261d] md:rounded-b-[3rem]">
         <img
           src={heroImage}
           alt="Góc nhìn từ trên cao của Biển Hồ T’Nưng và rừng xanh Gia Lai"
@@ -177,48 +74,15 @@ export default function App() {
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,17,20,0.42)_0%,rgba(11,17,20,0.18)_33%,rgba(11,17,20,0.34)_64%,rgba(11,17,20,0.62)_100%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,rgba(255,250,240,0.20),transparent_28%),radial-gradient(circle_at_14%_88%,rgba(255,250,240,0.12),transparent_22%)]" />
 
-        <header className={`fixed left-0 right-0 top-0 z-30 grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-5 py-4 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] md:px-8 lg:px-14 ${navbarRowSurfaceClass}`}>
-          <a href="#" aria-label="Trang chủ Gia Lai Eco Tourist" className="relative inline-flex h-20 w-44 items-center focus:outline-none focus:ring-4 focus:ring-[#fffaf0]/50 md:h-24 md:w-52">
-            <img
-              src={glecoLogo}
-              alt="Gia Lai Eco Tourist Co., Ltd."
-              className={`absolute inset-0 h-full w-full object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-opacity duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${isOverHero ? 'opacity-100' : 'opacity-0'}`}
-            />
-            <img
-              src={glecoLogoOrg}
-              alt=""
-              aria-hidden="true"
-              className={`absolute inset-0 h-full w-full object-contain transition-opacity duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${isOverHero ? 'opacity-0' : 'opacity-100'}`}
-            />
-          </a>
-
-          <nav aria-label="Điều hướng chính" className={`hidden items-center gap-2 rounded-full border p-2 text-sm font-semibold backdrop-blur-2xl transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] lg:flex ${navSurfaceClass}`}>
-            {navLinks.map((link, index) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className={`rounded-full px-6 py-3 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] focus:outline-none focus:ring-2 ${index === 0 ? activeNavLinkClass : inactiveNavLinkClass} ${isOverHero ? 'focus:ring-white/70' : 'focus:ring-[#d9a441]/45'}`}
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
-
-          <a href="mailto:tours@gialaieco.example" className={`ml-auto inline-flex items-center gap-3 rounded-full border py-2 pl-5 pr-2 backdrop-blur-2xl transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 active:scale-[0.98] focus:outline-none focus:ring-4 ${ctaSurfaceClass}`}>
-            <span className="hidden text-sm font-bold md:inline">Đặt hành trình</span>
-            <span className={`grid h-11 w-11 place-items-center rounded-full transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${ctaIconClass}`}><ArrowUpRight size={22} strokeWidth={2.4} /></span>
-          </a>
-        </header>
-
         <main id="main-content" className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-center px-5 pb-44 pt-28 text-center md:px-10 lg:px-16">
-          <span className="mb-7 inline-flex rounded-full border border-white/18 bg-white/12 px-5 py-2 text-xs font-bold uppercase tracking-[0.18em] text-[#f5d889] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_18px_55px_rgba(3,12,18,0.18)] backdrop-blur-2xl md:text-sm">
+          {/* <span className="mb-7 inline-flex rounded-full border border-white/18 bg-white/12 px-5 py-2 text-xs font-bold uppercase tracking-[0.18em] text-[#f5d889] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_18px_55px_rgba(3,12,18,0.18)] backdrop-blur-2xl md:text-sm">
             Du lịch chậm từ cao nguyên Việt Nam
-          </span>
+          </span> */}
           <h1 className="max-w-7xl text-balance text-[clamp(4.4rem,11vw,10.5rem)] font-light leading-[0.86] tracking-[-0.075em] text-[#fffaf0] drop-shadow-[0_18px_70px_rgba(0,0,0,0.36)]">
             <span className="block font-serif italic font-black tracking-[-0.055em]">Đi chậm hơn.<br />Nhớ lâu hơn.</span>
           </h1>
           <p className="mt-7 max-w-2xl text-pretty text-base leading-7 text-[#fffaf0]/90 drop-shadow md:text-lg">Từ Biển Hồ lộng gió đến những cánh rừng nguyên sinh, hãy kết nối với thiên nhiên, văn hóa bản địa và những người thuộc từng con đường nơi đây.</p>
-          <a href="#tour-details" className="group mt-10 inline-flex items-center justify-center gap-5 rounded-full border border-white/22 bg-white/18 px-9 py-4 text-lg font-black text-[#fffaf0] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_24px_70px_rgba(3,12,18,0.25)] backdrop-blur-2xl transition duration-200 hover:-translate-y-1 hover:bg-white/24 active:translate-y-0 focus:outline-none focus:ring-4 focus:ring-white/45 md:px-12 md:py-5 md:text-xl">
+          <a href="#" onClick={(event) => { event.preventDefault(); handleNavigate('explore'); }} className="group mt-10 inline-flex items-center justify-center gap-5 rounded-full border border-white/22 bg-white/18 px-9 py-4 text-lg font-black text-[#fffaf0] shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_24px_70px_rgba(3,12,18,0.25)] backdrop-blur-2xl transition duration-200 hover:-translate-y-1 hover:bg-white/24 active:translate-y-0 focus:outline-none focus:ring-4 focus:ring-white/45 md:px-12 md:py-5 md:text-xl">
             Khám phá điểm đến <ArrowRight size={26} className="transition group-hover:translate-x-1" />
           </a>
         </main>
@@ -387,6 +251,8 @@ export default function App() {
           </div>
         </div>
       </footer>
+        </>
+      )}
     </div>
   );
 }
