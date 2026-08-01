@@ -3,33 +3,174 @@
 @theme {
   --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Playfair Display", Georgia, serif;
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-soft: cubic-bezier(0.45, 0, 0.15, 1);
+  --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+  --duration-fast: 150ms;
+  --duration-med: 260ms;
+  --duration-slow: 340ms;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
 body {
   margin: 0;
   background: #f2efe7;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
-body::before {
+img {
+  image-rendering: auto;
+}
+
+/* Subtle film grain — breaks flat digital surfaces without fighting photos */
+body::after {
   content: "";
+  pointer-events: none;
   position: fixed;
   inset: 0;
-  pointer-events: none;
   z-index: 50;
   opacity: 0.035;
-  background-image:
-    radial-gradient(circle at 20% 20%, #2d4a35 0 1px, transparent 1px),
-    radial-gradient(circle at 80% 40%, #9a6b2f 0 1px, transparent 1px);
-  background-size: 18px 18px, 26px 26px;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px 180px;
+}
+
+/* Skip layout and paint for offscreen homepage content without removing it from scroll flow. */
+.deferred-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 58rem;
+}
+
+.explore-loading {
+  display: grid;
+  min-height: 100dvh;
+  place-items: center;
+  background: #f2efe7;
+  color: #203828;
+  font-weight: 700;
+}
+
+/* Keep chrome stable while page content crossfades */
+.site-navbar {
+  view-transition-name: site-navbar;
+}
+
+.page-shell {
+  view-transition-name: page-shell;
+  contain: layout paint style;
+  isolation: isolate;
+}
+
+@supports not (view-transition-name: none) {
+  .page-shell {
+    animation: page-enter var(--duration-med) var(--ease-out-soft) both;
+  }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-group(page-shell) {
+  animation-duration: var(--duration-med);
+  animation-timing-function: var(--ease-out-soft);
+}
+
+::view-transition-old(page-shell) {
+  animation: vt-page-out var(--duration-fast) var(--ease-in-out-soft) both;
+}
+
+::view-transition-new(page-shell) {
+  animation: vt-page-in var(--duration-med) var(--ease-out-soft) both;
+}
+
+::view-transition-group(site-navbar) {
+  animation-duration: var(--duration-fast);
+  animation-timing-function: var(--ease-out-soft);
+}
+
+/* Opacity plus small translate only; avoid blur and scale on full-page snapshots. */
+@keyframes vt-page-out {
+  to {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0);
+  }
+}
+
+@keyframes vt-page-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Scroll interpolation — GPU-safe transform/opacity/filter only */
+  .reveal {
+    opacity: 0;
+    transform: translate3d(0, 3rem, 0);
+    filter: blur(6px);
+    transition:
+      opacity 900ms var(--ease-fluid),
+      transform 900ms var(--ease-fluid),
+      filter 900ms var(--ease-fluid);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
   }
 
   .text-pretty {
@@ -38,6 +179,78 @@ body::before {
 
   .tabular-nums {
     font-variant-numeric: tabular-nums;
+  }
+
+  .motion-surface {
+    transition:
+      background-color var(--duration-med) var(--ease-out-soft),
+      color var(--duration-med) var(--ease-out-soft),
+      border-color var(--duration-med) var(--ease-out-soft),
+      box-shadow var(--duration-med) var(--ease-out-soft),
+      opacity var(--duration-med) var(--ease-out-soft);
+  }
+
+  .motion-tap {
+    transition:
+      background-color var(--duration-fast) var(--ease-out-soft),
+      color var(--duration-fast) var(--ease-out-soft),
+      border-color var(--duration-fast) var(--ease-out-soft),
+      box-shadow var(--duration-fast) var(--ease-out-soft),
+      opacity var(--duration-fast) var(--ease-out-soft),
+      transform var(--duration-fast) var(--ease-out-soft);
+  }
+
+  .motion-media {
+    transition: transform var(--duration-med) var(--ease-out-soft), opacity var(--duration-fast) var(--ease-out-soft);
+  }
+
+  .horizontal-scroll-carousel {
+    display: flex;
+    gap: var(--carousel-gap, 1.5rem);
+    margin-left: -1.25rem;
+    margin-right: -1.25rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    scroll-padding-inline: 1.25rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .horizontal-scroll-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .horizontal-scroll-carousel__item {
+    flex: 0 0 min(var(--carousel-card-width, 85vw), 32rem);
+    min-width: 0;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+
+  .horizontal-scroll-carousel__item>* {
+    height: 100%;
+    width: 100%;
+  }
+
+  @media (min-width: 1024px) {
+    .horizontal-scroll-carousel {
+      display: grid;
+      margin-left: 0;
+      margin-right: 0;
+      overflow: visible;
+      padding-left: 0;
+      padding-right: 0;
+      scroll-snap-type: none;
+    }
+
+    .horizontal-scroll-carousel__item {
+      display: block;
+      min-width: 0;
+      scroll-snap-align: none;
+    }
   }
 
   .skip-link {
@@ -51,144 +264,80 @@ body::before {
     color: #fffaf0;
     padding: 0.75rem 1rem;
     font-weight: 700;
-    transition: transform 200ms ease;
+    transition: transform var(--duration-fast) var(--ease-out-soft);
   }
 
-
-  .explore-vietnam-map {
-    transform-origin: 0 0;
-    transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: transform;
-  }
-
-  .explore-vietnam-map svg {
-    display: block;
-    height: 100%;
-    width: 100%;
-    overflow: visible;
-    filter: drop-shadow(0 26px 42px rgba(32, 56, 40, 0.22));
-  }
-
-  .explore-vietnam-map svg path {
-    fill: #9fb58f;
-    stroke: rgba(255, 250, 240, 0.84);
-    stroke-width: 0.9;
-    pointer-events: none;
-    transition: fill 260ms ease, opacity 260ms ease, stroke 260ms ease, stroke-width 260ms ease, filter 260ms ease;
-  }
-
-  .explore-vietnam-map svg path.is-unavailable {
-    fill: #c8c7ad;
-    opacity: 0.46;
-  }
-
-  .explore-vietnam-map svg path.is-selected-region,
-  .explore-vietnam-map svg path.is-active-region {
-    fill: #d9a441;
-    opacity: 1;
-    stroke: #203828;
-    stroke-width: 1.55;
-    filter: drop-shadow(0 5px 0 rgba(32, 56, 40, 0.22));
-  }
-
-  .explore-vietnam-map svg path.is-hovered-region {
-    fill: #f2c86d;
-    opacity: 1;
-    stroke: #8a5a16;
-    stroke-dasharray: 3 2;
-    stroke-width: 1.35;
-  }
-
-  .explore-vietnam-map svg #points {
-    display: none;
-  }
-
-  .explore-vietnam-map svg #label_points {
-    display: block;
-    pointer-events: none;
-  }
-
-  .explore-vietnam-map svg #label_points circle {
-    r: 4.8px;
-    fill: #fffaf0;
-    stroke: #203828;
-    stroke-width: 1.6;
-    opacity: 0.92;
-    pointer-events: none;
-    transition: fill 200ms ease, opacity 200ms ease, r 200ms ease, stroke 200ms ease, filter 200ms ease;
-  }
-
-  .explore-vietnam-map svg #label_points circle.is-unavailable {
-    opacity: 0.2;
-  }
-
-  .explore-vietnam-map svg #label_points circle.is-clickable {
-    cursor: pointer;
-    fill: #fffaf0;
-    pointer-events: auto;
-  }
-
-  .explore-vietnam-map svg #label_points circle.is-clickable:hover,
-  .explore-vietnam-map svg #label_points circle.is-clickable:focus,
-  .explore-vietnam-map svg #label_points circle.is-clickable:focus-visible {
-    r: 7px;
-    fill: #d9a441;
-    opacity: 1;
-    outline: none;
-    stroke: #203828;
-    stroke-width: 2;
-    filter: drop-shadow(0 6px 9px rgba(32, 56, 40, 0.34));
-  }
-
-  .explore-vietnam-map svg #label_points circle.is-hovered-region {
-    r: 7px;
-    fill: #f2c86d;
-    opacity: 1;
-    stroke: #8a5a16;
-    stroke-width: 2;
-    stroke-dasharray: 2 1;
-  }
-
-  .explore-vietnam-map svg #label_points circle.is-selected-region,
-  .explore-vietnam-map svg #label_points circle.is-active-region {
-    r: 6.4px;
-    fill: #d9a441;
-    opacity: 1;
-    stroke: #203828;
-    stroke-width: 2;
-  }
-
-  .map-direction-button {
-    display: grid;
-    place-items: center;
-    min-height: 2.75rem;
-    min-width: 2.75rem;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 250, 240, 0.22);
-    background: #fffaf0;
-    color: #203828;
-    font-weight: 900;
-    transition: transform 180ms ease, background 180ms ease, opacity 180ms ease, box-shadow 180ms ease;
-  }
-
-  .map-direction-button:hover:not(:disabled) {
-    transform: translateY(-1px);
-    background: #d9a441;
-  }
-
-  .map-direction-button:focus-visible {
-    outline: 3px solid rgba(217, 164, 65, 0.75);
+  .skip-link:focus,
+  .skip-link:focus-visible {
+    transform: translateY(0);
+    outline: 3px solid #d9a441;
     outline-offset: 3px;
   }
+}
 
-  .map-direction-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.42;
+@media (prefers-reduced-motion: no-preference) {
+  .hero-swipe-cue__icon {
+    animation: hero-swipe-prompt 2.4s var(--ease-fluid) infinite;
   }
 
-  .map-direction-button.is-boundary:not(:disabled) {
-    background: #8a5a16;
-    color: #fffaf0;
-    box-shadow: 0 0 0 3px rgba(217, 164, 65, 0.35);
+  .hero-swipe-cue:hover .hero-swipe-cue__icon,
+  .hero-swipe-cue:focus-visible .hero-swipe-cue__icon {
+    animation-play-state: paused;
+  }
+}
+
+/* Compose reveal and centering transforms for the hero-bottom affordance. */
+.hero-swipe-cue.reveal {
+  transform: translate3d(-50%, 3rem, 0);
+}
+
+.hero-swipe-cue.reveal.is-visible {
+  transform: translate3d(-50%, 0, 0);
+}
+
+.hero-swipe-cue.reveal.is-visible:active {
+  transform: translate3d(-50%, 0, 0) scale(0.98);
+}
+
+@keyframes hero-swipe-prompt {
+
+  0%,
+  56%,
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  72% {
+    opacity: 0.68;
+    transform: translate3d(0, 0.4rem, 0);
+  }
+}
+
+/* Assistant stays anchored to the viewport, never in page flow. */
+.explore-chat-layout {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.explore-chat-portal>aside {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 40;
+  width: min(24rem, calc(100vw - 2rem));
+  height: min(34rem, calc(100dvh - 2rem));
+  max-height: none;
+  border: 1px solid rgb(32 56 40 / 0.14);
+  border-radius: 1.5rem;
+  box-shadow: 0 24px 60px rgb(32 56 40 / 0.24);
+  overflow: hidden;
+}
+
+@media (max-width: 480px) {
+  .explore-chat-portal>aside {
+    right: 0.5rem;
+    bottom: 0.5rem;
+    width: calc(100vw - 1rem);
+    height: min(32rem, calc(100dvh - 1rem));
   }
 }

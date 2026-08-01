@@ -1,16 +1,9 @@
-export const navLinks = [
-    { label: 'Khám phá', page: 'explore' as const },
-    { label: 'Lên kế hoạch', page: 'home' as const, href: '#travel-plan' },
-    { label: 'Trải nghiệm', page: 'home' as const, href: '#guides' },
-    { label: 'Cảm nhận du khách', page: 'home' as const, href: '#testimonials' },
-];
-
 export const destinations = [
     {
         title: 'Đi bộ giữa rừng Kon Ka Kinh',
         location: 'Huyện Kbang',
         category: 'Rừng nguyên sinh',
-        duration: '3–4 giờ',
+        duration: '3-4 giờ',
         pace: 'Dễ',
         price: '$42.00',
         image: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&q=80',
@@ -20,7 +13,7 @@ export const destinations = [
         title: 'Bình minh trên Biển Hồ T’Nưng',
         location: 'Cao nguyên Pleiku',
         category: 'Hồ núi lửa',
-        duration: '2–3 giờ',
+        duration: '2-3 giờ',
         pace: 'Rất dễ',
         price: '$28.50',
         image: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&q=80',
@@ -50,7 +43,7 @@ export const destinations = [
         title: 'Vòng cung thác Phú Cường',
         location: 'Huyện Chư Sê',
         category: 'Thác nước',
-        duration: '3–4 giờ',
+        duration: '3-4 giờ',
         pace: 'Dễ',
         price: '$36.20',
         image: 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&q=80',
@@ -99,12 +92,18 @@ export const smallCards = [
     { title: 'Nghề thủ công làng', image: 'https://images.unsplash.com/photo-1493106819501-66d381c466f1?auto=format&fit=crop&q=80' },
 ];
 
-export const partners = [
-    { name: 'K-Tech', mark: '✦' },
-    { name: 'travel GiaLai', mark: '◆' },
-    { name: 'ELARIVER', mark: '▰' },
-    { name: 'LeoNEX', mark: '◖' },
-    { name: 'cloogle tours', mark: '✤' },
-    { name: 'tahlex', mark: '◒' },
-    { name: 'Surx', mark: '✧' },
+export type Partner = {
+    name: string;
+    /** Monogram shown until an approved silver logo asset is supplied. */
+    mark: string;
+    /** Optional local/imported logo. Keep it monochrome for the recessed partner strip. */
+    logoSrc?: string;
+    logoAlt?: string;
+};
+
+// Add future partners here. `logoSrc` may point to an imported asset or public SVG/PNG.
+export const partners: Partner[] = [
+    { name: 'BIDV', mark: 'B' },
+    { name: 'SeSan Gia Lai', mark: 'S' },
+    { name: 'Agribank', mark: 'A' },
 ];

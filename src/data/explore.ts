@@ -53,8 +53,8 @@ export const exploreRegions: ExploreRegion[] = [
       { id: 'pleiku-coffee', name: 'Cà phê Pleiku', provinceId: 'VN30', aliases: ['coffee', 'ca phe', 'Robusta'], summary: 'Trải nghiệm nông trại và rang cà phê cao nguyên.', isSelectable: true },
     ],
     packages: [
-      { title: 'Bình minh trên Biển Hồ T’Nưng', category: 'Hồ núi lửa', duration: '2–3 giờ', pace: 'Rất dễ', price: '$28.50', image: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&q=80', copy: 'Khởi hành trước nắng sớm, băng qua triền thông và dừng lại bên ly cà phê ven hồ của người địa phương.' },
-      { title: 'Đi bộ giữa rừng Kon Ka Kinh', category: 'Rừng nguyên sinh', duration: '3–4 giờ', pace: 'Dễ', price: '$42.00', image: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&q=80', copy: 'Một cung đường mát rượi dưới tán cây cổ thụ, tiếng chim rừng và bữa picnic nhỏ bên dòng suối trong.' },
+      { title: 'Bình minh trên Biển Hồ T’Nưng', category: 'Hồ núi lửa', duration: '2-3 giờ', pace: 'Rất dễ', price: '$28.50', image: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&q=80', copy: 'Khởi hành trước nắng sớm, băng qua triền thông và dừng lại bên ly cà phê ven hồ của người địa phương.' },
+      { title: 'Đi bộ giữa rừng Kon Ka Kinh', category: 'Rừng nguyên sinh', duration: '3-4 giờ', pace: 'Dễ', price: '$42.00', image: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&q=80', copy: 'Một cung đường mát rượi dưới tán cây cổ thụ, tiếng chim rừng và bữa picnic nhỏ bên dòng suối trong.' },
       { title: 'Một ngày cùng cà phê Pleiku', category: 'Cà phê cao nguyên', duration: '3 giờ', pace: 'Thưởng thức', price: '$19.80', image: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&q=80', copy: 'Hái quả chín đúng mùa, xem rang thủ công và nếm Robusta theo ba cách pha thân thuộc của cao nguyên.' },
     ],
   },
@@ -90,11 +90,11 @@ export const exploreRegions: ExploreRegion[] = [
     destinations: [
       { id: 'hoi-an-old-town', name: 'Phố cổ Hội An', provinceId: 'VN27', aliases: ['Hoi An', 'Quang Nam'], summary: 'Di sản phố cổ, xưởng thủ công và ẩm thực ven sông.', isSelectable: true },
       { id: 'hue-garden', name: 'Vườn nhà Huế', provinceId: 'VN26', aliases: ['Hue', 'lăng tẩm'], summary: 'Vườn nhà, lịch sử và bữa cơm Huế chậm rãi.', isSelectable: true },
-      { id: 'quy-nhon-phu-yen', name: 'Đường biển Quy Nhơn – Phú Yên', provinceId: 'VN32', aliases: ['Quy Nhon', 'Phu Yen', 'biển'], summary: 'Cung đường biển, làng chài và bãi đá.', isSelectable: true },
+      { id: 'quy-nhon-phu-yen', name: 'Đường biển Quy Nhơn - Phú Yên', provinceId: 'VN32', aliases: ['Quy Nhon', 'Phu Yen', 'biển'], summary: 'Cung đường biển, làng chài và bãi đá.', isSelectable: true },
     ],
     packages: [
       { title: 'Một ngày giữa phố cổ Hội An', category: 'Di sản', duration: '1 ngày', pace: 'Thư thả', price: '$48.00', image: 'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&q=80', copy: 'Đi bộ qua nhà cổ, xưởng thủ công và bữa tối bên sông với nhịp chậm, ít điểm dừng nhưng nhiều thời gian cảm nhận.' },
-      { title: 'Đường biển Quy Nhơn – Phú Yên', category: 'Biển và làng chài', duration: '8 giờ', pace: 'Dễ', price: '$52.00', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80', copy: 'Một cung đường ven biển, ghé làng chài, bãi đá và những quán nhỏ nấu hải sản theo mùa.' },
+      { title: 'Đường biển Quy Nhơn - Phú Yên', category: 'Biển và làng chài', duration: '8 giờ', pace: 'Dễ', price: '$52.00', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80', copy: 'Một cung đường ven biển, ghé làng chài, bãi đá và những quán nhỏ nấu hải sản theo mùa.' },
       { title: 'Huế qua vườn nhà và lăng tẩm', category: 'Ẩm thực · lịch sử', duration: '6 giờ', pace: 'Rất dễ', price: '$39.00', image: 'https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&q=80', copy: 'Đi giữa vườn nhà Huế, nghe chuyện gia đình, thưởng thức bữa cơm nhỏ và thăm một lăng tẩm yên tĩnh.' },
     ],
   },
