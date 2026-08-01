@@ -5,6 +5,8 @@ import { defineConfig } from 'vite';
 
 export default defineConfig(() => {
   return {
+    // GitHub Pages project site: https://vkb0205.github.io/gialai_eco_tourist/
+    base: '/gialai_eco_tourist/',
     plugins: [
       react(),
       tailwindcss(),
@@ -16,8 +18,8 @@ export default defineConfig(() => {
           short_name: 'Gia Lai Eco',
           description: 'Slow, local eco tours through Gia Lai’s wild plateau.',
           lang: 'vi',
-          start_url: '/',
-          scope: '/',
+          start_url: '/gialai_eco_tourist/',
+          scope: '/gialai_eco_tourist/',
           display: 'standalone',
           background_color: '#f3f6ef',
           theme_color: '#203828',
