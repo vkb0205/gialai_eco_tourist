@@ -126,27 +126,27 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#edf2e9] text-[#14251c] font-sans selection:bg-[#c28a36]/25">
+    <div className="min-h-screen bg-[#eef3e8] text-[#14251c] font-sans selection:bg-[#c28a36]/25">
       <a href="#main-content" className="skip-link">Đến nội dung chính</a>
 
       <Navbar isOverHero={isOverHero} activePage={activePage} onNavigate={handleNavigate} />
 
       {activePage === 'explore' ? (
-        <div key="explore" className="page-shell">
+        <div key="explore" className="page-shell explore-page-shell">
           <Suspense fallback={<div className="explore-loading" role="status">Đang tải trải nghiệm...</div>}>
             <ExplorePage onBackHome={() => handleNavigate('home')} />
           </Suspense>
         </div>
       ) : activePage === 'blog' ? (
-        <div key="blog" className="page-shell">
+        <div key="blog" className="page-shell explore-page-shell">
           <Suspense fallback={<div className="explore-loading" role="status">Đang tải nhật ký...</div>}>
             <BlogPage onBackHome={() => handleNavigate('home')} onExplore={() => handleNavigate('explore')} />
           </Suspense>
         </div>
       ) : (
-        <div key="home" className="page-shell">
+        <div key="home" className="page-shell explore-page-shell">
           <main id="main-content">
-            <section id="hero" className="relative min-h-[100dvh] overflow-hidden bg-[#0f2118] text-[#f7f5eb]">
+            <section id="hero" className="eco-hero relative min-h-[100dvh] overflow-hidden bg-[#07170f] text-[#f7f5eb]">
               <img
                 src={heroImage}
                 alt="Biển Hồ T’Nưng và rừng xanh nhìn từ trên cao"
@@ -154,16 +154,18 @@ export default function App() {
                 fetchPriority="high"
                 decoding="async"
               />
-              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(9,24,17,0.88)_0%,rgba(9,24,17,0.58)_46%,rgba(9,24,17,0.16)_100%)]" />
-              <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#edf2e9] to-transparent" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_28%,rgba(214,155,69,0.24),transparent_28%),linear-gradient(90deg,rgba(5,18,12,0.92)_0%,rgba(9,24,17,0.68)_45%,rgba(9,24,17,0.18)_100%)]" />
+              <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#eef3e8] via-[#eef3e8]/55 to-transparent" />
+              <div aria-hidden="true" className="absolute left-5 top-28 hidden max-w-[10rem] rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-white/80 backdrop-blur-xl md:block">Local-first travel</div>
 
               <div className="relative z-10 mx-auto grid min-h-[100dvh] max-w-7xl items-center gap-10 px-5 pb-20 pt-24 md:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:pt-24">
                 <div className="max-w-3xl text-left">
-                  <h1 className="reveal text-balance text-5xl font-black leading-[0.92] tracking-[-0.065em] md:text-7xl lg:text-8xl">
-                    Gia Lai Eco Tourist
+                  <p className="reveal mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.22em] text-[#d7c08b] backdrop-blur-xl">Du lịch sinh thái Gia Lai</p>
+                  <h1 className="reveal text-balance font-serif text-5xl font-black leading-[0.86] tracking-[-0.075em] md:text-7xl lg:text-8xl">
+                    Đi chậm giữa cao nguyên xanh.
                   </h1>
-                  <p style={revealDelay(140)} className="reveal mt-6 max-w-xl text-pretty text-base leading-7 text-[#f7f5eb]/86 md:text-lg">
-                    Trải nghiệm, đi chậm và để thấy sâu.
+                  <p style={revealDelay(140)} className="reveal mt-6 max-w-xl text-pretty text-base leading-7 text-[#f7f5eb]/86 md:text-xl md:leading-8">
+                    Những hành trình nhỏ quanh Biển Hồ, rừng, cà phê và làng bản — thiết kế bởi người địa phương để bạn thấy Gia Lai sâu hơn.
                   </p>
                   <a
                     href="#"
@@ -176,6 +178,14 @@ export default function App() {
                       <ArrowRight size={18} strokeWidth={1.75} />
                     </span>
                   </a>
+                  <div style={revealDelay(340)} className="reveal mt-10 grid max-w-xl grid-cols-3 gap-3">
+                    {[['26+', 'chuyến đi'], ['08', 'chủ nhà'], ['4.8', 'đánh giá']].map(([value, label]) => (
+                      <div key={label} className="rounded-2xl border border-white/12 bg-white/10 p-4 backdrop-blur-xl">
+                        <p className="font-serif text-3xl font-black tracking-[-0.06em] text-[#d7c08b]">{value}</p>
+                        <p className="mt-1 text-[10px] font-black uppercase tracking-[0.16em] text-white/68">{label}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <button
@@ -196,7 +206,7 @@ export default function App() {
               </div>
             </section>
 
-            <section id="tour-details" className="deferred-section bg-[#f7f5eb] py-24 md:py-32">
+            <section id="tour-details" className="deferred-section eco-section-light bg-[#f7f5eb] py-24 md:py-32">
               <div className="mx-auto max-w-7xl px-5 md:px-8">
                 <div className="reveal max-w-3xl">
                   <p className="text-sm font-black uppercase tracking-[0.18em] text-[#7b6a2d]">Nhật ký hành trình</p>
@@ -233,7 +243,7 @@ export default function App() {
               </div>
             </section>
 
-            <section id="featured-tours" className="deferred-section bg-[#edf2e9] py-24 md:py-32">
+            <section id="featured-tours" className="deferred-section eco-section-mist bg-[#edf2e9] py-24 md:py-32">
               <div className="mx-auto max-w-7xl px-5 md:px-8">
                 <div className="reveal flex max-w-4xl flex-col gap-5 md:flex-row md:items-end md:justify-between">
                   <div>
@@ -271,7 +281,7 @@ export default function App() {
               </div>
             </section>
 
-            <section id="travel-plan" className="deferred-section bg-[#edf2e9] py-24 md:py-32">
+            <section id="travel-plan" className="deferred-section eco-section-mist bg-[#edf2e9] py-24 md:py-32">
               <div className="mx-auto grid max-w-7xl gap-10 px-5 md:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
                 <div className="reveal rounded-[2rem] bg-[#173d2b] p-7 text-[#f7f5eb] shadow-[0_30px_90px_rgba(23,61,43,0.22)] md:p-9">
                   <MapPinned className="mb-10 text-[#c28a36]" size={34} strokeWidth={1.5} />
@@ -307,7 +317,7 @@ export default function App() {
               </div>
             </section> */}
 
-            <section id="testimonials" className="deferred-section bg-[#edf2e9] py-24 md:py-32">
+            <section id="testimonials" className="deferred-section eco-section-mist bg-[#edf2e9] py-24 md:py-32">
               <div className="mx-auto max-w-7xl px-5 md:px-8">
                 <div className="reveal max-w-3xl">
                   <h2 className="text-balance text-4xl font-black leading-[0.98] tracking-[-0.055em] text-[#14251c] md:text-6xl">Du khách nhớ điều gì sau chuyến đi.</h2>

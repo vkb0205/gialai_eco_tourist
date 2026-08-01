@@ -49,7 +49,7 @@ export default function BlogPage({ onBackHome, onExplore }: BlogPageProps) {
 
   return (
     <main id="main-content" className="min-h-[100dvh] overflow-hidden bg-[#f7f5eb] pt-28 text-[#14251c] md:pt-36">
-      <section className="relative px-4 pb-24 md:px-8 md:pb-32">
+      <section className="relative overflow-hidden px-4 pb-24 md:px-8 md:pb-32">
         <div aria-hidden="true" className="absolute -right-40 top-6 h-80 w-80 rounded-full bg-[#d7c08b]/24 blur-3xl" />
         <div aria-hidden="true" className="absolute -left-28 top-72 h-72 w-72 rounded-full bg-[#7b9a81]/18 blur-3xl" />
 
@@ -72,7 +72,7 @@ export default function BlogPage({ onBackHome, onExplore }: BlogPageProps) {
         </div>
       </section>
 
-      <section className="bg-[#edf2e9] px-4 py-24 md:px-8 md:py-32">
+      <section className="relative overflow-hidden bg-[#edf2e9] px-4 py-24 md:px-8 md:py-32">
         <div className="mx-auto max-w-7xl">
           <div className="reveal flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div>
@@ -122,7 +122,7 @@ export default function BlogPage({ onBackHome, onExplore }: BlogPageProps) {
         </div>
       </section>
 
-      <section className="px-4 py-24 md:px-8 md:py-32">
+      <section className="relative overflow-hidden px-4 py-24 md:px-8 md:py-32">
         <div className="mx-auto max-w-7xl">
           <div className="reveal flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl"><p className="inline-flex items-center gap-2 rounded-full bg-[#d7c08b]/35 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-[#735013]"><Sparkles size={12} strokeWidth={1.5} /> Thư viện hành trình</p><h2 className="mt-5 text-balance text-4xl font-black tracking-[-0.055em] text-[#14251c] md:text-6xl">Chuyện của đường đi.</h2></div>
@@ -142,7 +142,7 @@ export default function BlogPage({ onBackHome, onExplore }: BlogPageProps) {
         </div>
       </section>
 
-      <section className="bg-[#173d2b] px-4 py-24 text-[#f7f5eb] md:px-8 md:py-32">
+      <section className="relative overflow-hidden bg-[#173d2b] px-4 py-24 text-[#f7f5eb] md:px-8 md:py-32">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_0.75fr] lg:items-end">
           <div className="reveal"><p className="inline-flex rounded-full bg-[#f7f5eb]/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-[#d7c08b]">Đi tiếp cùng chúng tôi</p><h2 className="mt-6 max-w-3xl font-serif text-balance text-5xl font-black leading-[0.92] tracking-[-0.055em] md:text-7xl">Câu chuyện đẹp nhất vẫn là chuyến đi sắp tới.</h2></div>
           <div className="reveal rounded-[2rem] bg-[#f7f5eb]/9 p-1.5 ring-1 ring-white/12" style={revealDelay(120)}><div className="rounded-[calc(2rem-0.375rem)] bg-[#f7f5eb]/8 p-7 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] md:p-8"><p className="text-pretty leading-7 text-[#f7f5eb]/76">Hãy chọn một cung đường. Phần còn lại, đội ngũ địa phương sẽ cùng bạn giữ nhịp thật vừa vặn.</p><button type="button" onClick={onExplore} className={`group mt-7 inline-flex items-center gap-4 rounded-full bg-[#d7c08b] py-3 pl-6 pr-3 font-black text-[#14251c] transition-all duration-700 ${fluidEase} hover:-translate-y-1 active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-[#f7f5eb]/30`}>Khám phá hành trình <span className={`grid h-10 w-10 place-items-center rounded-full bg-[#14251c]/12 transition-transform duration-700 ${fluidEase} group-hover:translate-x-1 group-hover:-translate-y-[1px]`}><ArrowRight size={16} strokeWidth={1.6} /></span></button></div></div>

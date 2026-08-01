@@ -56,7 +56,7 @@ export default function Navbar({ isOverHero, activePage, onNavigate }: NavbarPro
 
     return (
         <>
-            <header className="site-navbar fixed inset-x-0 top-0 z-30 flex items-center justify-between gap-4 px-5 pt-4 md:px-8 md:pt-6 lg:px-10">
+            <header className="site-navbar fixed inset-x-0 top-0 z-30 flex items-center justify-between gap-4 px-4 pt-4 md:px-8 md:pt-6 lg:px-10">
                 <a
                     href="#"
                     aria-label="Trang chủ Gia Lai Eco Tourist"
@@ -116,7 +116,7 @@ export default function Navbar({ isOverHero, activePage, onNavigate }: NavbarPro
             </header>
 
             <div
-                className={`fixed inset-0 z-20 flex flex-col items-center justify-center bg-[#f2efe7]/85 px-6 backdrop-blur-3xl transition-opacity duration-700 ${fluidEase} ${menuOpen ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+                className={`fixed inset-0 z-20 flex flex-col items-center justify-center bg-[#f2efe7]/78 px-6 backdrop-blur-3xl transition-opacity duration-700 ${fluidEase} ${menuOpen ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
                 aria-hidden={!menuOpen}
             >
                 <span

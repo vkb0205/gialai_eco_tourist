@@ -72,9 +72,42 @@ body::after {
   display: grid;
   min-height: 100dvh;
   place-items: center;
-  background: #f2efe7;
+  background:
+    radial-gradient(circle at top, rgb(214 155 69 / 0.18), transparent 32%),
+    #f2efe7;
   color: #203828;
   font-weight: 700;
+}
+
+.eco-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 10rem;
+  background: linear-gradient(to top, rgb(238 243 232), transparent);
+  pointer-events: none;
+}
+
+.eco-section-light,
+.eco-section-mist {
+  position: relative;
+}
+
+.eco-section-light::before,
+.eco-section-mist::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.eco-section-light::before {
+  background: radial-gradient(circle at 10% 0%, rgb(199 212 188 / 0.38), transparent 34%);
+}
+
+.eco-section-mist::before {
+  background: radial-gradient(circle at 90% 0%, rgb(214 155 69 / 0.12), transparent 28%);
 }
 
 /* Keep chrome stable while page content crossfades */
@@ -253,6 +286,12 @@ body::after {
     }
   }
 
+  .eco-section-light>*,
+  .eco-section-mist>* {
+    position: relative;
+    z-index: 1;
+  }
+
   .skip-link {
     position: fixed;
     left: 1rem;
@@ -317,6 +356,21 @@ body::after {
 /* Assistant stays anchored to the viewport, never in page flow. */
 .explore-chat-layout {
   grid-template-columns: minmax(0, 1fr);
+}
+
+.explore-page-shell {
+  position: relative;
+  overflow: hidden;
+}
+
+.explore-page-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top left, rgb(214 155 69 / 0.14), transparent 28%),
+    radial-gradient(circle at top right, rgb(123 154 129 / 0.12), transparent 26%);
+  pointer-events: none;
 }
 
 .explore-chat-portal>aside {
