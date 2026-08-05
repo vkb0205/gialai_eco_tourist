@@ -1,0 +1,10 @@
+{
+  "description": "Discover eco-friendly tours in Gia Lai, Vietnam with curated packages for trekking, camping, and cultural experiences, all led by local guides.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
