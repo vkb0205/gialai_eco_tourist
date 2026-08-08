@@ -125,29 +125,34 @@ function Hero() {
           alt="Phong cảnh xanh của Gia Lai"
           className="absolute inset-0 h-full w-full object-cover object-center"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(12,31,23,0.94)_0%,rgba(15,42,30,0.68)_46%,rgba(15,42,30,0.13)_100%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(8,26,19,0.78)_0%,transparent_45%,rgba(8,26,19,0.25)_100%)]" />
+        {/* <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(12,31,23,0.0)_0%,rgba(15,42,30,0.13)_0%,rgba(15,42,30,0.13)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(8,26,19,0)_0%,transparent_45%,rgba(8,26,19,0.25)_100%)]" /> */}
       </div>
 
       {/* Film-grain overlay, matching the Explore header. */}
       <div className="pointer-events-none absolute inset-0 z-10 bg-noise opacity-[0.035] mix-blend-overlay" />
 
-      <div className="relative z-20 mx-auto flex min-h-[760px] max-w-[1440px] flex-col justify-end px-6 pb-14 pt-32 lg:min-h-[860px] lg:px-12 lg:pb-20">
+      <div className="relative z-20 mx-auto flex min-h-[760px] max-w-[1440px] flex-col justify-between px-6 pb-14 pt-32 lg:min-h-[860px] lg:px-12 lg:pb-20">
         <div className="grid items-end gap-14 lg:grid-cols-[minmax(0,760px)_1fr]">
           <div>
-            <div className="mb-7 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em] text-[#f2b08e]">
+            {/* <div className="mb-7 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em] text-[#f2b08e]">
               <span className="h-px w-10 bg-[#f2b08e]" />
               Tây Nguyên · Việt Nam
-            </div>
-            <h1 className="max-w-4xl font-display text-[clamp(3.7rem,9vw,8.8rem)] font-medium leading-[0.88] tracking-[-0.075em]">
-              Sống chậm
-              <br />
-              <span className="text-[#f2b08e]">giữa đại ngàn.</span>
+            </div> */}
+            <h1 className="translate-y-7 max-w-5xl font-display font-medium tracking-[-0.075em]">
+              <span className="block text-[clamp(2.4rem,7vw,5rem)] leading-[1.05]">
+                Vi vu muôn phương
+              </span>
+              <span className="block whitespace-nowrap text-[#fef2a0] text-[clamp(2.4rem,7vw,6rem)] leading-[1.05]">
+                Chạm ngàn cung đường
+              </span>
             </h1>
-            <p className="mt-8 max-w-xl text-base leading-7 text-white/75 lg:text-lg">
-              Những hành trình nhỏ, chạm sâu vào thiên nhiên và văn hóa bản địa.
-              Đi xa hơn để trở về gần hơn với chính mình.
+            <p className="mt-16 w-full whitespace-nowrap lg:max-w-[50%] text-base leading-7 text-white/75 lg:text-lg">
+              Từ phố thị đến biển xanh nắng vàng và cao nguyên rộng mở,
+              <br />
+              mỗi chuyến đi đều là một trải nghiệm mới đầy cảm hứng.
             </p>
+
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <a
                 href="#/explore"
@@ -155,7 +160,7 @@ function Hero() {
                   event.preventDefault()
                   navigateTo("/explore")
                 }}
-                className="group inline-flex items-center gap-3 rounded-full bg-[#d56742] px-6 py-4 text-xs font-bold uppercase tracking-[0.12em] text-white transition-all hover:-translate-y-1 hover:bg-[#e27b57] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="group inline-flex items-center gap-3 rounded-full bg-[#fed24f] px-6 py-4 text-xs font-bold uppercase tracking-[0.12em] text-[#6f4e37] transition-all hover:-translate-y-1 hover:bg-[#fed24f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
                 Xem hành trình{" "}
                 <ArrowRight
@@ -179,7 +184,7 @@ function Hero() {
             </div>
           </div>
 
-          <div className="hidden justify-self-end lg:block">
+          {/* <div className="hidden justify-self-end lg:block">
             <div className="mb-7 flex items-center justify-end gap-3 text-right text-[10px] font-bold uppercase tracking-[0.25em] text-white/60">
               <span>13°58&apos;N · 108°00&apos;E</span>
               <span className="h-px w-10 bg-white/40" />
@@ -210,16 +215,16 @@ function Hero() {
                 </p>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
-        <div className="mt-16 flex items-end justify-between border-t border-white/20 pt-5">
-          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/60">
+        <div className="flex items-end justify-between border-t border-white/20 pt-5">
+          {/* <span className="text-[20px] font-bold uppercase tracking-[0.25em] text-white/60">
             Gialai Eco Tourist
-          </span>
+          </span> */}
           <a
             href="#story"
-            className="group flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-white/75 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            className="group flex items-center gap-3 text-[17px] font-bold uppercase tracking-[0.2em] text-white/75 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
             Khám phá tiếp <ArrowDown className="h-4 w-4" aria-hidden="true" />
           </a>
@@ -287,7 +292,7 @@ function Story() {
           </div>
           <div className="absolute -bottom-6 -right-5 hidden rounded-full bg-[#d56742] px-7 py-7 text-center text-white shadow-xl sm:block">
             <span className="block font-display text-3xl leading-none">
-              12+
+              14+
             </span>
             <span className="mt-2 block text-[9px] font-bold uppercase tracking-[0.15em]">
               năm bền bỉ
@@ -386,14 +391,15 @@ function ExperienceCard({ experience }: { experience: Experience }) {
           <a
             href="#contact"
             onClick={goToEnquiry}
-            className="group/link flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.15em] text-[#183024] transition-colors hover:text-[#b4502f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
+            className="group/link flex items-center gap-2 rounded-full bg-[#183024] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em] text-[#6f4e37] transition-colors hover:bg-[#b4502f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
           >
-            Đặt hành trình
+            <span className="text-[white]">Đặt hành trình</span>
             <ArrowUpRight
-              className="h-4 w-4 transition-transform group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5"
+              className="h-4 w-4 text-[#6f4e37] transition-transform group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5"
               aria-hidden="true"
             />
           </a>
+
         </div>
       </div>
     </article>
@@ -876,7 +882,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <IntroStrip />
+      {/* <IntroStrip /> */}
       <Story />
       <Experiences />
       <Destinations />

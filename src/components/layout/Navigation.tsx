@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
-import { ArrowUpRight, Leaf, List, X } from "@phosphor-icons/react"
+import { ArrowUpRight, List, X } from "@phosphor-icons/react"
+import logo from "@/imports/logo.png"
+import logoWhite from "@/imports/logo_white.png"
 import { navigateTo, useHashRoute } from "@/lib/useHashRoute"
 import type { RoutePath } from "@/lib/useHashRoute"
 
@@ -80,11 +82,22 @@ function useScrolledPastTop(): [boolean, (
 export default function Navigation() {
   const route = useHashRoute()
   const [scrolledPastTop, setSentinel] = useScrolledPastTop()
+  const [scrollY, setScrollY] = useState(0)
   const [menuOpen, setMenuOpen] = useState(false)
 
+  useEffect(() => {
+    const updateScrollY = () => setScrollY(window.scrollY)
+    updateScrollY()
+    window.addEventListener("scroll", updateScrollY, { passive: true })
+    return () => window.removeEventListener("scroll", updateScrollY)
+  }, [])
+
   // The landing hero is a dark photograph, so the bar starts transparent there.
-  // Explore has no hero, so it stays solid from the first paint.
-  const solid = route.path !== "/" || scrolledPastTop
+  // While scrolling inside the hero it stays transparent and only blurs; once
+  // outside the hero, or on non-home routes, it becomes the solid green bar.
+  const insideHero = route.path === "/" && scrollY < window.innerHeight - 78
+  const atHeroTop = route.path === "/" && !scrolledPastTop
+  const solid = route.path !== "/" || !insideHero
 
   useEffect(() => {
     setMenuOpen(false)
@@ -96,10 +109,12 @@ export default function Navigation() {
       <div ref={setSentinel} aria-hidden="true" className="h-10 -mb-10" />
 
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+        className={`fixed inset-x-0 top-0 z-50 transition-all duration-700 ${
           solid
-            ? "border-b border-[#d9d4c9]/80 bg-[#f6f3ec]/95 text-[#183024] shadow-[0_10px_35px_rgba(27,48,36,0.08)] backdrop-blur-xl"
-            : "bg-transparent text-white"
+            ? "border-b border-[#07552f]/20 bg-[#07552f]/92 text-white shadow-[0_8px_24px_rgba(8,127,60,0.12)] backdrop-blur-[2px]"
+            : atHeroTop
+              ? "bg-transparent text-white"
+              : "bg-transparent text-white backdrop-blur-sm"
         }`}
       >
         <div className="mx-auto flex h-[78px] max-w-[1440px] items-center justify-between gap-4 px-6 lg:px-12">
@@ -112,22 +127,22 @@ export default function Navigation() {
               navigateTo("/", "", { scrollTo: "home" })
             }}
           >
-            <span
-              className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
-                solid
-                  ? "bg-[#d56742] text-white"
-                  : "bg-white/15 text-white backdrop-blur-md"
-              }`}
-            >
-              <Leaf className="h-5 w-5" aria-hidden="true" />
-            </span>
+            <img
+              src={solid || !atHeroTop ? logoWhite : logo}
+              alt="Gia Lai Eco-Tourist Co.,Ltd"
+              className="h-12 w-12 object-contain"
+            />
             <span className="flex flex-col leading-none">
-              <span className="font-display text-[17px] font-semibold tracking-[-0.03em]">
+              <span
+                className={`font-display text-[17px] font-semibold tracking-[-0.03em] transition-colors ${
+                  solid || !atHeroTop ? "text-white" : "text-[#6f4e37]"
+                }`}
+              >
                 Gialai
               </span>
               <span
                 className={`mt-1 text-[9px] font-semibold uppercase tracking-[0.28em] transition-colors ${
-                  solid ? "text-[#5c6b5c]" : "text-white/70"
+                  solid || !atHeroTop ? "text-white/80" : "text-[#6f4e37]"
                 }`}
               >
                 Eco Tourist
@@ -149,13 +164,13 @@ export default function Navigation() {
                   aria-current={active ? "page" : undefined}
                   onClick={(event) => followNavLink(event, link)}
                   className={`whitespace-nowrap text-[12px] font-semibold uppercase tracking-[0.1em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742] ${
-                    solid
+                    solid || !atHeroTop
                       ? active
                         ? "text-[#d56742]"
-                        : "text-[#4a5a50] hover:text-[#d56742]"
-                      : active
-                        ? "text-white"
                         : "text-white/85 hover:text-white"
+                      : active
+                        ? "text-[#6f4e37]"
+                        : "text-[#6f4e37] hover:text-[#6f4e37]"
                   }`}
                 >
                   {link.label}
@@ -166,10 +181,10 @@ export default function Navigation() {
               href="#contact"
               onClick={goToEnquiry}
               className={`ml-1 inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-5 py-3 text-[11px] font-bold uppercase tracking-[0.1em] transition-all hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] ${
-                solid
-                  ? "bg-[#183024] text-[#f6f3ec] hover:bg-[#d56742]"
-                  : "bg-[#d56742] text-white hover:bg-[#e27b57]"
-              }`}
+                  solid
+                    ? "bg-[#fed24f] text-[#6f4e37] hover:bg-[#fed24f]"
+                    : "bg-[#fed24f] text-[#6f4e37] hover:bg-[#fed24f]"
+                }`}
             >
               Đặt hành trình{" "}
               <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -181,7 +196,7 @@ export default function Navigation() {
             className={`flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742] lg:hidden ${
               solid
                 ? "bg-[#183024] text-white"
-                : "bg-white/15 text-white backdrop-blur-md"
+                : "bg-white/15 text-[#6f4e37] backdrop-blur-md"
             }`}
             onClick={() => setMenuOpen((current) => !current)}
             aria-label={menuOpen ? "Đóng menu" : "Mở menu"}
@@ -205,7 +220,7 @@ export default function Navigation() {
                 <a
                   key={link.label}
                   href={hrefFor(link)}
-                  className="text-sm font-semibold uppercase tracking-[0.12em] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
+                  className="text-sm font-semibold uppercase tracking-[0.12em] text-[#183024] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
                   onClick={(event) => {
                     setMenuOpen(false)
                     followNavLink(event, link)
@@ -216,7 +231,7 @@ export default function Navigation() {
               ))}
               <a
                 href="#contact"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#d56742] px-5 py-3 text-[11px] font-bold uppercase tracking-[0.12em] text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#d56742] px-5 py-3 text-[11px] font-bold uppercase tracking-[0.12em] text-[#6f4e37] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
                 onClick={(event) => {
                   setMenuOpen(false)
                   goToEnquiry(event)
