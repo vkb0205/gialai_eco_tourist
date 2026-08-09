@@ -29,7 +29,7 @@ type Experience = {
 const experiences: Experience[] = [
   {
     id: 1,
-    category: "Trekking",
+    category: "Tour trong nước",
     title: "Qua tầng rừng Kon Ka Kinh",
     description:
       "Băng qua rừng nguyên sinh, nghe tiếng suối và ngủ giữa một trong những hệ sinh thái giàu nhất Tây Nguyên.",
@@ -40,7 +40,7 @@ const experiences: Experience[] = [
   },
   {
     id: 2,
-    category: "Văn hóa",
+    category: "Tour trong nước",
     title: "Một đêm ở làng Bahnar",
     description:
       "Bữa cơm bên bếp lửa, tiếng cồng chiêng và một nhịp sống không cần vội vàng.",
@@ -51,7 +51,7 @@ const experiences: Experience[] = [
   },
   {
     id: 3,
-    category: "Thiên nhiên",
+    category: "Tour ngoài nước",
     title: "Bình minh trên Biển Hồ",
     description:
       "Đạp xe qua những đồi chè, ngắm mặt hồ đổi màu và thưởng thức cà phê rang tại chỗ.",
@@ -61,7 +61,7 @@ const experiences: Experience[] = [
   },
   {
     id: 4,
-    category: "Phiêu lưu",
+    category: "Dịch vụ khác",
     title: "Dòng thác Kon Chư Răng",
     description:
       "Cung đường dành cho người thích thử thách: vượt suối, đi sâu vào rừng và chạm đến thác K50.",
@@ -290,7 +290,7 @@ function Story() {
               <span className="font-display text-2xl italic">03°</span>
             </div>
           </div>
-          <div className="absolute -bottom-6 -right-5 hidden rounded-full bg-[#d56742] px-7 py-7 text-center text-white shadow-xl sm:block">
+          <div className="absolute -bottom-6 -right-5 hidden rounded-full bg-[#6f4e37] px-7 py-7 text-center text-white shadow-xl sm:block">
             <span className="block font-display text-3xl leading-none">
               14+
             </span>
@@ -301,28 +301,25 @@ function Story() {
         </div>
 
         <div>
-          <div className="mb-6 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em] text-[#d56742]">
-            <span className="h-px w-10 bg-[#d56742]" />
-            Câu chuyện
+          <div className="mb-5 ml-auto flex w-fit items-center justify-end gap-4 text-[px] font-bold uppercase tracking-[0.2em] text-[#6f4e37]">
+            <span className="h-px w-70 bg-[#6f4e37]" />
+            Câu chuyện thương hiệu
           </div>
-          <h2 className="max-w-xl font-display text-5xl font-medium leading-[0.98] tracking-[-0.06em] text-[#183024] sm:text-6xl">
-            Không chỉ đi qua.
+
+          <h2 className="max-w-full text-balance font-display text-[clamp(1.5rem,4vw,2.4rem)] font-medium leading-[1.05] tracking-[-0.04em] text-[#183024] sm:max-w-2xl">
+            Kết nối điểm đến, kiến tạo trải nghiệm
             <br />
-            <em className="text-[#61703f]">Mà thuộc về nơi này.</em>
+            <em className="whitespace-nowrap text-[#087f3c]">Đồng hành cùng mỗi chuyến đi</em>
           </h2>
           <div className="mt-8 max-w-lg space-y-5 text-[15px] leading-7 text-[#55605a]">
             <p>
-              Gialai Eco Tourist được bắt đầu từ một câu hỏi đơn giản: làm sao
-              để mỗi lần du khách đặt chân đến Tây Nguyên, nơi này nhận lại
-              nhiều hơn những gì đã trao đi?
+              Được thành lập năm 2012, Gia Lai Eco-Tourist khởi nguồn từ niềm đam mê du lịch và thế mạnh tại Gia Lai - Tây Nguyên, từng bước mở rộng hành trình trong nước và quốc tế.
             </p>
             <p>
-              Vì vậy, chúng tôi đi cùng những người địa phương. Chọn những cung
-              đường ít người biết. Giữ nhóm nhỏ. Và để thiên nhiên, văn hóa, con
-              người kể câu chuyện của chính mình.
+              Với nền tảng uy tín, chất lượng và đổi mới, chúng tôi mang đến đa dạng dịch vụ từ tour, MICE đến visa, vé máy bay và xe du lịch, giúp khách hàng an tâm lên đường và tận hưởng trọn vẹn mỗi chuyến đi.
             </p>
           </div>
-          <div className="mt-9 flex flex-wrap gap-3">
+          {/* <div className="mt-9 flex flex-wrap gap-3">
             <span className="rounded-full border border-[#c8cfc3] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.13em] text-[#42524a]">
               Đối tác cộng đồng
             </span>
@@ -332,8 +329,8 @@ function Story() {
             <span className="rounded-full border border-[#c8cfc3] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.13em] text-[#42524a]">
               Được cấp phép
             </span>
-          </div>
-          <a
+          </div> */}
+          {/* <a
             href="#contact"
             onClick={goToEnquiry}
             className="group mt-10 inline-flex items-center gap-3 border-b border-[#183024] pb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#183024] transition-colors hover:border-[#d56742] hover:text-[#b4502f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
@@ -342,8 +339,8 @@ function Story() {
             <ArrowRight
               className="h-4 w-4 transition-transform group-hover:translate-x-1"
               aria-hidden="true"
-            />
-          </a>
+            /> */}
+          {/* </a> */}
         </div>
       </div>
     </section>
@@ -407,12 +404,25 @@ function ExperienceCard({ experience }: { experience: Experience }) {
 }
 
 function Experiences() {
-  const filters = ["Tất cả", "Trekking", "Văn hóa", "Thiên nhiên", "Phiêu lưu"]
+  const filters = [
+    "Tất cả",
+    "Tour trong nước",
+    "Tour ngoài nước",
+    "Dịch vụ khác",
+  ]
   const [activeFilter, setActiveFilter] = useState("Tất cả")
   const visibleExperiences =
     activeFilter === "Tất cả"
       ? experiences
       : experiences.filter((experience) => experience.category === activeFilter)
+  const exploreQuery =
+    activeFilter === "Tour ngoài nước"
+      ? new URLSearchParams({ tim: "nước ngoài" }).toString()
+      : ""
+  const allToursLabel =
+    activeFilter === "Tất cả"
+      ? "Xem toàn bộ hành trình"
+      : `Xem toàn bộ ${activeFilter}`
 
   return (
     <section
@@ -468,14 +478,14 @@ function Experiences() {
         )}
         <div className="mt-10 flex justify-end">
           <a
-            href="#/explore"
+            href={exploreQuery ? `#/explore?${exploreQuery}` : "#/explore"}
             onClick={(event) => {
               event.preventDefault()
-              navigateTo("/explore")
+              navigateTo("/explore", exploreQuery)
             }}
             className="group inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.17em] text-[#183024] transition-colors hover:text-[#b4502f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
           >
-            Xem toàn bộ hành trình{" "}
+            {allToursLabel}{" "}
             <ArrowRight
               className="h-4 w-4 transition-transform group-hover:translate-x-1"
               aria-hidden="true"
@@ -696,6 +706,7 @@ function Contact() {
   const [form, setForm] = useState({
     name: "",
     email: "",
+    phone: "",
     date: "",
     group: "",
     note: "",
@@ -822,6 +833,18 @@ function Contact() {
               </div>
               <div className="grid gap-5 sm:grid-cols-2">
                 <label className="block">
+                  <span className="form-label">Số điện thoại *</span>
+                  <input
+                    required
+                    type="tel"
+                    name="phone"
+                    value={form.phone}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="0905 123 456"
+                  />
+                </label>
+                <label className="block">
                   <span className="form-label">Thời gian dự kiến</span>
                   <input
                     name="date"
@@ -831,6 +854,8 @@ function Contact() {
                     placeholder="Tháng 10, 2025"
                   />
                 </label>
+              </div>
+              <div className="grid gap-5 sm:grid-cols-2">
                 <label className="block">
                   <span className="form-label">Số người</span>
                   <select
@@ -845,6 +870,7 @@ function Contact() {
                     <option value="7-12">7 – 12 người</option>
                   </select>
                 </label>
+                <div />
               </div>
               <label className="block">
                 <span className="form-label">Bạn muốn trải nghiệm gì?</span>
@@ -885,8 +911,7 @@ export default function HomePage() {
       {/* <IntroStrip /> */}
       <Story />
       <Experiences />
-      <Destinations />
-      <Philosophy />
+      {/* <Philosophy /> */}
       <Journal />
       <Contact />
     </>

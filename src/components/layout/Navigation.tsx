@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { ArrowUpRight, List, X } from "@phosphor-icons/react"
+import { ArrowUpRight, CaretDown, List, X } from "@phosphor-icons/react"
 import logo from "@/imports/logo.png"
 import logoWhite from "@/imports/logo_white.png"
 import { navigateTo, useHashRoute } from "@/lib/useHashRoute"
@@ -9,9 +9,15 @@ export type NavLink = {
   label: string
   /** Route the link resolves to. */
   path: RoutePath
+  /** Hash query string, used for explore-filter presets. */
+  query?: string
   /** Landing-page section id, when the link targets a section of `/`. */
   section?: string
 }
+
+const internationalExploreQuery = new URLSearchParams({
+  tim: "nước ngoài",
+}).toString()
 
 /**
  * Primary navigation model, shared with the footer so both stay in step.
@@ -19,15 +25,24 @@ export type NavLink = {
  */
 export const navLinks: NavLink[] = [
   { label: "Hành trình", path: "/", section: "experiences" },
-  { label: "Khám phá", path: "/explore" },
-  { label: "Điểm đến", path: "/", section: "destinations" },
-  { label: "Câu chuyện", path: "/", section: "story" },
-  { label: "Nhật ký ảnh", path: "/", section: "journal" },
+  {
+    label: "Tour trong nước",
+    path: "/explore",
+  },
+  {
+    label: "Tour ngoài nước",
+    path: "/explore",
+    query: internationalExploreQuery,
+  },
 ]
+
+const serviceOptions = ["Thuê xe", "Vé máy bay", "Khách sạn", "Visa", "Khác"]
 
 /** Href for a nav link, so links stay real anchors and remain openable in a new tab. */
 export function hrefFor(link: NavLink): string {
-  if (link.path === "/explore") return "#/explore"
+  if (link.path === "/explore") {
+    return link.query ? `#/explore?${link.query}` : "#/explore"
+  }
   return link.section ? `#${link.section}` : "#/"
 }
 
@@ -42,7 +57,7 @@ export function followNavLink(
   event.preventDefault()
   navigateTo(
     link.path,
-    "",
+    link.query ?? "",
     link.section ? { scrollTo: link.section } : undefined,
   )
 }
@@ -156,7 +171,7 @@ export default function Navigation() {
           >
             {navLinks.map((link) => {
               const active =
-                link.path === "/explore" && route.path === "/explore"
+                link.path === "/explore" && route.path === "/explore" && route.query === (link.query ?? "")
               return (
                 <a
                   key={link.label}
@@ -177,14 +192,48 @@ export default function Navigation() {
                 </a>
               )
             })}
+            <div className="group relative">
+              <button
+                type="button"
+                className={`inline-flex items-center gap-1.5 whitespace-nowrap text-[12px] font-semibold uppercase tracking-[0.1em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742] ${
+                  solid || !atHeroTop
+                    ? "text-white/85 hover:text-white"
+                    : "text-[#6f4e37] hover:text-[#6f4e37]"
+                }`}
+              >
+                Dịch vụ khác
+                <CaretDown className="h-3.5 w-3.5" aria-hidden="true" />
+              </button>
+              <div className="invisible absolute right-0 top-full z-10 mt-3 min-w-[190px] rounded-2xl border border-[#d9d4c9] bg-[#f6f3ec] p-2 text-[#183024] opacity-0 shadow-[0_18px_40px_rgba(10,25,17,0.16)] transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                {serviceOptions.map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    className="block w-full rounded-xl px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.1em] text-[#183024] transition-colors hover:bg-[#e9e6dd] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <button
+              type="button"
+              className={`whitespace-nowrap text-[12px] font-semibold uppercase tracking-[0.1em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742] ${
+                solid || !atHeroTop
+                  ? "text-white/85 hover:text-white"
+                  : "text-[#6f4e37] hover:text-[#6f4e37]"
+              }`}
+            >
+              Nhật ký hành trình
+            </button>
             <a
               href="#contact"
               onClick={goToEnquiry}
               className={`ml-1 inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-5 py-3 text-[11px] font-bold uppercase tracking-[0.1em] transition-all hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] ${
-                  solid
-                    ? "bg-[#fed24f] text-[#6f4e37] hover:bg-[#fed24f]"
-                    : "bg-[#fed24f] text-[#6f4e37] hover:bg-[#fed24f]"
-                }`}
+                solid
+                  ? "bg-[#fed24f] text-[#6f4e37] hover:bg-[#fed24f]"
+                  : "bg-[#fed24f] text-[#6f4e37] hover:bg-[#fed24f]"
+              }`}
             >
               Đặt hành trình{" "}
               <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -229,6 +278,22 @@ export default function Navigation() {
                   {link.label}
                 </a>
               ))}
+              <div className="border-t border-[#d9d4c9] pt-5">
+                <span className="text-sm font-semibold uppercase tracking-[0.12em] text-[#183024]">
+                  Dịch vụ khác
+                </span>
+                <div className="mt-3 grid gap-2">
+                  {serviceOptions.map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      className="text-left text-sm font-medium uppercase tracking-[0.1em] text-[#5b665d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <a
                 href="#contact"
                 className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#d56742] px-5 py-3 text-[11px] font-bold uppercase tracking-[0.12em] text-[#6f4e37] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"

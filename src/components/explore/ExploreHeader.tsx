@@ -80,12 +80,12 @@ export default function ExploreHeader({
       {/* Compact masthead built around the search bar. */}
       <div className="mx-auto flex max-w-[1440px] flex-col items-center gap-8 px-6 pb-12 pt-28 text-center lg:px-12 lg:pb-14 lg:pt-32">
         <div className="motion-safe:animate-[rise-in_700ms_cubic-bezier(0.32,0.72,0,1)_both]">
-          <p className="m-0 font-mono text-[11px] font-medium uppercase tracking-[0.28em] text-[#f2b08e]">
+          {/* <p className="m-0 font-mono text-[11px] font-medium uppercase tracking-[0.28em] text-[#f2b08e]">
             Tuyển tập hành trình · {catalogueSize} chuyến đi
-          </p>
-          <h1 className="mt-3 m-0 font-display text-[clamp(1.9rem,5vw,3.5rem)] leading-[1] tracking-[-0.045em] text-white motion-safe:animate-[rise-in_700ms_cubic-bezier(0.32,0.72,0,1)_120ms_both]">
+          </p> */}
+          {/* <h1 className="mt-3 m-0 font-display text-[clamp(1.9rem,5vw,3.5rem)] leading-[1] tracking-[-0.045em] text-white motion-safe:animate-[rise-in_700ms_cubic-bezier(0.32,0.72,0,1)_120ms_both]">
             Khám phá hành trình
-          </h1>
+          </h1> */}
         </div>
 
         <form
@@ -128,9 +128,6 @@ export default function ExploreHeader({
               )}
             </div>
           </div>
-          <p className="mt-2.5 text-[11px] leading-4 text-white/65">
-            Không phân biệt dấu, nên “thac” cũng tìm ra “thác”.
-          </p>
         </form>
       </div>
     </header>
