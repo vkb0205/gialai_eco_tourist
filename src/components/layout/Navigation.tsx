@@ -36,7 +36,20 @@ export const navLinks: NavLink[] = [
   },
 ]
 
-const serviceOptions = ["Thuê xe", "Vé máy bay", "Khách sạn", "Visa", "Khác"]
+const otherServicesExploreQuery = new URLSearchParams({
+  tim: "dịch vụ khác",
+}).toString()
+
+const servicePresetQuery = (keyword: string) =>
+  new URLSearchParams({ tim: keyword }).toString()
+
+const serviceOptions: { label: string; slug: string; query: string }[] = [
+  { label: "Thuê xe", slug: "thue-xe", query: servicePresetQuery("thuê xe") },
+  { label: "Vé máy bay", slug: "ve-may-bay", query: servicePresetQuery("vé máy bay") },
+  { label: "Khách sạn", slug: "khach-san", query: servicePresetQuery("khách sạn") },
+  { label: "Visa", slug: "visa", query: servicePresetQuery("visa") },
+  { label: "Khác", slug: "khac", query: servicePresetQuery("dịch vụ khác") },
+]
 
 /** Href for a nav link, so links stay real anchors and remain openable in a new tab. */
 export function hrefFor(link: NavLink): string {
@@ -195,10 +208,15 @@ export default function Navigation() {
             <div className="group relative">
               <button
                 type="button"
+                onClick={() => navigateTo("/explore", otherServicesExploreQuery)}
                 className={`inline-flex items-center gap-1.5 whitespace-nowrap text-[12px] font-semibold uppercase tracking-[0.1em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742] ${
                   solid || !atHeroTop
-                    ? "text-white/85 hover:text-white"
-                    : "text-[#6f4e37] hover:text-[#6f4e37]"
+                    ? route.path === "/explore" && route.query === otherServicesExploreQuery
+                      ? "text-[#d56742]"
+                      : "text-white/85 hover:text-white"
+                    : route.path === "/explore" && route.query === otherServicesExploreQuery
+                      ? "text-[#6f4e37]"
+                      : "text-[#6f4e37] hover:text-[#6f4e37]"
                 }`}
               >
                 Dịch vụ khác
@@ -207,11 +225,12 @@ export default function Navigation() {
               <div className="invisible absolute right-0 top-full z-10 mt-3 min-w-[190px] rounded-2xl border border-[#d9d4c9] bg-[#f6f3ec] p-2 text-[#183024] opacity-0 shadow-[0_18px_40px_rgba(10,25,17,0.16)] transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
                 {serviceOptions.map((option) => (
                   <button
-                    key={option}
+                    key={option.slug}
                     type="button"
+                    onClick={() => navigateTo("/explore", option.query)}
                     className="block w-full rounded-xl px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.1em] text-[#183024] transition-colors hover:bg-[#e9e6dd] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
                   >
-                    {option}
+                    {option.label}
                   </button>
                 ))}
               </div>
@@ -279,17 +298,28 @@ export default function Navigation() {
                 </a>
               ))}
               <div className="border-t border-[#d9d4c9] pt-5">
-                <span className="text-sm font-semibold uppercase tracking-[0.12em] text-[#183024]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false)
+                    navigateTo("/explore", otherServicesExploreQuery)
+                  }}
+                  className="text-sm font-semibold uppercase tracking-[0.12em] text-[#183024] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
+                >
                   Dịch vụ khác
-                </span>
+                </button>
                 <div className="mt-3 grid gap-2">
                   {serviceOptions.map((option) => (
                     <button
-                      key={option}
+                      key={option.slug}
                       type="button"
+                      onClick={() => {
+                        setMenuOpen(false)
+                        navigateTo("/explore", option.query)
+                      }}
                       className="text-left text-sm font-medium uppercase tracking-[0.1em] text-[#5b665d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
                     >
-                      {option}
+                      {option.label}
                     </button>
                   ))}
                 </div>

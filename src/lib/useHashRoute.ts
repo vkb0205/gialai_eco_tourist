@@ -9,7 +9,7 @@ import { useCallback, useSyncExternalStore } from "react"
  * dependency, so this subscribes to `hashchange` through `useSyncExternalStore`.
  */
 
-export type RoutePath = "/" | "/explore"
+export type RoutePath = "/" | "/explore" | "/services" | "/car-rental"
 
 export type Route = {
   /** Normalised path, always one of the known routes. */
@@ -20,7 +20,7 @@ export type Route = {
   anchor: string | null
 }
 
-const KNOWN_PATHS: readonly RoutePath[] = ["/", "/explore"]
+const KNOWN_PATHS: readonly RoutePath[] = ["/", "/explore", "/services", "/car-rental"]
 
 function subscribe(onChange: () => void): () => void {
   window.addEventListener("hashchange", onChange)
