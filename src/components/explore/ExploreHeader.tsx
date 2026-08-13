@@ -63,7 +63,7 @@ export default function ExploreHeader({
       {/* Photographic band with the landing hero's layered forest scrim. */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <img
-          src={regions[5].image}
+          src={regions[0].image}
           alt=""
           aria-hidden="true"
           className="h-full w-full object-cover"

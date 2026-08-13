@@ -1,327 +1,316 @@
-import { useState, useMemo } from "react"
-import { ArrowUpRight, CheckCircle, Sparkle } from "@phosphor-icons/react"
+import { useEffect, useMemo, useState } from "react"
+import type { FormEvent, ReactNode } from "react"
+import {
+  AirplaneTilt,
+  ArrowUpRight,
+  CalendarBlank,
+  CarProfile,
+  CheckCircle,
+  FileText,
+  MapPin,
+  PhoneCall,
+  ShieldCheck,
+  Users,
+} from "@phosphor-icons/react"
 import img0 from "@/imports/image.jpeg"
-import services from "@/data/services"
-import type { Service } from "@/data/services"
-import { goToEnquiry } from "@/components/layout/Navigation"
-import { useHashRoute, navigateTo } from "@/lib/useHashRoute"
+import img1 from "@/imports/image-1.png"
+import img2 from "@/imports/image-2.png"
 
-/* ───────────────────────────── Hero ───────────────────────────── */
+type ServiceKey = "car" | "visa" | "flight"
 
-function ServicesHero() {
-  return (
-    <section
-      id="services-hero"
-      className="relative isolate min-h-[520px] overflow-hidden bg-[#183024] text-white lg:min-h-[620px]"
-    >
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <img
-          src={img0}
-          alt="Dịch vụ du lịch Gia Lai"
-          className="absolute inset-0 h-full w-full object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,26,19,0.72)_0%,rgba(8,26,19,0.45)_50%,rgba(8,26,19,0.82)_100%)]" />
-      </div>
-
-      <div className="pointer-events-none absolute inset-0 z-10 bg-noise opacity-[0.035] mix-blend-overlay" />
-
-      <div className="relative z-20 mx-auto flex min-h-[520px] max-w-[1440px] flex-col justify-end px-6 pb-16 pt-32 lg:min-h-[620px] lg:px-12 lg:pb-24">
-        <div className="max-w-3xl">
-          <div className="mb-7 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em] text-[#f2b08e]">
-            <span className="h-px w-10 bg-[#f2b08e]" />
-            Hỗ trợ hành trình
-          </div>
-          <h1 className="font-display text-[clamp(2.2rem,6vw,4.5rem)] font-medium leading-[1.06] tracking-[-0.045em]">
-            Dịch vụ khác
-          </h1>
-          <p className="mt-6 max-w-xl text-base leading-7 text-white/75 lg:text-lg">
-            Từ thuê xe, vé máy bay, đặt phòng đến visa và hướng dẫn viên —
-            chúng tôi đồng hành cùng bạn trên mọi chặng đường, để mỗi chuyến đi
-            thêm trọn vẹn.
-          </p>
-        </div>
-      </div>
-    </section>
-  )
+type ServiceOption = {
+  key: ServiceKey
+  label: string
+  title: string
+  summary: string
+  image: string
+  icon: ReactNode
+  benefits: string[]
 }
 
-/* ─────────────────────── Services Tabs ─────────────────────── */
-
-/** Parse the `dichvu` param from the hash query string. */
-function parseActiveSlug(query: string): string {
-  const params = new URLSearchParams(query)
-  return params.get("dichvu") ?? ""
-}
-
-function ServicesTabs() {
-  const route = useHashRoute()
-  const activeSlug = parseActiveSlug(route.query)
-
-  const activeService: Service = useMemo(
-    () => services.find((s) => s.slug === activeSlug) ?? services[0],
-    [activeSlug],
-  )
-
-  const handleTabClick = (slug: string) => {
-    const query = slug ? `dichvu=${slug}` : ""
-    navigateTo("/services", query, { replace: true })
-  }
-
-  return (
-    <section className="border-b border-[#d9d4c9] bg-[#f6f3ec] py-20 lg:py-28">
-      <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
-        {/* Section header */}
-        <div className="mb-14 max-w-2xl">
-          <div className="mb-4 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em] text-[#d56742]">
-            <span className="h-px w-10 bg-[#d56742]" />
-            Dịch vụ bổ trợ
-          </div>
-          <h2 className="font-display text-[clamp(1.6rem,3.5vw,2.5rem)] font-medium leading-[1.15] tracking-[-0.03em] text-[#183024]">
-            Mọi nhu cầu hành trình, một điểm tin cậy
-          </h2>
-          <p className="mt-4 text-sm leading-6 text-[#69746b]">
-            Không chỉ bán tour, chúng tôi cung cấp chuỗi dịch vụ trọn gói để
-            bạn yên tâm khám phá Tây Nguyên và xa hơn nữa.
-          </p>
-        </div>
-
-        {/* Tab bar — horizontally scrollable on small screens */}
-        <div className="-mx-1 mb-10 overflow-x-auto scrollbar-hide">
-          <div className="flex gap-2 px-1 whitespace-nowrap sm:flex-wrap">
-            {services.map((service) => {
-              const isActive = service.slug === activeService.slug
-              return (
-                <button
-                  key={service.slug}
-                  type="button"
-                  onClick={() => handleTabClick(service.slug)}
-                  className={`inline-flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-[11px] font-bold uppercase tracking-[0.1em] transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742] ${
-                    isActive
-                      ? "bg-[#d56742] text-white shadow-[0_4px_12px_rgba(213,103,66,0.3)]"
-                      : "bg-white text-[#526257] hover:bg-[#e9e6dd] hover:text-[#183024] border border-[#e0dcd2]"
-                  }`}
-                >
-                  <span className="text-base">{service.icon}</span>
-                  {service.title}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Active service detail panel */}
-        <div className="rounded-2xl border border-[#e0dcd2] bg-white p-8 shadow-[0_8px_24px_rgba(10,25,17,0.04)] lg:p-12">
-          <div className="grid gap-10 lg:grid-cols-[1fr_320px] lg:gap-16">
-            {/* Left: details */}
-            <div>
-              <div className="mb-2">
-                <span className="rounded-full bg-[#f6f3ec] px-3 py-1 text-[9px] font-bold uppercase tracking-[0.14em] text-[#7f887f]">
-                  {activeService.category}
-                </span>
-              </div>
-              <h3 className="font-display text-2xl font-semibold tracking-[-0.02em] text-[#183024] lg:text-3xl">
-                {activeService.title}
-              </h3>
-              <p className="mt-4 max-w-prose text-sm leading-7 text-[#69746b]">
-                {activeService.description}
-              </p>
-
-              <ul className="mt-8 space-y-3">
-                {activeService.features.map((feature) => (
-                  <li
-                    key={feature}
-                    className="flex items-start gap-3 text-sm leading-6 text-[#526257]"
-                  >
-                    <CheckCircle
-                      weight="duotone"
-                      className="mt-0.5 h-5 w-5 shrink-0 text-[#d56742]"
-                      aria-hidden="true"
-                    />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-
-              <a
-                href={activeService.ctaHref}
-                onClick={goToEnquiry}
-                className="group/btn mt-8 inline-flex items-center gap-2 rounded-full bg-[#183024] px-6 py-3 text-[11px] font-bold uppercase tracking-[0.14em] text-white transition-all hover:-translate-y-0.5 hover:bg-[#d56742] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
-              >
-                {activeService.cta}
-                <ArrowUpRight
-                  className="h-3.5 w-3.5 transition-transform group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5"
-                  aria-hidden="true"
-                />
-              </a>
-            </div>
-
-            {/* Right: large icon card */}
-            <div className="flex items-center justify-center rounded-2xl bg-[#f6f3ec] p-10">
-              <span className="text-8xl">{activeService.icon}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ───────────────────── Trust Strip ───────────────────── */
-
-function TrustStrip() {
-  const stats = [
-    { value: "12+", label: "Năm kinh nghiệm" },
-    { value: "5000+", label: "Khách hàng hài lòng" },
-    { value: "24/7", label: "Hỗ trợ mọi lúc" },
-    { value: "100%", label: "Cam kết giá tốt" },
-  ]
-  return (
-    <section className="border-b border-[#d9d4c9] bg-[#183024] py-14 text-white">
-      <div className="mx-auto grid max-w-[1440px] grid-cols-2 gap-8 px-6 sm:grid-cols-4 lg:px-12">
-        {stats.map((stat) => (
-          <div key={stat.label} className="text-center">
-            <span className="block font-display text-[clamp(2rem,4vw,3rem)] font-medium text-[#fed24f]">
-              {stat.value}
-            </span>
-            <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/65">
-              {stat.label}
-            </p>
-          </div>
-        ))}
-      </div>
-    </section>
-  )
-}
-
-/* ───────────────────────── FAQ ───────────────────────── */
-
-type FaqItem = { question: string; answer: string }
-
-const faqItems: FaqItem[] = [
+const serviceOptions: ServiceOption[] = [
   {
-    question: "Tôi có thể đặt dịch vụ riêng lẻ hay phải mua kèm tour?",
-    answer:
-      "Bạn hoàn toàn có thể đặt từng dịch vụ riêng biệt — thuê xe, vé máy bay, phòng, visa — mà không cần mua tour. Tuy nhiên, khi đặt trọn gói kèm tour, bạn sẽ nhận được mức giá ưu đãi hơn.",
+    key: "car",
+    label: "Thuê xe",
+    title: "Thuê xe du lịch",
+    summary: "Xe riêng, tài xế địa phương và lịch trình linh hoạt cho cá nhân, gia đình hoặc đoàn nhỏ.",
+    image: img1,
+    icon: <CarProfile weight="duotone" className="h-5 w-5" aria-hidden="true" />,
+    benefits: ["Xe 4-45 chỗ", "Đưa đón sân bay", "Báo giá theo hành trình"],
   },
   {
-    question: "Làm sao để tôi biết giá cụ thể của từng dịch vụ?",
-    answer:
-      "Giá dịch vụ phụ thuộc vào thời điểm, số lượng người và yêu cầu cụ thể. Vui lòng liên hệ qua form 'Đặt hành trình' hoặc hotline để nhận báo giá chi tiết và nhanh nhất.",
+    key: "visa",
+    label: "Visa",
+    title: "Tư vấn visa",
+    summary: "Tư vấn hồ sơ, lịch nộp và các giấy tờ cần chuẩn bị cho chuyến đi nước ngoài.",
+    image: img2,
+    icon: <FileText weight="duotone" className="h-5 w-5" aria-hidden="true" />,
+    benefits: ["Kiểm tra hồ sơ", "Nhắc lịch nộp", "Theo sát từng trường hợp"],
   },
   {
-    question: "Dịch vụ thuê xe có tài xế không?",
-    answer:
-      "Có. Tất cả xe thuê đều đi kèm tài xế người địa phương, am hiểu cung đường Tây Nguyên. Nếu bạn cần xe tự lái, chúng tôi cũng có lựa chọn phù hợp với điều kiện giấy phép hợp lệ.",
-  },
-  {
-    question: "Có hỗ trợ đặt vé máy bay khứ hồi không?",
-    answer:
-      "Có. Chúng tôi săn vé khứ hồi nội địa và quốc tế với mức giá tốt nhất, đồng thời hỗ trợ đổi/hoàn vé theo chính sách của hãng hàng không.",
+    key: "flight",
+    label: "Vé máy bay",
+    title: "Vé máy bay",
+    summary: "Tìm chuyến bay phù hợp, so sánh khung giờ và giữ vé theo thông tin bạn cung cấp.",
+    image: img0,
+    icon: <AirplaneTilt weight="duotone" className="h-5 w-5" aria-hidden="true" />,
+    benefits: ["Nội địa và quốc tế", "Một chiều hoặc khứ hồi", "Hỗ trợ đoàn"],
   },
 ]
 
-function FaqSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0)
-
+function Field({ id, label, children }: { id: string; label: string; children: ReactNode }) {
   return (
-    <section className="border-b border-[#d9d4c9] bg-[#f6f3ec] py-20 lg:py-28">
-      <div className="mx-auto max-w-[900px] px-6 lg:px-12">
-        <div className="mb-12 text-center">
-          <div className="mb-4 flex items-center justify-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em] text-[#d56742]">
-            <span className="h-px w-10 bg-[#d56742]" />
-            Câu hỏi thường gặp
-            <span className="h-px w-10 bg-[#d56742]" />
-          </div>
-          <h2 className="font-display text-[clamp(1.6rem,3.5vw,2.5rem)] font-medium leading-[1.15] tracking-[-0.03em] text-[#183024]">
-            Bạn cần thêm thông tin?
-          </h2>
-        </div>
-
-        <div className="divide-y divide-[#e0dcd2] rounded-2xl border border-[#e0dcd2] bg-white">
-          {faqItems.map((item, index) => {
-            const isOpen = openIndex === index
-            return (
-              <div key={item.question}>
-                <button
-                  type="button"
-                  className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#d56742]"
-                  aria-expanded={isOpen}
-                  onClick={() => setOpenIndex(isOpen ? null : index)}
-                >
-                  <span className="text-sm font-semibold text-[#183024]">
-                    {item.question}
-                  </span>
-                  <span
-                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#e0dcd2] text-[#d56742] transition-transform duration-200 ${
-                      isOpen ? "rotate-45" : ""
-                    }`}
-                  >
-                    <span className="text-lg leading-none">+</span>
-                  </span>
-                </button>
-                {isOpen && (
-                  <div className="px-6 pb-5 text-sm leading-6 text-[#69746b]">
-                    {item.answer}
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      </div>
-    </section>
+    <div className="grid gap-2">
+      <label htmlFor={id} className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#526257]">
+        {label}
+      </label>
+      {children}
+    </div>
   )
 }
 
-/* ─────────────────────── CTA Section ─────────────────────── */
+const inputClass = "min-h-12 rounded-xl border border-[#d9d4c9] bg-white px-4 text-sm text-[#183024] outline-none transition-colors placeholder:text-[#7a857d] focus:border-[#d56742] focus:ring-2 focus:ring-[#d56742]/20"
+const textareaClass = `${inputClass} min-h-28 resize-y py-3`
 
-function CtaSection() {
+function SubmitButton({ children }: { children: ReactNode }) {
   return (
-    <section className="bg-[#f6f3ec] py-20 lg:py-28">
-      <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
-        <div className="relative overflow-hidden rounded-3xl bg-[#183024] px-8 py-16 text-center text-white lg:px-16 lg:py-24">
-          <div className="pointer-events-none absolute inset-0 bg-noise opacity-[0.04] mix-blend-overlay" />
+    <button
+      type="submit"
+      className="group inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#183024] px-7 py-4 text-xs font-bold uppercase tracking-[0.12em] text-white transition-all hover:-translate-y-0.5 hover:bg-[#d56742] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742] sm:w-auto"
+    >
+      {children}
+      <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+    </button>
+  )
+}
 
-          <div className="relative z-10 mx-auto max-w-2xl">
-            <div className="mb-5 flex items-center justify-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em] text-[#f2b08e]">
-              <Sparkle weight="fill" className="h-4 w-4" aria-hidden="true" />
-              Sẵn sàng lên đường?
+function FormShell({ activeService, children }: { activeService: ServiceOption; children: ReactNode }) {
+  const [submitted, setSubmitted] = useState(false)
+
+  useEffect(() => {
+    setSubmitted(false)
+  }, [activeService.key])
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setSubmitted(true)
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="overflow-hidden rounded-[24px] border border-[#d9d4c9] bg-white shadow-[0_18px_46px_rgba(24,48,36,0.08)]">
+      <div className="grid lg:grid-cols-[0.82fr_1.18fr]">
+        <div className="relative min-h-[280px] bg-[#183024] text-white lg:min-h-full">
+          <img src={activeService.image} alt={activeService.title} className="absolute inset-0 h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(24,48,36,0.16)_0%,rgba(24,48,36,0.84)_100%)]" />
+          <div className="relative flex min-h-[280px] flex-col justify-end p-6 lg:min-h-[560px] lg:p-8">
+            <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#d56742]">
+              {activeService.icon}
             </div>
-            <h2 className="font-display text-[clamp(1.6rem,4vw,3rem)] font-medium leading-[1.15] tracking-[-0.03em]">
-              Hãy để chúng tôi lo mọi thứ
+            <h2 className="font-display text-3xl font-semibold leading-tight tracking-[-0.03em] lg:text-4xl">
+              {activeService.title}
             </h2>
-            <p className="mt-5 text-base leading-7 text-white/70">
-              Từ xe cộ, vé máy bay, phòng nghỉ đến visa — chỉ cần nói cho chúng
-              tôi biết kế hoạch của bạn, phần còn lại để chúng tôi lo.
-            </p>
-            <a
-              href="#contact"
-              onClick={goToEnquiry}
-              className="group mt-9 inline-flex items-center gap-3 rounded-full bg-[#fed24f] px-8 py-4 text-xs font-bold uppercase tracking-[0.14em] text-[#6f4e37] transition-all hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-            >
-              Đặt hành trình
-              <ArrowUpRight
-                className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                aria-hidden="true"
-              />
-            </a>
+            <p className="mt-4 max-w-sm text-sm leading-6 text-white/78">{activeService.summary}</p>
+            <div className="mt-7 grid gap-3">
+              {activeService.benefits.map((benefit) => (
+                <span key={benefit} className="flex items-center gap-3 text-sm text-white/86">
+                  <CheckCircle weight="fill" className="h-5 w-5 text-[#fed24f]" aria-hidden="true" />
+                  {benefit}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
+        <div className="p-6 lg:p-8">
+          {submitted ? (
+            <div className="flex min-h-[480px] flex-col items-start justify-center rounded-2xl bg-[#f6f3ec] p-8">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#d56742] text-white">
+                <CheckCircle weight="fill" className="h-7 w-7" aria-hidden="true" />
+              </div>
+              <h3 className="mt-6 font-display text-3xl font-semibold tracking-[-0.03em] text-[#183024]">
+                Đã ghi nhận yêu cầu
+              </h3>
+              <p className="mt-4 max-w-md text-sm leading-7 text-[#526257]">
+                Cảm ơn bạn. Đội ngũ tư vấn sẽ liên hệ lại để xác nhận thông tin và gửi báo giá phù hợp.
+              </p>
+              <button
+                type="button"
+                onClick={() => setSubmitted(false)}
+                className="mt-7 rounded-full border border-[#d9d4c9] bg-white px-6 py-3 text-xs font-bold uppercase tracking-[0.12em] text-[#183024] transition-colors hover:border-[#d56742] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
+              >
+                Gửi yêu cầu mới
+              </button>
+            </div>
+          ) : (
+            <div className="grid gap-6">{children}</div>
+          )}
+        </div>
       </div>
-    </section>
+    </form>
   )
 }
 
-/* ─────────────────────── Page ─────────────────────── */
-
-export default function ServicesPage() {
+function CarForm() {
   return (
-    <div className="pt-[78px]">
-      <ServicesHero />
-      <ServicesTabs />
-      <TrustStrip />
-      <FaqSection />
-      <CtaSection />
+    <>
+      <div className="grid gap-4 sm:grid-cols-3">
+        {["Xe 4-7 chỗ", "Xe 16-29 chỗ", "Xe 35-45 chỗ"].map((item) => (
+          <label key={item} className="flex cursor-pointer items-center gap-3 rounded-2xl border border-[#d9d4c9] bg-[#f6f3ec] p-4 text-sm font-semibold text-[#183024] has-[:checked]:border-[#d56742] has-[:checked]:bg-[#fff4ef]">
+            <input required name="vehicle" type="radio" className="h-4 w-4 accent-[#d56742]" />
+            {item}
+          </label>
+        ))}
+      </div>
+      <div className="grid gap-5 md:grid-cols-2">
+        <Field id="car-from" label="Điểm đón"><input id="car-from" required className={inputClass} placeholder="Sân bay Pleiku" /></Field>
+        <Field id="car-to" label="Điểm đến"><input id="car-to" required className={inputClass} placeholder="Măng Đen" /></Field>
+        <Field id="car-date" label="Ngày đi"><input id="car-date" required type="date" className={inputClass} /></Field>
+        <Field id="car-guests" label="Số khách"><input id="car-guests" required min="1" type="number" className={inputClass} placeholder="4" /></Field>
+      </div>
+      <Field id="car-note" label="Ghi chú hành trình"><textarea id="car-note" className={textareaClass} placeholder="Thêm số điểm dừng, hành lý hoặc yêu cầu riêng" /></Field>
+      <ContactFields prefix="car" />
+      <SubmitButton>Gửi yêu cầu thuê xe</SubmitButton>
+    </>
+  )
+}
+
+function VisaForm() {
+  return (
+    <>
+      <div className="grid gap-5 md:grid-cols-2">
+        <Field id="visa-country" label="Quốc gia hoặc vùng lãnh thổ"><input id="visa-country" required className={inputClass} placeholder="Nhật Bản" /></Field>
+        <Field id="visa-date" label="Ngày dự kiến đi"><input id="visa-date" type="date" className={inputClass} /></Field>
+        <Field id="visa-purpose" label="Mục đích chuyến đi"><select id="visa-purpose" required className={inputClass} defaultValue=""><option value="" disabled>Chọn mục đích</option><option>Du lịch</option><option>Công tác</option><option>Thăm thân</option><option>Du học</option></select></Field>
+        <Field id="visa-people" label="Số người làm hồ sơ"><input id="visa-people" required min="1" type="number" className={inputClass} placeholder="2" /></Field>
+      </div>
+      <Field id="visa-note" label="Tình trạng hồ sơ hiện tại"><textarea id="visa-note" className={textareaClass} placeholder="Bạn đã có hộ chiếu, lịch bay hoặc thư mời chưa" /></Field>
+      <ContactFields prefix="visa" />
+      <div className="rounded-2xl bg-[#f6f3ec] p-4 text-sm leading-6 text-[#526257]">
+        Phí và thời gian xử lý phụ thuộc vào từng lãnh sự quán. Tư vấn viên sẽ kiểm tra trước khi báo giá.
+      </div>
+      <SubmitButton>Gửi yêu cầu visa</SubmitButton>
+    </>
+  )
+}
+
+function FlightForm() {
+  return (
+    <>
+      <div className="grid gap-4 sm:grid-cols-2">
+        {["Một chiều", "Khứ hồi"].map((item) => (
+          <label key={item} className="flex cursor-pointer items-center gap-3 rounded-2xl border border-[#d9d4c9] bg-[#f6f3ec] p-4 text-sm font-semibold text-[#183024] has-[:checked]:border-[#d56742] has-[:checked]:bg-[#fff4ef]">
+            <input required name="trip" type="radio" className="h-4 w-4 accent-[#d56742]" />
+            {item}
+          </label>
+        ))}
+      </div>
+      <div className="grid gap-5 md:grid-cols-2">
+        <Field id="flight-from" label="Đi từ"><input id="flight-from" required className={inputClass} placeholder="TP. Hồ Chí Minh" /></Field>
+        <Field id="flight-to" label="Đi đến"><input id="flight-to" required className={inputClass} placeholder="Pleiku" /></Field>
+        <Field id="flight-date" label="Ngày đi"><input id="flight-date" required type="date" className={inputClass} /></Field>
+        <Field id="flight-return" label="Ngày về"><input id="flight-return" type="date" className={inputClass} /></Field>
+        <Field id="flight-passengers" label="Số hành khách"><input id="flight-passengers" required min="1" type="number" className={inputClass} placeholder="3" /></Field>
+        <Field id="flight-class" label="Hạng ghế"><select id="flight-class" required className={inputClass} defaultValue=""><option value="" disabled>Chọn hạng ghế</option><option>Phổ thông</option><option>Phổ thông đặc biệt</option><option>Thương gia</option></select></Field>
+      </div>
+      <ContactFields prefix="flight" />
+      <SubmitButton>Gửi yêu cầu vé máy bay</SubmitButton>
+    </>
+  )
+}
+
+function ContactFields({ prefix }: { prefix: string }) {
+  return (
+    <div className="grid gap-5 border-t border-[#e0dcd2] pt-6 md:grid-cols-2">
+      <Field id={`${prefix}-name`} label="Họ và tên"><input id={`${prefix}-name`} required className={inputClass} placeholder="Nguyễn Minh Anh" /></Field>
+      <Field id={`${prefix}-phone`} label="Số điện thoại"><input id={`${prefix}-phone`} required type="tel" className={inputClass} placeholder="090 000 0000" /></Field>
+      <Field id={`${prefix}-email`} label="Email"><input id={`${prefix}-email`} type="email" className={inputClass} placeholder="email@cuaban.com" /></Field>
+      <Field id={`${prefix}-contact-time`} label="Thời gian liên hệ"><input id={`${prefix}-contact-time`} className={inputClass} placeholder="Sau 18:00" /></Field>
+    </div>
+  )
+}
+
+function ActiveForm({ activeKey }: { activeKey: ServiceKey }) {
+  if (activeKey === "visa") return <VisaForm />
+  if (activeKey === "flight") return <FlightForm />
+  return <CarForm />
+}
+
+function keyFromQuery(query: string): ServiceKey {
+  const slug = new URLSearchParams(query).get("dichvu")
+  if (slug === "visa") return "visa"
+  if (slug === "ve-may-bay") return "flight"
+  return "car"
+}
+
+export default function ServicesPage({ query = "" }: { query?: string }) {
+  const [activeKey, setActiveKey] = useState<ServiceKey>(() => keyFromQuery(query))
+  useEffect(() => {
+    setActiveKey(keyFromQuery(query))
+  }, [query])
+
+  const activeService = useMemo(
+    () => serviceOptions.find((service) => service.key === activeKey) ?? serviceOptions[0],
+    [activeKey],
+  )
+
+  return (
+    <div className="bg-[#f6f3ec] pt-[78px] text-[#183024]">
+      <section className="border-b border-[#d9d4c9] px-6 py-14 lg:px-12 lg:py-20">
+        <div className="mx-auto grid max-w-[1440px] gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(420px,0.6fr)] lg:items-end">
+          <div>
+            <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.2em] text-[#d56742]">Dịch vụ khác</p>
+            <h1 className="font-display text-[clamp(2.4rem,6vw,4.7rem)] font-semibold leading-[1.04] tracking-[-0.05em]">
+              Cần thêm hỗ trợ cho chuyến đi?
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-7 text-[#526257] lg:text-lg">
+              Chọn dịch vụ, để lại thông tin. Tư vấn viên sẽ kiểm tra và phản hồi phương án phù hợp.
+            </p>
+          </div>
+          <div className="grid gap-4 rounded-[24px] border border-[#d9d4c9] bg-white p-5 shadow-[0_14px_34px_rgba(24,48,36,0.06)] sm:grid-cols-3 lg:grid-cols-1">
+            {[{ icon: <MapPin className="h-5 w-5" />, text: "Lịch trình rõ ràng" }, { icon: <PhoneCall className="h-5 w-5" />, text: "Liên hệ trong ngày" }, { icon: <ShieldCheck className="h-5 w-5" />, text: "Thông tin được bảo mật" }].map((item) => (
+              <div key={item.text} className="flex items-center gap-3 rounded-2xl bg-[#f6f3ec] p-4 text-sm font-semibold text-[#183024]">
+                <span className="text-[#d56742]">{item.icon}</span>
+                {item.text}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 py-14 lg:px-12 lg:py-20">
+        <div className="mx-auto grid max-w-[1440px] gap-8 lg:grid-cols-[280px_minmax(0,1fr)]">
+          <aside className="lg:sticky lg:top-[102px] lg:self-start">
+            <div className="rounded-[24px] border border-[#d9d4c9] bg-white p-3 shadow-[0_14px_34px_rgba(24,48,36,0.05)]">
+              <p className="px-3 py-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#69746b]">Chọn dịch vụ</p>
+              <div className="grid gap-2">
+                {serviceOptions.map((service) => {
+                  const active = service.key === activeKey
+                  return (
+                    <button
+                      key={service.key}
+                      type="button"
+                      onClick={() => setActiveKey(service.key)}
+                      className={`flex items-center justify-between rounded-2xl px-4 py-4 text-left text-sm font-bold transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742] ${
+                        active ? "bg-[#183024] text-white" : "bg-[#f6f3ec] text-[#183024] hover:bg-[#e9e6dd]"
+                      }`}
+                    >
+                      <span className="flex items-center gap-3">{service.icon}{service.label}</span>
+                      {active ? <CheckCircle weight="fill" className="h-5 w-5 text-[#fed24f]" aria-hidden="true" /> : null}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+            <div className="mt-4 rounded-[24px] border border-[#d9d4c9] bg-[#183024] p-5 text-white">
+              <div className="flex items-center gap-3 text-[#fed24f]"><CalendarBlank className="h-5 w-5" /><Users className="h-5 w-5" /></div>
+              <p className="mt-4 text-sm leading-6 text-white/78">Bạn có thể gửi từng dịch vụ riêng lẻ. Nếu cần trọn gói, hãy ghi rõ trong phần ghi chú.</p>
+            </div>
+          </aside>
+
+          <FormShell activeService={activeService}>
+            <ActiveForm activeKey={activeKey} />
+          </FormShell>
+        </div>
+      </section>
     </div>
   )
 }

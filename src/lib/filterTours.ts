@@ -48,6 +48,9 @@ export const EMPTY_FACETS: Record<FacetKey, string[]> = {
   difficulty: [],
   season: [],
   group: [],
+  tourGroup: [],
+  destination: [],
+  special: [],
 }
 
 export function createEmptyFilterState(): FilterState {

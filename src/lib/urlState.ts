@@ -17,7 +17,6 @@ import type { FilterState } from "./filterTours"
 const REGION_PARAM = "vung"
 const KEYWORD_PARAM = "tim"
 const SORT_PARAM = "sap-xep"
-
 /** Parse a hash query string into a filter state, discarding anything unknown. */
 export function parseFilterState(query: string): FilterState {
   const state = createEmptyFilterState()

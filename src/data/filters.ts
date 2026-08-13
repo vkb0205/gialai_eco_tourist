@@ -1,4 +1,5 @@
-import type { Difficulty, Theme, Tour } from "./tours"
+import { tourGroups } from "./tours"
+import type { Difficulty, Theme, Tour, TourGroup } from "./tours"
 
 /**
  * Facet group configuration.
@@ -9,7 +10,16 @@ import type { Difficulty, Theme, Tour } from "./tours"
  */
 
 /** Keys used in the URL. Region lives outside this list, in its own strip. */
-export type FacetKey = "theme" | "duration" | "price" | "difficulty" | "season" | "group"
+export type FacetKey =
+  | "theme"
+  | "duration"
+  | "price"
+  | "difficulty"
+  | "season"
+  | "group"
+  | "tourGroup"
+  | "destination"
+  | "special"
 
 export type FacetOption = {
   /** Stable value written to the URL. */
@@ -63,10 +73,10 @@ const seasonMonths: Record<string, number[]> = {
 }
 
 const seasonLabels: Record<string, string> = {
-  xuan: "Tháng 1 – 3",
-  he: "Tháng 4 – 6",
-  thu: "Tháng 7 – 9",
-  dong: "Tháng 10 – 12",
+  xuan: "Tháng 1 - 3",
+  he: "Tháng 4 - 6",
+  thu: "Tháng 7 - 9",
+  dong: "Tháng 10 - 12",
 }
 
 export const facetGroups: FacetGroup[] = [
@@ -92,7 +102,7 @@ export const facetGroups: FacetGroup[] = [
       },
       {
         value: "2-3",
-        label: "2 – 3 ngày",
+        label: "2 - 3 ngày",
         matches: (tour) => tour.durationDays >= 2 && tour.durationDays <= 3,
       },
       {
@@ -114,13 +124,13 @@ export const facetGroups: FacetGroup[] = [
       },
       {
         value: "1-2",
-        label: "1 – 2 triệu",
+        label: "1 - 2 triệu",
         matches: (tour) =>
           tour.priceVnd >= 1_000_000 && tour.priceVnd < 2_000_000,
       },
       {
         value: "2-4",
-        label: "2 – 4 triệu",
+        label: "2 - 4 triệu",
         matches: (tour) =>
           tour.priceVnd >= 2_000_000 && tour.priceVnd < 4_000_000,
       },
@@ -168,7 +178,7 @@ export const facetGroups: FacetGroup[] = [
       },
       {
         value: "nho",
-        label: "9 – 12 người",
+        label: "9 - 12 người",
         matches: (tour) => tour.groupMax > 8 && tour.groupMax <= 12,
       },
       {
@@ -177,6 +187,53 @@ export const facetGroups: FacetGroup[] = [
         matches: (tour) => tour.groupMax > 12,
       },
     ],
+  },
+  {
+    key: "tourGroup",
+    label: "Loại hành trình",
+    mode: "single",
+    options: (Object.entries(tourGroups) as [TourGroup, (typeof tourGroups)[TourGroup]][]).map(
+      ([value, group]) => ({
+        value,
+        label: group.label,
+        matches: (tour) => tour.tourGroup === value,
+      }),
+    ),
+  },
+  {
+    key: "destination",
+    label: "Điểm đến quốc tế",
+    mode: "multiple",
+    options: [
+      "Thái Lan",
+      "Campuchia",
+      "Singapore",
+      "Hàn Quốc",
+      "Nhật Bản",
+      "Trung Quốc",
+      "Mỹ",
+      "Khác",
+    ].map((value) => ({
+      value,
+      label: value,
+      matches: (tour) =>
+        tour.tourGroup === "international" && tour.category === value,
+    })),
+  },
+  {
+    key: "special",
+    label: "Hành trình đặc biệt",
+    mode: "multiple",
+    options: [
+      "Tour du thuyền",
+      "Tour trải nghiệm học sinh-sinh viên",
+      "Tour Cựu Chiến Binh",
+    ].map((value) => ({
+      value,
+      label: value,
+      matches: (tour) =>
+        tour.tourGroup === "special" && tour.category === value,
+    })),
   },
 ]
 

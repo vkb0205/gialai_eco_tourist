@@ -2,7 +2,7 @@ import type { RegionSlug } from "./regions"
 
 /**
  * ============================================================================
- * REPRESENTATIVE SAMPLE DATA — NOT VERIFIED INVENTORY
+ * REPRESENTATIVE SAMPLE DATA - NOT VERIFIED INVENTORY
  * ============================================================================
  *
  * Vehicle records below are illustrative. Models, capacities, and prices are
@@ -74,7 +74,7 @@ const IMG_PICKUP =
   "https://images.unsplash.com/photo-1559416523-140ddc3d238c?auto=format&fit=crop&w=900&q=80"
 
 export const vehicles: Vehicle[] = [
-  // ── Sedans ──
+  // Sedans
   {
     id: 1,
     slug: "toyota-vios",
@@ -87,10 +87,10 @@ export const vehicles: Vehicle[] = [
     fuel: "xang",
     pricePerDayVnd: 800_000,
     driverOption: "co-tai-xe",
-    regionSlugs: ["tay-nguyen", "nam-trung-bo", "dong-nam-bo"],
+    regionSlugs: ["tay-nguyen", "mien-trung", "mien-nam"],
     image: IMG_SEDAN,
     blurb:
-      "Sedan nhỏ gọn, tiết kiệm nhiên liệu — lý cho di chuyển 2–4 khách trong thành phố và cung đường ngắn.",
+      "Sedan nhỏ gọn, tiết kiệm nhiên liệu - lý cho di chuyển 2-4 khách trong thành phố và cung đường ngắn.",
     features: ["Điều hòa", "Bluetooth", "Cản lăn"],
     b2bCapable: false,
   },
@@ -106,10 +106,10 @@ export const vehicles: Vehicle[] = [
     fuel: "xang",
     pricePerDayVnd: 750_000,
     driverOption: "co-tai-xe",
-    regionSlugs: ["tay-nguyen", "bac-trung-bo"],
+    regionSlugs: ["tay-nguyen", "mien-trung"],
     image: IMG_SEDAN,
     blurb:
-      "Sedan hạng A giá mềm, rộng ghế sau — phù hợp đưa đón sân bay Pleiku và chuyến ngắn.",
+      "Sedan hạng A giá mềm, rộng ghế sau - phù hợp đưa đón sân bay Pleiku và chuyến ngắn.",
     features: ["Điều hòa", "Camera lùi", "Bluetooth"],
     b2bCapable: false,
   },
@@ -125,15 +125,15 @@ export const vehicles: Vehicle[] = [
     fuel: "hybrid",
     pricePerDayVnd: 1_100_000,
     driverOption: "co-tai-xe",
-    regionSlugs: ["tay-nguyen", "dong-nam-bo"],
+    regionSlugs: ["tay-nguyen", "mien-nam"],
     image: IMG_SEDAN,
     blurb:
-      "Sedan hạng C cao cấp, chạy êm và tiết kiệm — cho khách cần sự thoải mái trên đường dài.",
+      "Sedan hạng C cao cấp, chạy êm và tiết kiệm - cho khách cần sự thoải mái trên đường dài.",
     features: ["Điều hòa tự động", "Camera 360", "Cruise control"],
     b2bCapable: false,
   },
 
-  // ── SUVs ──
+  // SUVs
   {
     id: 4,
     slug: "toyota-fortuner",
@@ -146,10 +146,10 @@ export const vehicles: Vehicle[] = [
     fuel: "dau",
     pricePerDayVnd: 1_800_000,
     driverOption: "co-tai-xe",
-    regionSlugs: ["tay-bac", "dong-bac", "tay-nguyen"],
+    regionSlugs: ["mien-bac", "tay-nguyen"],
     image: IMG_SUV,
     blurb:
-      "SUV 7 chỗ gầm cao, vượt đèo dốc Tây Bắc an toàn — tài xế địa phương am hiểu cung đường núi.",
+      "SUV 7 chỗ gầm cao, vượt đèo dốc Tây Bắc an toàn - tài xế địa phương am hiểu cung đường núi.",
     features: ["7 chỗ", "Gầm cao", "4WD", "Điều hòa 2 vùng"],
     b2bCapable: true,
   },
@@ -165,10 +165,10 @@ export const vehicles: Vehicle[] = [
     fuel: "xang",
     pricePerDayVnd: 1_600_000,
     driverOption: "co-tai-xe",
-    regionSlugs: ["tay-nguyen", "nam-trung-bo", "bac-trung-bo"],
+    regionSlugs: ["tay-nguyen", "mien-trung"],
     image: IMG_SUV,
     blurb:
-      "MPV 7 chỗ rộng rãi, ghế xếp gọn — linh hoạt cho gia đình hoặc nhóm nhỏ 5–7 người.",
+      "MPV 7 chỗ rộng rãi, ghế xếp gọn - linh hoạt cho gia đình hoặc nhóm nhỏ 5-7 người.",
     features: ["7 chỗ", "Ghế da", "Cửa lùa"],
     b2bCapable: true,
   },
@@ -184,15 +184,15 @@ export const vehicles: Vehicle[] = [
     fuel: "dau",
     pricePerDayVnd: 2_200_000,
     driverOption: "co-tai-xe",
-    regionSlugs: ["tay-bac", "dong-bac", "tay-nguyen", "dong-nam-bo"],
+    regionSlugs: ["mien-bac", "tay-nguyen", "mien-nam"],
     image: IMG_SUV,
     blurb:
-      "SUV cao cấp 4WD, sức kéo mạnh và khung gầm vững — cho những chuyến phiêu lưu đường xa.",
+      "SUV cao cấp 4WD, sức kéo mạnh và khung gầm vững - cho những chuyến phiêu lưu đường xa.",
     features: ["7 chỗ", "4WD", "Lane assist", "Điều hòa 3 vùng"],
     b2bCapable: true,
   },
 
-  // ── Vans ──
+  // Vans
   {
     id: 7,
     slug: "toyota-innova",
@@ -205,10 +205,10 @@ export const vehicles: Vehicle[] = [
     fuel: "hybrid",
     pricePerDayVnd: 1_500_000,
     driverOption: "co-tai-xe",
-    regionSlugs: ["tay-nguyen", "nam-trung-bo", "dong-nam-bo", "bac-trung-bo"],
+    regionSlugs: ["tay-nguyen", "mien-trung", "mien-nam"],
     image: IMG_VAN,
     blurb:
-      "MPV 8 chỗ hybrid, rộng và tiết kiệm — xe phổ dụng nhất cho nhóm 6–8 khách thuê kèm tài xế.",
+      "MPV 8 chỗ hybrid, rộng và tiết kiệm - xe phổ dụng nhất cho nhóm 6-8 khách thuê kèm tài xế.",
     features: ["8 chỗ", "Hybrid", "Điều hòa sau"],
     b2bCapable: true,
   },
@@ -224,10 +224,10 @@ export const vehicles: Vehicle[] = [
     fuel: "dau",
     pricePerDayVnd: 2_000_000,
     driverOption: "co-tai-xe",
-    regionSlugs: ["tay-nguyen", "dong-bac", "tay-bac", "nam-trung-bo", "dong-nam-bo"],
+    regionSlugs: ["tay-nguyen", "mien-bac", "mien-trung", "mien-nam"],
     image: IMG_VAN,
     blurb:
-      "Van 12 chỗ chở — phổ biến cho đoàn 10–12 khách, có tài xế am hiểu tuyến đường.",
+      "Van 12 chỗ chở - phổ biến cho đoàn 10-12 khách, có tài xế am hiểu tuyến đường.",
     features: ["12 chỗ", "Khoang hành lý riêng", "Điều hòa cả xe"],
     b2bCapable: true,
   },
@@ -243,15 +243,15 @@ export const vehicles: Vehicle[] = [
     fuel: "dau",
     pricePerDayVnd: 2_400_000,
     driverOption: "co-tai-xe",
-    regionSlugs: ["tay-nguyen", "dong-bac", "nam-trung-bo", "dong-nam-bo", "bac-bo"],
+    regionSlugs: ["tay-nguyen", "mien-bac", "mien-trung", "mien-nam"],
     image: IMG_VAN,
     blurb:
-      "Van 16 chỗ cao cấp, ghế ngả và đọc đèn — cho đoàn công tác hoặc nhóm 14–16 người.",
+      "Van 16 chỗ cao cấp, ghế ngả và đọc đèn - cho đoàn công tác hoặc nhóm 14-16 người.",
     features: ["16 chỗ", "Ghế ngả", "Đọc đèn", "USB sạc"],
     b2bCapable: true,
   },
 
-  // ── Minibuses ──
+  // Minibuses
   {
     id: 10,
     slug: "mercedes-sprinter",
@@ -264,10 +264,10 @@ export const vehicles: Vehicle[] = [
     fuel: "dau",
     pricePerDayVnd: 3_500_000,
     driverOption: "co-tai-xe",
-    regionSlugs: ["tay-nguyen", "nam-trung-bo", "dong-nam-bo", "bac-bo"],
+    regionSlugs: ["tay-nguyen", "mien-bac", "mien-trung", "mien-nam"],
     image: IMG_MINIBUS,
     blurb:
-      "Minibus 19 chỗ cao cấp — thường dùng cho đoàn công tác, team building, sự kiện B2B.",
+      "Minibus 19 chỗ cao cấp - thường dùng cho đoàn công tác, team building, sự kiện B2B.",
     features: ["19 chỗ", "Ghế da ngả", "Màn hình DVD", "Tủ lạnh nhỏ"],
     b2bCapable: true,
   },
@@ -283,15 +283,15 @@ export const vehicles: Vehicle[] = [
     fuel: "dau",
     pricePerDayVnd: 3_000_000,
     driverOption: "co-tai-xe",
-    regionSlugs: ["tay-nguyen", "dong-bac", "nam-trung-bo", "dong-nam-bo"],
+    regionSlugs: ["tay-nguyen", "mien-bac", "mien-trung", "mien-nam"],
     image: IMG_MINIBUS,
     blurb:
-      "Minibus 24 chỗ — giải pháp trung chuyển cho đoàn 20–24 khách giữa các điểm tham quan.",
+      "Minibus 24 chỗ - giải pháp trung chuyển cho đoàn 20-24 khách giữa các điểm tham quan.",
     features: ["24 chỗ", "Khoang hành lý lớn", "Điều hòa mạnh"],
     b2bCapable: true,
   },
 
-  // ── Buses ──
+  // Buses
   {
     id: 12,
     slug: "hyundai-county-29",
@@ -304,10 +304,10 @@ export const vehicles: Vehicle[] = [
     fuel: "dau",
     pricePerDayVnd: 4_500_000,
     driverOption: "co-tai-xe",
-    regionSlugs: ["tay-nguyen", "dong-bac", "nam-trung-bo", "dong-nam-bo", "bac-bo", "bac-trung-bo"],
+    regionSlugs: ["tay-nguyen", "mien-bac", "mien-trung", "mien-nam"],
     image: IMG_BUS,
     blurb:
-      "Xe buýt 29 chỗ — standard cho đoàn lớn 25–29 khách, phù hợp charter tour và trung chuyển dài.",
+      "Xe buýt 29 chỗ - standard cho đoàn lớn 25-29 khách, phù hợp charter tour và trung chuyển dài.",
     features: ["29 chỗ", "Khoang hành lý hầm", "Điều hòa cả xe", "Micro"],
     b2bCapable: true,
   },
@@ -323,10 +323,10 @@ export const vehicles: Vehicle[] = [
     fuel: "dau",
     pricePerDayVnd: 6_500_000,
     driverOption: "co-tai-xe",
-    regionSlugs: ["tay-nguyen", "dong-bac", "nam-trung-bo", "dong-nam-bo", "bac-bo", "bac-trung-bo"],
+    regionSlugs: ["tay-nguyen", "mien-bac", "mien-trung", "mien-nam"],
     image: IMG_BUS,
     blurb:
-      "Xe giường nằm 45 chỗ — chuyên cung đường dài Bắc–Nam, charter đoàn 40+ khách, có phụ xe.",
+      "Xe giường nằm 45 chỗ - chuyên cung đường dài Bắc-Nam, charter đoàn 40+ khách, có phụ xe.",
     features: ["45 chỗ giường nằm", "Hầm hành lý lớn", "WC (tùy xe)", "Phụ xe"],
     b2bCapable: true,
   },
@@ -342,15 +342,15 @@ export const vehicles: Vehicle[] = [
     fuel: "dau",
     pricePerDayVnd: 5_200_000,
     driverOption: "co-tai-xe",
-    regionSlugs: ["tay-nguyen", "dong-bac", "nam-trung-bo", "dong-nam-bo", "bac-trung-bo"],
+    regionSlugs: ["tay-nguyen", "mien-bac", "mien-trung", "mien-nam"],
     image: IMG_BUS,
     blurb:
-      "Xe khách 35 chỗ ghế ngồi — cho đoàn tham quan 30–35 khách, thường đặt cho tour trọn gói.",
+      "Xe khách 35 chỗ ghế ngồi - cho đoàn tham quan 30-35 khách, thường đặt cho tour trọn gói.",
     features: ["35 chỗ ghế ngồi", "Điều hòa", "Màn hình LED", "Khoang hành lý hầm"],
     b2bCapable: true,
   },
 
-  // ── Pickups ──
+  // Pickups
   {
     id: 15,
     slug: "ford-ranger",
@@ -363,10 +363,10 @@ export const vehicles: Vehicle[] = [
     fuel: "dau",
     pricePerDayVnd: 2_000_000,
     driverOption: "co-tai-xe",
-    regionSlugs: ["tay-nguyen", "dong-bac", "tay-bac"],
+    regionSlugs: ["tay-nguyen", "mien-bac"],
     image: IMG_PICKUP,
     blurb:
-      "Bán tải 5 chỗ 4WD — chở hành lý cồng kềnh, lội nước nhẹ, cho những chuyến off-road Tây Nguyên.",
+      "Bán tải 5 chỗ 4WD - chở hành lý cồng kềnh, lội nước nhẹ, cho những chuyến off-road Tây Nguyên.",
     features: ["4WD", "Thùng chở đồ", "Off-road", "5 chỗ"],
     b2bCapable: true,
   },
@@ -382,10 +382,10 @@ export const vehicles: Vehicle[] = [
     fuel: "dau",
     pricePerDayVnd: 1_800_000,
     driverOption: "co-tai-xe",
-    regionSlugs: ["tay-nguyen", "tay-bac"],
+    regionSlugs: ["tay-nguyen", "mien-bac"],
     image: IMG_PICKUP,
     blurb:
-      "Bán tải 5 chỗ giá tốt — cho nhóm nhỏ cần chở thiết bị cắm trại hoặc trekking.",
+      "Bán tải 5 chỗ giá tốt - cho nhóm nhỏ cần chở thiết bị cắm trại hoặc trekking.",
     features: ["4WD", "Thùng chở đồ", "5 chỗ"],
     b2bCapable: true,
   },
@@ -401,10 +401,10 @@ export const vehicles: Vehicle[] = [
     fuel: "xang",
     pricePerDayVnd: 700_000,
     driverOption: "tu-lai",
-    regionSlugs: ["tay-nguyen", "dong-nam-bo"],
+    regionSlugs: ["tay-nguyen", "mien-nam"],
     image: IMG_SEDAN,
     blurb:
-      "Sedan hạng A giá rẻ, tự lái — cho khách có GPLX B2, muốn tự do khám phá Pleiku và xung quanh.",
+      "Sedan hạng A giá rẻ, tự lái - cho khách có GPLX B2, muốn tự do khám phá Pleiku và xung quanh.",
     features: ["Tự lái", "GPS", "Camera lùi"],
     b2bCapable: false,
   },
@@ -420,10 +420,10 @@ export const vehicles: Vehicle[] = [
     fuel: "xang",
     pricePerDayVnd: 900_000,
     driverOption: "tu-lai",
-    regionSlugs: ["tay-nguyen", "dong-nam-bo", "nam-trung-bo"],
+    regionSlugs: ["tay-nguyen", "mien-nam", "mien-trung"],
     image: IMG_SUV,
     blurb:
-      "Hatchback/SUV gầm cao hạng A, tự lái — tiết kiệm và dễ xử lý cho cung đường thành phố.",
+      "Hatchback/SUV gầm cao hạng A, tự lái - tiết kiệm và dễ xử lý cho cung đường thành phố.",
     features: ["Tự lái", "GPS", "Camera 360", "Apple CarPlay"],
     b2bCapable: false,
   },

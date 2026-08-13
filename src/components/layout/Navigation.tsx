@@ -15,9 +15,39 @@ export type NavLink = {
   section?: string
 }
 
-const internationalExploreQuery = new URLSearchParams({
-  tim: "nước ngoài",
-}).toString()
+const domesticExploreQuery = "tourGroup=domestic"
+const internationalExploreQuery = "tourGroup=international"
+const specialExploreQuery = "tourGroup=special"
+
+const domesticRegions = [
+  { label: "Tây Nguyên", query: "tourGroup=domestic&vung=tay-nguyen" },
+  { label: "Miền Bắc", query: "tourGroup=domestic&vung=mien-bac" },
+  { label: "Miền Nam", query: "tourGroup=domestic&vung=mien-nam" },
+  { label: "Miền Trung", query: "tourGroup=domestic&vung=mien-trung" },
+]
+
+const internationalDestinations = [
+  "Thái Lan",
+  "Campuchia",
+  "Singapore",
+  "Hàn Quốc",
+  "Nhật Bản",
+  "Trung Quốc",
+  "Mỹ",
+  "Khác",
+].map((label) => ({
+  label,
+  query: `tourGroup=international&destination=${encodeURIComponent(label)}`,
+}))
+
+const specialTours = [
+  "Tour du thuyền",
+  "Tour trải nghiệm học sinh-sinh viên",
+  "Tour Cựu Chiến Binh",
+].map((label) => ({
+  label,
+  query: `tourGroup=special&special=${encodeURIComponent(label)}`,
+}))
 
 /**
  * Primary navigation model, shared with the footer so both stay in step.
@@ -28,27 +58,30 @@ export const navLinks: NavLink[] = [
   {
     label: "Tour trong nước",
     path: "/explore",
+    query: domesticExploreQuery,
   },
   {
     label: "Tour ngoài nước",
     path: "/explore",
     query: internationalExploreQuery,
   },
+  {
+    label: "Tour đặc biệt",
+    path: "/explore",
+    query: specialExploreQuery,
+  },
 ]
 
-const otherServicesExploreQuery = new URLSearchParams({
-  tim: "dịch vụ khác",
-}).toString()
-
-const servicePresetQuery = (keyword: string) =>
-  new URLSearchParams({ tim: keyword }).toString()
+const secondaryLinks: Record<string, { label: string; query: string }[]> = {
+  "Tour trong nước": domesticRegions,
+  "Tour ngoài nước": internationalDestinations,
+  "Tour đặc biệt": specialTours,
+}
 
 const serviceOptions: { label: string; slug: string; query: string }[] = [
-  { label: "Thuê xe", slug: "thue-xe", query: servicePresetQuery("thuê xe") },
-  { label: "Vé máy bay", slug: "ve-may-bay", query: servicePresetQuery("vé máy bay") },
-  { label: "Khách sạn", slug: "khach-san", query: servicePresetQuery("khách sạn") },
-  { label: "Visa", slug: "visa", query: servicePresetQuery("visa") },
-  { label: "Khác", slug: "khac", query: servicePresetQuery("dịch vụ khác") },
+  { label: "Thuê xe", slug: "thue-xe", query: "dichvu=thue-xe" },
+  { label: "Visa", slug: "visa", query: "dichvu=visa" },
+  { label: "Vé máy bay", slug: "ve-may-bay", query: "dichvu=ve-may-bay" },
 ]
 
 /** Href for a nav link, so links stay real anchors and remain openable in a new tab. */
@@ -185,7 +218,9 @@ export default function Navigation() {
             {navLinks.map((link) => {
               const active =
                 link.path === "/explore" && route.path === "/explore" && route.query === (link.query ?? "")
+              const children = secondaryLinks[link.label]
               return (
+                <div key={link.label} className="group/nav relative">
                 <a
                   key={link.label}
                   href={hrefFor(link)}
@@ -203,18 +238,35 @@ export default function Navigation() {
                 >
                   {link.label}
                 </a>
+                {children && (
+                  <div className="invisible absolute left-1/2 top-full z-10 mt-4 w-max -translate-x-1/2 translate-y-1 rounded-2xl border border-[#d9d4c9] bg-[#f6f3ec] p-2 text-[#183024] opacity-0 shadow-[0_18px_40px_rgba(10,25,17,0.16)] transition-all group-hover/nav:visible group-hover/nav:translate-y-0 group-hover/nav:opacity-100 group-focus-within/nav:visible group-focus-within/nav:translate-y-0 group-focus-within/nav:opacity-100">
+                    <div className="grid gap-1">
+                      {children.map((child) => (
+                        <button
+                          key={child.query}
+                          type="button"
+                          onClick={() => navigateTo("/explore", child.query)}
+                          className="rounded-xl px-4 py-2.5 text-left text-[11px] font-semibold normal-case tracking-normal text-[#183024] transition-colors hover:bg-[#e9e6dd] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
+                        >
+                          {child.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                </div>
               )
             })}
             <div className="group relative">
               <button
                 type="button"
-                onClick={() => navigateTo("/explore", otherServicesExploreQuery)}
+                onClick={() => navigateTo("/services")}
                 className={`inline-flex items-center gap-1.5 whitespace-nowrap text-[12px] font-semibold uppercase tracking-[0.1em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742] ${
                   solid || !atHeroTop
-                    ? route.path === "/explore" && route.query === otherServicesExploreQuery
+                    ? route.path === "/services"
                       ? "text-[#d56742]"
                       : "text-white/85 hover:text-white"
-                    : route.path === "/explore" && route.query === otherServicesExploreQuery
+                    : route.path === "/services"
                       ? "text-[#6f4e37]"
                       : "text-[#6f4e37] hover:text-[#6f4e37]"
                 }`}
@@ -227,7 +279,7 @@ export default function Navigation() {
                   <button
                     key={option.slug}
                     type="button"
-                    onClick={() => navigateTo("/explore", option.query)}
+                    onClick={() => navigateTo("/services", option.query)}
                     className="block w-full rounded-xl px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.1em] text-[#183024] transition-colors hover:bg-[#e9e6dd] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
                   >
                     {option.label}
@@ -284,25 +336,46 @@ export default function Navigation() {
             aria-label="Menu di động"
           >
             <div className="flex flex-col gap-5">
-              {navLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={hrefFor(link)}
-                  className="text-sm font-semibold uppercase tracking-[0.12em] text-[#183024] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
-                  onClick={(event) => {
-                    setMenuOpen(false)
-                    followNavLink(event, link)
-                  }}
-                >
-                  {link.label}
-                </a>
-              ))}
+              {navLinks.map((link) => {
+                const children = secondaryLinks[link.label]
+                return (
+                  <div key={link.label}>
+                    <a
+                      href={hrefFor(link)}
+                      className="text-sm font-semibold uppercase tracking-[0.12em] text-[#183024] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
+                      onClick={(event) => {
+                        setMenuOpen(false)
+                        followNavLink(event, link)
+                      }}
+                    >
+                      {link.label}
+                    </a>
+                    {children && (
+                      <div className="mt-2 grid gap-2 border-l border-[#d9d4c9] pl-4">
+                        {children.map((child) => (
+                          <button
+                            key={child.query}
+                            type="button"
+                            onClick={() => {
+                              setMenuOpen(false)
+                              navigateTo("/explore", child.query)
+                            }}
+                            className="text-left text-xs font-medium text-[#5b665d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
+                          >
+                            {child.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
               <div className="border-t border-[#d9d4c9] pt-5">
                 <button
                   type="button"
                   onClick={() => {
                     setMenuOpen(false)
-                    navigateTo("/explore", otherServicesExploreQuery)
+                    navigateTo("/services")
                   }}
                   className="text-sm font-semibold uppercase tracking-[0.12em] text-[#183024] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
                 >
@@ -315,7 +388,7 @@ export default function Navigation() {
                       type="button"
                       onClick={() => {
                         setMenuOpen(false)
-                        navigateTo("/explore", option.query)
+                        navigateTo("/services", option.query)
                       }}
                       className="text-left text-sm font-medium uppercase tracking-[0.1em] text-[#5b665d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
                     >

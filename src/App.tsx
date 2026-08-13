@@ -38,7 +38,7 @@ export default function App() {
         ) : route.path === "/car-rental" ? (
           <CarRentalPage query={route.query} />
         ) : route.path === "/services" ? (
-          <ServicesPage />
+          <ServicesPage query={route.query} />
         ) : (
           <HomePage />
         )}
