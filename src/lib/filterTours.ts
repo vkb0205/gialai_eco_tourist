@@ -144,21 +144,42 @@ function matchesAll(
   return matchesKeyword(tour, foldedKeyword)
 }
 
+function priceForSort(tour: Tour): number {
+  return tour.priceVnd ?? Number.POSITIVE_INFINITY
+}
+
+function orderForSort(tour: Tour): number {
+  return tour.sortOrder ?? (typeof tour.id === "number" ? tour.id : Number.MAX_SAFE_INTEGER)
+}
+
+function compareTourOrder(a: Tour, b: Tour): number {
+  const byCuratedOrder = orderForSort(a) - orderForSort(b)
+  if (byCuratedOrder !== 0) return byCuratedOrder
+  return String(a.id).localeCompare(String(b.id))
+}
+
 function sortTours(list: Tour[], sort: SortMode): Tour[] {
   const sorted = [...list]
   switch (sort) {
     case "gia-tang":
-      return sorted.sort((a, b) => a.priceVnd - b.priceVnd || a.id - b.id)
+      return sorted.sort(
+        (a, b) => priceForSort(a) - priceForSort(b) || compareTourOrder(a, b),
+      )
     case "gia-giam":
-      return sorted.sort((a, b) => b.priceVnd - a.priceVnd || a.id - b.id)
+      return sorted.sort(
+        (a, b) => priceForSort(b) - priceForSort(a) || compareTourOrder(a, b),
+      )
     case "thoi-gian":
       return sorted.sort(
-        (a, b) => a.durationDays - b.durationDays || a.priceVnd - b.priceVnd,
+        (a, b) =>
+          a.durationDays - b.durationDays ||
+          priceForSort(a) - priceForSort(b) ||
+          compareTourOrder(a, b),
       )
     case "goi-y":
     default:
       // Curated order is the authored order of the dataset: north to south.
-      return sorted.sort((a, b) => a.id - b.id)
+      return sorted.sort(compareTourOrder)
   }
 }
 

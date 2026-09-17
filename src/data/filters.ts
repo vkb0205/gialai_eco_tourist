@@ -120,24 +120,30 @@ export const facetGroups: FacetGroup[] = [
       {
         value: "duoi-1",
         label: "Dưới 1 triệu",
-        matches: (tour) => tour.priceVnd < 1_000_000,
+        matches: (tour) =>
+          tour.priceVnd !== null && tour.priceVnd < 1_000_000,
       },
       {
         value: "1-2",
         label: "1 - 2 triệu",
         matches: (tour) =>
-          tour.priceVnd >= 1_000_000 && tour.priceVnd < 2_000_000,
+          tour.priceVnd !== null &&
+          tour.priceVnd >= 1_000_000 &&
+          tour.priceVnd < 2_000_000,
       },
       {
         value: "2-4",
         label: "2 - 4 triệu",
         matches: (tour) =>
-          tour.priceVnd >= 2_000_000 && tour.priceVnd < 4_000_000,
+          tour.priceVnd !== null &&
+          tour.priceVnd >= 2_000_000 &&
+          tour.priceVnd < 4_000_000,
       },
       {
         value: "tren-4",
         label: "Trên 4 triệu",
-        matches: (tour) => tour.priceVnd >= 4_000_000,
+        matches: (tour) =>
+          tour.priceVnd !== null && tour.priceVnd >= 4_000_000,
       },
     ],
   },
@@ -174,17 +180,20 @@ export const facetGroups: FacetGroup[] = [
       {
         value: "rat-nho",
         label: "Tối đa 8 người",
-        matches: (tour) => tour.groupMax <= 8,
+        matches: (tour) => tour.groupMax !== null && tour.groupMax <= 8,
       },
       {
         value: "nho",
         label: "9 - 12 người",
-        matches: (tour) => tour.groupMax > 8 && tour.groupMax <= 12,
+        matches: (tour) =>
+          tour.groupMax !== null &&
+          tour.groupMax > 8 &&
+          tour.groupMax <= 12,
       },
       {
         value: "vua",
         label: "13 người trở lên",
-        matches: (tour) => tour.groupMax > 12,
+        matches: (tour) => tour.groupMax !== null && tour.groupMax > 12,
       },
     ],
   },

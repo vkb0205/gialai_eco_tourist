@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { facetOptionLabel } from "@/data/filters"
 import type { FacetKey } from "@/data/filters"
 import { regionName } from "@/data/regions"
-import { tours } from "@/data/tours"
+import type { Tour } from "@/data/tours"
+import { loadPublishedTours } from "@/data/toursRepository"
 import {
   countActiveFilters,
   filterTours,
@@ -37,9 +38,35 @@ const SKELETON_COUNT = 6
 
 export default function ExplorePage({ query }: { query: string }) {
   const state = useMemo(() => parseFilterState(query), [query])
-  const result = useMemo(() => filterTours(tours, state), [state])
+  const [dataset, setDataset] = useState<Tour[]>([])
+  const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
+  const result = useMemo(() => filterTours(dataset, state), [dataset, state])
   const activeCount = countActiveFilters(state)
   const chips = useMemo(() => buildActiveChips(state), [state])
+
+  useEffect(() => {
+    let active = true
+
+    loadPublishedTours()
+      .then((nextTours) => {
+        if (!active) return
+        setDataset(nextTours)
+        setLoadError(null)
+      })
+      .catch(() => {
+        if (!active) return
+        setDataset([])
+        setLoadError("Không thể tải dữ liệu hành trình lúc này.")
+      })
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [])
 
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [page, setPage] = useState(1)
@@ -110,15 +137,15 @@ export default function ExplorePage({ query }: { query: string }) {
 
   const suggestion = useMemo(
     () =>
-      result.total === 0
-        ? suggestRelaxation(tours, state, (kind, groupKey, value) => {
+      result.total === 0 && !loadError
+        ? suggestRelaxation(dataset, state, (kind, groupKey, value) => {
             if (kind === "region") return regionName(value)
             if (kind === "facet" && groupKey)
               return facetOptionLabel(groupKey, value)
             return `từ khóa "${value}"`
           })
         : null,
-    [result.total, state],
+    [dataset, loadError, result.total, state],
   )
 
   const pageCount = Math.max(1, Math.ceil(result.total / PAGE_SIZE))
@@ -155,7 +182,7 @@ export default function ExplorePage({ query }: { query: string }) {
       <ExploreHeader
         keyword={state.keyword}
         onKeywordChange={onKeywordChange}
-        catalogueSize={tours.length}
+        catalogueSize={dataset.length}
       />
 
       <div className="mx-auto max-w-[1440px] px-6 pt-10 lg:px-12 lg:pt-12">
@@ -193,7 +220,7 @@ export default function ExplorePage({ query }: { query: string }) {
             />
 
             <div ref={resultsRef} className="pt-8">
-              {!ready ? (
+              {!ready || loading ? (
                 <ul
                   aria-hidden="true"
                   className="grid list-none grid-cols-1 gap-6 p-0 md:grid-cols-2 xl:grid-cols-3"
@@ -204,6 +231,13 @@ export default function ExplorePage({ query }: { query: string }) {
                     </li>
                   ))}
                 </ul>
+              ) : loadError ? (
+                <div
+                  role="alert"
+                  className="rounded-2xl border border-[#e0dcd2] bg-white px-6 py-12 text-center text-sm text-[#69746b]"
+                >
+                  {loadError}
+                </div>
               ) : result.total === 0 ? (
                 <EmptyResults
                   suggestion={suggestion}

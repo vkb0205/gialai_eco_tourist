@@ -51,7 +51,7 @@ export default function TourCard({ tour }: { tour: Tour }) {
           <span aria-hidden="true" className="text-[#c8c4b8]">
             /
           </span>
-          <span>{themeLabel(tour.theme)}</span>
+          <span>{tour.theme ? themeLabel(tour.theme) : "Đang cập nhật"}</span>
         </div>
 
         <h3 className="mt-3.5 font-display text-[26px] leading-[1.1] tracking-[-0.04em] text-[#183024]">
@@ -80,7 +80,11 @@ export default function TourCard({ tour }: { tour: Tour }) {
                 className="mt-px h-3 w-3 shrink-0 text-[#69746b]"
                 aria-hidden="true"
               />
-              <span>{difficultyLabel(tour.difficulty)}</span>
+              <span>
+                {tour.difficulty
+                  ? difficultyLabel(tour.difficulty)
+                  : "Đang cập nhật"}
+              </span>
             </dd>
           </div>
           <div>
@@ -90,7 +94,9 @@ export default function TourCard({ tour }: { tour: Tour }) {
                 className="mt-px h-3 w-3 shrink-0 text-[#69746b]"
                 aria-hidden="true"
               />
-              <span>Tối đa {tour.groupMax}</span>
+              <span>
+                {tour.groupMax ? `Tối đa ${tour.groupMax}` : "Liên hệ quy mô"}
+              </span>
             </dd>
           </div>
         </dl>
@@ -101,7 +107,9 @@ export default function TourCard({ tour }: { tour: Tour }) {
               Giá từ / khách
             </span>
             <strong className="mt-1 block text-[15px] font-semibold text-[#b4502f]">
-              {formatVnd(tour.priceVnd)}
+              {tour.priceVnd === null
+                ? "Liên hệ để biết giá"
+                : formatVnd(tour.priceVnd)}
             </strong>
           </p>
           <a

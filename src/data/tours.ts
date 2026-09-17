@@ -64,22 +64,22 @@ export const tourGroups: Record<TourGroup, { label: string; values: string[] }> 
 }
 
 export type Tour = {
-  /** Stable numeric identifier. */
-  id: number
+  /** Stable identifier from Supabase, or the legacy numeric id for samples. */
+  id: number | string
   /** URL-safe identifier, reserved for future detail routes. */
   slug: string
   title: string
   regionSlug: RegionSlug
-  theme: Theme
+  theme: Theme | null
   /** Whole days, used for duration banding and sorting. */
   durationDays: number
   /** Display form, e.g. `3 ngày · 2 đêm`. */
   durationLabel: string
-  /** Starting price per traveller in đồng, as a sortable number. */
-  priceVnd: number
-  difficulty: Difficulty
-  /** Maximum travellers per departure. */
-  groupMax: number
+  /** Starting price per traveller in đồng. Null means contact pricing. */
+  priceVnd: number | null
+  difficulty: Difficulty | null
+  /** Maximum travellers per departure, when the agency confirms capacity. */
+  groupMax: number | null
   /** Months (1-12) the journey runs in. */
   departureMonths: number[]
   image: string
@@ -88,9 +88,11 @@ export type Tour = {
   /** Short phrases, also searched by the keyword filter. */
   highlights: string[]
   /** How the journey returns value to the host community. */
-  impact: string
+  impact: string | null
   tourGroup: TourGroup
   category: string
+  /** Curated database ordering; legacy samples use their numeric id. */
+  sortOrder?: number
 }
 
 const IMG_LAKE = img0
