@@ -18,9 +18,9 @@ into the Supabase schema described in [spec.md](./spec.md), then make the existi
 
 ## 0. Confirm the target
 
-- [ ] Create a Supabase account/organization for the agency.
-- [ ] Create one project for the first release.
-- [ ] Record the project URL and publishable/anonymous key.
+- [x] Create a Supabase account/organization for the agency.
+- [x] Create one project for the first release.
+- [x] Record the project URL and publishable/anonymous key.
 - [ ] Choose the project region closest to the agency’s primary visitors.
 - [ ] Decide who is allowed to review and publish content in the Supabase Dashboard.
 - [ ] Confirm the first release contains tours, regions, media, and future blog posts only.
@@ -96,7 +96,7 @@ The current archive contains approximately 26 `.doc` files, one `.docx`, three P
 - [ ] Create a private `source-originals` bucket for Word/PDF originals and quotations.
 - [ ] Add Storage policies matching the public/private rules.
 - [ ] Confirm a browser using the publishable/anonymous key cannot read source originals.
-- [ ] Keep the service-role key out of the frontend and repository.
+- [x] Keep the service-role key out of the frontend and repository.
 
 ## 5. Seed lookup and content records
 
@@ -170,29 +170,30 @@ For the pilot:
 
 ## 9. Connect the existing frontend
 
-- [ ] Add `@supabase/supabase-js` to the web app.
-- [ ] Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to local development.
-- [ ] Create one Supabase client module.
+- [x] Add `@supabase/supabase-js` to the web app.
+- [x] Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` to local development.
+- [x] Create one Supabase client module.
 - [ ] Generate or write TypeScript types for the database tables.
-- [ ] Create one tour repository/loader for published tours and related cover media.
-- [ ] Replace the static `src/data/tours.ts` import in Explore with the loader.
+- [x] Create one tour repository/loader for published tours.
+- [ ] Load approved cover media from Storage once public media is available.
+- [x] Replace the static `src/data/tours.ts` import in Explore with the loader.
 - [ ] Replace the separate homepage experience list with the same published tour data.
-- [ ] Preserve the existing browser-side filtering and sorting.
-- [ ] Derive `durationLabel` from days and nights.
-- [ ] Map a null card price to “Liên hệ để biết giá”.
-- [ ] Prevent null prices from entering numeric price filters.
-- [ ] Hide group capacity when `group_max` is null.
+- [x] Preserve the existing browser-side filtering and sorting.
+- [x] Derive `durationLabel` from days and nights.
+- [x] Map a null card price to “Liên hệ để biết giá”.
+- [x] Prevent null prices from entering numeric price filters.
+- [x] Hide group capacity when `group_max` is null.
 - [ ] Do not display a quoted price range as a capacity.
-- [ ] Add loading, unavailable, empty, and populated states for remote content.
-- [ ] Keep the current hash routing and GitHub Pages deployment.
+- [x] Add loading, unavailable, empty, and populated states for remote content.
+- [x] Keep the current hash routing and GitHub Pages deployment.
 - [ ] Decide whether to add a tour-detail route so imported itinerary data is visible to visitors.
 - [ ] Add the future blog route only after `blog_posts` has real content.
 
 ## 10. Verify before launch
 
-- [ ] Query the public API with the anonymous key and confirm only published records appear.
-- [ ] Confirm draft and archived tours are invisible.
-- [ ] Confirm unpublished itinerary days and price options are invisible.
+- [x] Query the public API with the publishable key and confirm only published records appear.
+- [x] Confirm draft and archived tours are invisible.
+- [x] Confirm unpublished itinerary days and price options are invisible.
 - [ ] Confirm future blog posts are invisible until their publication time.
 - [ ] Confirm private source documents and original filenames are inaccessible.
 - [ ] Confirm a blank price displays contact pricing.
@@ -202,8 +203,8 @@ For the pilot:
 - [ ] Confirm region, duration, season, group, theme, difficulty, keyword, and price filters behave correctly with null values.
 - [ ] Confirm broken or missing media leaves the tour text readable.
 - [ ] Confirm Vietnamese diacritic-insensitive search still works.
-- [ ] Run `npm run lint` and `npm run build`.
-- [ ] Test the production build with the real Supabase environment variables.
+- [x] Run `npm run lint` and `npm run build`.
+- [x] Test the production build with the real Supabase environment variables.
 - [ ] Test the deployed GitHub Pages site on mobile and desktop.
 - [ ] Review published content with the agency before switching all approved rows to `published`.
 
