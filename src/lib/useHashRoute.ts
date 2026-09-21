@@ -9,7 +9,7 @@ import { useCallback, useSyncExternalStore } from "react"
  * dependency, so this subscribes to `hashchange` through `useSyncExternalStore`.
  */
 
-export type RoutePath = "/" | "/explore" | "/services" | "/car-rental"
+export type RoutePath = "/" | "/explore" | "/services" | "/car-rental" | "/tour"
 
 export type Route = {
   /** Normalised path, always one of the known routes. */
@@ -20,7 +20,13 @@ export type Route = {
   anchor: string | null
 }
 
-const KNOWN_PATHS: readonly RoutePath[] = ["/", "/explore", "/services", "/car-rental"]
+const KNOWN_PATHS: readonly RoutePath[] = [
+  "/",
+  "/explore",
+  "/services",
+  "/car-rental",
+  "/tour",
+]
 
 function subscribe(onChange: () => void): () => void {
   window.addEventListener("hashchange", onChange)
@@ -39,7 +45,7 @@ function getServerSnapshot(): string {
  * Parse a raw `window.location.hash` into a route.
  *
  * Recognises three shapes:
- * - `#/` and `#/explore`, optionally with `?a=b`, as routes
+ * - `#/`, `#/explore`, and `#/tour`, optionally with `?a=b`, as routes
  * - `#experiences` and other bare fragments, as landing-page anchors
  * - anything unknown, which falls back to the landing page
  */

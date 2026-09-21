@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import type { ChangeEvent, FormEvent } from "react"
 import {
   ArrowDown,
@@ -13,64 +13,10 @@ import img0 from "@/imports/image.jpeg"
 import img1 from "@/imports/image-1.png"
 import img2 from "@/imports/image-2.png"
 import { goToEnquiry } from "@/components/layout/Navigation"
+import { loadPublishedTours } from "@/data/toursRepository"
+import type { Tour } from "@/data/tours"
+import { formatVnd } from "@/lib/text"
 import { navigateTo } from "@/lib/useHashRoute"
-
-type Experience = {
-  id: number
-  category: string
-  title: string
-  description: string
-  duration: string
-  price: string
-  image: string
-  featured?: boolean
-}
-
-const experiences: Experience[] = [
-  {
-    id: 1,
-    category: "Tour trong nước",
-    title: "Qua tầng rừng Kon Ka Kinh",
-    description:
-      "Băng qua rừng nguyên sinh, nghe tiếng suối và ngủ giữa một trong những hệ sinh thái giàu nhất Tây Nguyên.",
-    duration: "3 ngày · 2 đêm",
-    price: "2.400.000đ",
-    image: img1,
-    featured: true,
-  },
-  {
-    id: 2,
-    category: "Tour trong nước",
-    title: "Một đêm ở làng Bahnar",
-    description:
-      "Bữa cơm bên bếp lửa, tiếng cồng chiêng và một nhịp sống không cần vội vàng.",
-    duration: "2 ngày · 1 đêm",
-    price: "1.850.000đ",
-    image:
-      "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    id: 3,
-    category: "Tour ngoài nước",
-    title: "Bình minh trên Biển Hồ",
-    description:
-      "Đạp xe qua những đồi chè, ngắm mặt hồ đổi màu và thưởng thức cà phê rang tại chỗ.",
-    duration: "1 ngày",
-    price: "980.000đ",
-    image: img0,
-  },
-  {
-    id: 4,
-    category: "Dịch vụ khác",
-    title: "Dòng thác Kon Chư Răng",
-    description:
-      "Cung đường dành cho người thích thử thách: vượt suối, đi sâu vào rừng và chạm đến thác K50.",
-    duration: "4 ngày · 3 đêm",
-    price: "3.600.000đ",
-    image:
-      "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=1000&q=85",
-  },
-]
 
 const destinations = [
   {
@@ -309,14 +255,21 @@ function Story() {
           <h2 className="max-w-full text-balance font-display text-[clamp(1.5rem,4vw,2.4rem)] font-medium leading-[1.05] tracking-[-0.04em] text-[#183024] sm:max-w-2xl">
             Kết nối điểm đến, kiến tạo trải nghiệm
             <br />
-            <em className="whitespace-nowrap text-[#087f3c]">Đồng hành cùng mỗi chuyến đi</em>
+            <em className="whitespace-nowrap text-[#087f3c]">
+              Đồng hành cùng mỗi chuyến đi
+            </em>
           </h2>
           <div className="mt-8 max-w-lg space-y-5 text-[15px] leading-7 text-[#55605a]">
             <p>
-              Được thành lập năm 2012, Gia Lai Eco-Tourist khởi nguồn từ niềm đam mê du lịch và thế mạnh tại Gia Lai - Tây Nguyên, từng bước mở rộng hành trình trong nước và quốc tế.
+              Được thành lập năm 2012, Gia Lai Eco-Tourist khởi nguồn từ niềm
+              đam mê du lịch và thế mạnh tại Gia Lai - Tây Nguyên, từng bước mở
+              rộng hành trình trong nước và quốc tế.
             </p>
             <p>
-              Với nền tảng uy tín, chất lượng và đổi mới, chúng tôi mang đến đa dạng dịch vụ từ tour, MICE đến visa, vé máy bay và xe du lịch, giúp khách hàng an tâm lên đường và tận hưởng trọn vẹn mỗi chuyến đi.
+              Với nền tảng uy tín, chất lượng và đổi mới, chúng tôi mang đến đa
+              dạng dịch vụ từ tour, MICE đến visa, vé máy bay và xe du lịch,
+              giúp khách hàng an tâm lên đường và tận hưởng trọn vẹn mỗi chuyến
+              đi.
             </p>
           </div>
           {/* <div className="mt-9 flex flex-wrap gap-3">
@@ -347,34 +300,61 @@ function Story() {
   )
 }
 
-function ExperienceCard({ experience }: { experience: Experience }) {
+function tourCategory(tour: Tour): string {
+  if (tour.tourGroup === "international") return "Tour ngoài nước"
+  if (tour.tourGroup === "special") return "Dịch vụ khác"
+  return "Tour trong nước"
+}
+
+function ExperienceCard({ tour }: { tour: Tour }) {
+  const detailHref = `#/tour?slug=${encodeURIComponent(tour.slug)}`
+
   return (
     <article
-      className={`group relative flex flex-col overflow-hidden rounded-[2px] bg-white ${
-        experience.featured ? "md:col-span-2 lg:col-span-1" : ""
-      }`}
+      role="link"
+      tabIndex={0}
+      onClick={(event) => {
+        if ((event.target as HTMLElement).closest("a, button")) return
+        navigateTo("/tour", `slug=${encodeURIComponent(tour.slug)}`)
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault()
+          navigateTo("/tour", `slug=${encodeURIComponent(tour.slug)}`)
+        }
+      }}
+      className="group relative flex cursor-pointer flex-col overflow-hidden rounded-[2px] bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#183024]"
     >
       <div className="relative overflow-hidden">
         <img
-          src={experience.image}
-          alt={experience.title}
+          src={tour.image}
+          alt={tour.title}
           loading="lazy"
           className="aspect-[1.3/1] w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#10261a]/75 via-transparent to-transparent opacity-80" />
         <span className="absolute bottom-5 left-5 text-[10px] font-bold uppercase tracking-[0.16em] text-white">
-          {experience.duration}
+          {tour.durationLabel}
         </span>
       </div>
       <div className="flex flex-1 flex-col border border-t-0 border-[#e5e1d8] p-6">
         <span className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#69746b]">
-          {experience.category}
+          {tourCategory(tour)}
         </span>
         <h3 className="mt-2 font-display text-2xl leading-tight tracking-[-0.04em] text-[#183024]">
-          {experience.title}
+          <a
+            href={detailHref}
+            onClick={(event) => {
+              event.preventDefault()
+              navigateTo("/tour", `slug=${encodeURIComponent(tour.slug)}`)
+            }}
+            className="transition-colors hover:text-[#b4502f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
+          >
+            {tour.title}
+          </a>
         </h3>
         <p className="mt-3 flex-1 text-sm leading-6 text-[#69746b]">
-          {experience.description}
+          {tour.blurb}
         </p>
         <div className="mt-7 flex items-end justify-between border-t border-[#e5e1d8] pt-4">
           <div>
@@ -382,7 +362,9 @@ function ExperienceCard({ experience }: { experience: Experience }) {
               Giá từ
             </span>
             <strong className="mt-1 block text-sm text-[#b4502f]">
-              {experience.price}
+              {tour.priceVnd === null
+                ? "Liên hệ để biết giá"
+                : formatVnd(tour.priceVnd)}
             </strong>
           </div>
           <a
@@ -396,7 +378,6 @@ function ExperienceCard({ experience }: { experience: Experience }) {
               aria-hidden="true"
             />
           </a>
-
         </div>
       </div>
     </article>
@@ -411,14 +392,42 @@ function Experiences() {
     "Dịch vụ khác",
   ]
   const [activeFilter, setActiveFilter] = useState("Tất cả")
-  const visibleExperiences =
+  const [tours, setTours] = useState<Tour[]>([])
+  const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
+
+  useEffect(() => {
+    let active = true
+    loadPublishedTours()
+      .then((nextTours) => {
+        if (!active) return
+        setTours(nextTours)
+        setLoadError(false)
+      })
+      .catch(() => {
+        if (active) setLoadError(true)
+      })
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [])
+
+  const visibleTours =
     activeFilter === "Tất cả"
-      ? experiences
-      : experiences.filter((experience) => experience.category === activeFilter)
+      ? tours
+      : tours.filter((tour) => tourCategory(tour) === activeFilter)
   const exploreQuery =
     activeFilter === "Tour ngoài nước"
-      ? new URLSearchParams({ tim: "nước ngoài" }).toString()
-      : ""
+      ? "tourGroup=international"
+      : activeFilter === "Dịch vụ khác"
+        ? "tourGroup=special"
+        : activeFilter === "Tour trong nước"
+          ? "tourGroup=domestic"
+          : ""
   const allToursLabel =
     activeFilter === "Tất cả"
       ? "Xem toàn bộ hành trình"
@@ -467,11 +476,22 @@ function Experiences() {
         </div>
 
         <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          {visibleExperiences.map((experience) => (
-            <ExperienceCard key={experience.id} experience={experience} />
-          ))}
+          {loading ? (
+            <p className="col-span-full py-16 text-center text-sm text-[#69746b]">
+              Đang tải các hành trình đã công bố…
+            </p>
+          ) : loadError ? (
+            <p className="col-span-full py-16 text-center text-sm text-[#69746b]">
+              Chưa thể tải hành trình lúc này. Bạn có thể xem toàn bộ danh mục ở
+              trang Explore.
+            </p>
+          ) : (
+            visibleTours
+              .slice(0, 4)
+              .map((tour) => <ExperienceCard key={tour.id} tour={tour} />)
+          )}
         </div>
-        {visibleExperiences.length === 0 && (
+        {!loading && !loadError && visibleTours.length === 0 && (
           <p className="py-16 text-center text-sm text-[#69746b]">
             Đang cập nhật hành trình mới.
           </p>

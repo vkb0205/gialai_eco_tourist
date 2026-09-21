@@ -10,20 +10,32 @@ import { difficultyLabel, themeLabel } from "@/data/filters"
 import { regionName } from "@/data/regions"
 import type { Tour } from "@/data/tours"
 import { formatVnd } from "@/lib/text"
-import { goToEnquiry } from "@/components/layout/Navigation"
+import { navigateTo } from "@/lib/useHashRoute"
+
+export function tourDetailsHref(slug: string): string {
+  return `#/tour?slug=${encodeURIComponent(slug)}`
+}
 
 /**
  * Catalogue card.
  *
  * Reuses the landing page's card treatment: 2px radius, hairline border, a
- * locked image aspect ratio so the grid cannot shift as images arrive, and one
- * booking action carrying the site's existing label.
+ * locked image aspect ratio so the grid cannot shift as images arrive. Cards
+ * lead to the source-backed detail route; booking remains available there.
  */
 export default function TourCard({ tour }: { tour: Tour }) {
   const [imageFailed, setImageFailed] = useState(false)
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-[2px] border border-[#e0dcd2] bg-white transition-all duration-300 motion-safe:hover:-translate-y-1 motion-safe:hover:shadow-[0_24px_60px_rgba(24,48,36,0.14)]">
+    <a
+      href={tourDetailsHref(tour.slug)}
+      onClick={(event) => {
+        event.preventDefault()
+        navigateTo("/tour", `slug=${encodeURIComponent(tour.slug)}`)
+      }}
+      aria-label={`Xem chi tiết ${tour.title}`}
+      className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-[2px] border border-[#e0dcd2] bg-white transition-all duration-300 motion-safe:hover:-translate-y-1 motion-safe:hover:shadow-[0_24px_60px_rgba(24,48,36,0.14)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#183024]"
+    >
       <div className="relative aspect-[1.5/1] w-full shrink-0 overflow-hidden bg-[#e4e0d6]">
         {imageFailed ? (
           <div className="flex h-full w-full items-center justify-center bg-[#e4e0d6] text-[#69746b]">
@@ -112,20 +124,15 @@ export default function TourCard({ tour }: { tour: Tour }) {
                 : formatVnd(tour.priceVnd)}
             </strong>
           </p>
-          <a
-            href="#contact"
-            onClick={goToEnquiry}
-            aria-label={`Đặt hành trình ${tour.title}`}
-            className="group/cta inline-flex shrink-0 items-center gap-2 rounded-full bg-[#183024] px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.13em] text-white transition-colors hover:bg-[#b4502f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
-          >
-            Đặt hành trình
+          <span className="group/cta inline-flex shrink-0 items-center gap-2 rounded-full bg-[#183024] px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.13em] text-white transition-colors group-hover:bg-[#b4502f]">
+            Xem chi tiết
             <ArrowUpRight
               className="h-3.5 w-3.5 transition-transform motion-safe:group-hover/cta:-translate-y-0.5 motion-safe:group-hover/cta:translate-x-0.5"
               aria-hidden="true"
             />
-          </a>
+          </span>
         </div>
       </div>
-    </article>
+    </a>
   )
 }

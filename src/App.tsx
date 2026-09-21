@@ -5,6 +5,7 @@ import HomePage from "@/pages/HomePage"
 import ExplorePage from "@/pages/ExplorePage"
 import ServicesPage from "@/pages/ServicesPage"
 import CarRentalPage from "@/pages/CarRentalPage"
+import TourDetailsPage from "@/pages/TourDetailsPage"
 import { useHashRoute } from "@/lib/useHashRoute"
 
 /**
@@ -35,6 +36,8 @@ export default function App() {
       <main id="main">
         {route.path === "/explore" ? (
           <ExplorePage query={route.query} />
+        ) : route.path === "/tour" ? (
+          <TourDetailsPage query={route.query} />
         ) : route.path === "/car-rental" ? (
           <CarRentalPage query={route.query} />
         ) : route.path === "/services" ? (
