@@ -15,6 +15,10 @@ import {
 import img0 from "@/imports/image.jpeg"
 import img1 from "@/imports/image-1.png"
 import img2 from "@/imports/image-2.png"
+import {
+  submissionErrorMessage,
+  submitServiceSubmission,
+} from "@/lib/submitServiceSubmission"
 
 type ServiceKey = "car" | "visa" | "flight"
 
@@ -86,18 +90,71 @@ function SubmitButton({ children }: { children: ReactNode }) {
 
 function FormShell({ activeService, children }: { activeService: ServiceOption; children: ReactNode }) {
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   useEffect(() => {
     setSubmitted(false)
+    setSubmitting(false)
+    setSubmitError(null)
   }, [activeService.key])
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setSubmitted(true)
+    if (submitting) return
+
+    const formData = new FormData(event.currentTarget)
+    const values: Record<string, string> = {}
+    for (const [key, value] of formData.entries()) {
+      if (typeof value === "string") values[key] = value.trim()
+    }
+
+    // A hidden honeypot catches the cheapest automated submissions without
+    // making the public form depend on a third-party captcha.
+    if (values.website) return
+
+    const contactFields = new Set([
+      "full_name",
+      "phone",
+      "email",
+      "contact_time",
+      "privacy_consent",
+      "website",
+    ])
+    const details = Object.fromEntries(
+      Object.entries(values).filter(([key]) => !contactFields.has(key)),
+    )
+
+    setSubmitting(true)
+    setSubmitError(null)
+    try {
+      await submitServiceSubmission({
+        serviceKey: activeService.key,
+        contactName: values.full_name ?? "",
+        phone: values.phone ?? "",
+        email: values.email,
+        preferredContactTime: values.contact_time,
+        details,
+        privacyConsent: values.privacy_consent === "true",
+      })
+      setSubmitted(true)
+    } catch (error) {
+      setSubmitError(submissionErrorMessage(error))
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="overflow-hidden rounded-[24px] border border-[#d9d4c9] bg-white shadow-[0_18px_46px_rgba(24,48,36,0.08)]">
+    <form
+      onSubmit={handleSubmit}
+      aria-busy={submitting}
+      className="overflow-hidden rounded-[24px] border border-[#d9d4c9] bg-white shadow-[0_18px_46px_rgba(24,48,36,0.08)]"
+    >
+      <div aria-hidden="true" className="absolute left-[-10000px] h-px w-px overflow-hidden">
+        <label htmlFor="website">Website</label>
+        <input id="website" name="website" tabIndex={-1} autoComplete="off" />
+      </div>
       <div className="grid lg:grid-cols-[0.82fr_1.18fr]">
         <div className="relative min-h-[280px] bg-[#183024] text-white lg:min-h-full">
           <img src={activeService.image} alt={activeService.title} className="absolute inset-0 h-full w-full object-cover" />
@@ -141,7 +198,14 @@ function FormShell({ activeService, children }: { activeService: ServiceOption; 
               </button>
             </div>
           ) : (
-            <div className="grid gap-6">{children}</div>
+            <>
+              {submitError ? (
+                <p role="alert" className="mb-5 rounded-2xl bg-[#fff4ef] px-4 py-3 text-sm leading-6 text-[#b4502f]">
+                  {submitError}
+                </p>
+              ) : null}
+              <div className="grid gap-6">{children}</div>
+            </>
           )}
         </div>
       </div>
@@ -161,13 +225,14 @@ function CarForm() {
         ))}
       </div>
       <div className="grid gap-5 md:grid-cols-2">
-        <Field id="car-from" label="Điểm đón"><input id="car-from" required className={inputClass} placeholder="Sân bay Pleiku" /></Field>
-        <Field id="car-to" label="Điểm đến"><input id="car-to" required className={inputClass} placeholder="Măng Đen" /></Field>
-        <Field id="car-date" label="Ngày đi"><input id="car-date" required type="date" className={inputClass} /></Field>
-        <Field id="car-guests" label="Số khách"><input id="car-guests" required min="1" type="number" className={inputClass} placeholder="4" /></Field>
+        <Field id="car-from" label="Điểm đón"><input id="car-from" name="from" required className={inputClass} placeholder="Sân bay Pleiku" /></Field>
+        <Field id="car-to" label="Điểm đến"><input id="car-to" name="to" required className={inputClass} placeholder="Măng Đen" /></Field>
+        <Field id="car-date" label="Ngày đi"><input id="car-date" name="date" required type="date" className={inputClass} /></Field>
+        <Field id="car-guests" label="Số khách"><input id="car-guests" name="guests" required min="1" type="number" className={inputClass} placeholder="4" /></Field>
       </div>
-      <Field id="car-note" label="Ghi chú hành trình"><textarea id="car-note" className={textareaClass} placeholder="Thêm số điểm dừng, hành lý hoặc yêu cầu riêng" /></Field>
+      <Field id="car-note" label="Ghi chú hành trình"><textarea id="car-note" name="note" className={textareaClass} placeholder="Thêm số điểm dừng, hành lý hoặc yêu cầu riêng" /></Field>
       <ContactFields prefix="car" />
+      <ConsentField />
       <SubmitButton>Gửi yêu cầu thuê xe</SubmitButton>
     </>
   )
@@ -177,16 +242,17 @@ function VisaForm() {
   return (
     <>
       <div className="grid gap-5 md:grid-cols-2">
-        <Field id="visa-country" label="Quốc gia hoặc vùng lãnh thổ"><input id="visa-country" required className={inputClass} placeholder="Nhật Bản" /></Field>
-        <Field id="visa-date" label="Ngày dự kiến đi"><input id="visa-date" type="date" className={inputClass} /></Field>
-        <Field id="visa-purpose" label="Mục đích chuyến đi"><select id="visa-purpose" required className={inputClass} defaultValue=""><option value="" disabled>Chọn mục đích</option><option>Du lịch</option><option>Công tác</option><option>Thăm thân</option><option>Du học</option></select></Field>
-        <Field id="visa-people" label="Số người làm hồ sơ"><input id="visa-people" required min="1" type="number" className={inputClass} placeholder="2" /></Field>
+        <Field id="visa-country" label="Quốc gia hoặc vùng lãnh thổ"><input id="visa-country" name="country" required className={inputClass} placeholder="Nhật Bản" /></Field>
+        <Field id="visa-date" label="Ngày dự kiến đi"><input id="visa-date" name="date" type="date" className={inputClass} /></Field>
+        <Field id="visa-purpose" label="Mục đích chuyến đi"><select id="visa-purpose" name="purpose" required className={inputClass} defaultValue=""><option value="" disabled>Chọn mục đích</option><option>Du lịch</option><option>Công tác</option><option>Thăm thân</option><option>Du học</option></select></Field>
+        <Field id="visa-people" label="Số người làm hồ sơ"><input id="visa-people" name="people" required min="1" type="number" className={inputClass} placeholder="2" /></Field>
       </div>
-      <Field id="visa-note" label="Tình trạng hồ sơ hiện tại"><textarea id="visa-note" className={textareaClass} placeholder="Bạn đã có hộ chiếu, lịch bay hoặc thư mời chưa" /></Field>
+      <Field id="visa-note" label="Tình trạng hồ sơ hiện tại"><textarea id="visa-note" name="note" className={textareaClass} placeholder="Bạn đã có hộ chiếu, lịch bay hoặc thư mời chưa" /></Field>
       <ContactFields prefix="visa" />
       <div className="rounded-2xl bg-[#f6f3ec] p-4 text-sm leading-6 text-[#526257]">
         Phí và thời gian xử lý phụ thuộc vào từng lãnh sự quán. Tư vấn viên sẽ kiểm tra trước khi báo giá.
       </div>
+      <ConsentField />
       <SubmitButton>Gửi yêu cầu visa</SubmitButton>
     </>
   )
@@ -204,14 +270,15 @@ function FlightForm() {
         ))}
       </div>
       <div className="grid gap-5 md:grid-cols-2">
-        <Field id="flight-from" label="Đi từ"><input id="flight-from" required className={inputClass} placeholder="TP. Hồ Chí Minh" /></Field>
-        <Field id="flight-to" label="Đi đến"><input id="flight-to" required className={inputClass} placeholder="Pleiku" /></Field>
-        <Field id="flight-date" label="Ngày đi"><input id="flight-date" required type="date" className={inputClass} /></Field>
-        <Field id="flight-return" label="Ngày về"><input id="flight-return" type="date" className={inputClass} /></Field>
-        <Field id="flight-passengers" label="Số hành khách"><input id="flight-passengers" required min="1" type="number" className={inputClass} placeholder="3" /></Field>
-        <Field id="flight-class" label="Hạng ghế"><select id="flight-class" required className={inputClass} defaultValue=""><option value="" disabled>Chọn hạng ghế</option><option>Phổ thông</option><option>Phổ thông đặc biệt</option><option>Thương gia</option></select></Field>
+        <Field id="flight-from" label="Đi từ"><input id="flight-from" name="from" required className={inputClass} placeholder="TP. Hồ Chí Minh" /></Field>
+        <Field id="flight-to" label="Đi đến"><input id="flight-to" name="to" required className={inputClass} placeholder="Pleiku" /></Field>
+        <Field id="flight-date" label="Ngày đi"><input id="flight-date" name="date" required type="date" className={inputClass} /></Field>
+        <Field id="flight-return" label="Ngày về"><input id="flight-return" name="return_date" type="date" className={inputClass} /></Field>
+        <Field id="flight-passengers" label="Số hành khách"><input id="flight-passengers" name="passengers" required min="1" type="number" className={inputClass} placeholder="3" /></Field>
+        <Field id="flight-class" label="Hạng ghế"><select id="flight-class" name="flight_class" required className={inputClass} defaultValue=""><option value="" disabled>Chọn hạng ghế</option><option>Phổ thông</option><option>Phổ thông đặc biệt</option><option>Thương gia</option></select></Field>
       </div>
       <ContactFields prefix="flight" />
+      <ConsentField />
       <SubmitButton>Gửi yêu cầu vé máy bay</SubmitButton>
     </>
   )
@@ -220,11 +287,28 @@ function FlightForm() {
 function ContactFields({ prefix }: { prefix: string }) {
   return (
     <div className="grid gap-5 border-t border-[#e0dcd2] pt-6 md:grid-cols-2">
-      <Field id={`${prefix}-name`} label="Họ và tên"><input id={`${prefix}-name`} required className={inputClass} placeholder="Nguyễn Minh Anh" /></Field>
-      <Field id={`${prefix}-phone`} label="Số điện thoại"><input id={`${prefix}-phone`} required type="tel" className={inputClass} placeholder="090 000 0000" /></Field>
-      <Field id={`${prefix}-email`} label="Email"><input id={`${prefix}-email`} type="email" className={inputClass} placeholder="email@cuaban.com" /></Field>
-      <Field id={`${prefix}-contact-time`} label="Thời gian liên hệ"><input id={`${prefix}-contact-time`} className={inputClass} placeholder="Sau 18:00" /></Field>
+      <Field id={`${prefix}-name`} label="Họ và tên"><input id={`${prefix}-name`} name="full_name" required className={inputClass} placeholder="Nguyễn Minh Anh" /></Field>
+      <Field id={`${prefix}-phone`} label="Số điện thoại"><input id={`${prefix}-phone`} name="phone" required type="tel" className={inputClass} placeholder="090 000 0000" /></Field>
+      <Field id={`${prefix}-email`} label="Email"><input id={`${prefix}-email`} name="email" type="email" className={inputClass} placeholder="email@cuaban.com" /></Field>
+      <Field id={`${prefix}-contact-time`} label="Thời gian liên hệ"><input id={`${prefix}-contact-time`} name="contact_time" className={inputClass} placeholder="Sau 18:00" /></Field>
     </div>
+  )
+}
+
+function ConsentField() {
+  return (
+    <label className="flex items-start gap-3 text-xs leading-5 text-[#69746b]">
+      <input
+        required
+        name="privacy_consent"
+        value="true"
+        type="checkbox"
+        className="mt-1 h-4 w-4 shrink-0 accent-[#d56742]"
+      />
+      <span>
+        Tôi đồng ý để Gia Lai Eco Tourist sử dụng thông tin này cho việc tư vấn và liên hệ về yêu cầu của tôi.
+      </span>
+    </label>
   )
 }
 

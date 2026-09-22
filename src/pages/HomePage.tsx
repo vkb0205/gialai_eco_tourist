@@ -16,6 +16,10 @@ import { goToEnquiry } from "@/components/layout/Navigation"
 import { loadPublishedTours } from "@/data/toursRepository"
 import type { Tour } from "@/data/tours"
 import { formatVnd } from "@/lib/text"
+import {
+  submissionErrorMessage,
+  submitServiceSubmission,
+} from "@/lib/submitServiceSubmission"
 import { navigateTo } from "@/lib/useHashRoute"
 
 const destinations = [
@@ -732,6 +736,8 @@ function Contact() {
     note: "",
   })
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -742,9 +748,35 @@ function Contact() {
     }))
   }
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setSubmitted(true)
+    if (submitting) return
+
+    const formData = new FormData(event.currentTarget)
+    const honeypot = formData.get("website")
+    if (typeof honeypot === "string" && honeypot.trim()) return
+
+    setSubmitting(true)
+    setSubmitError(null)
+    try {
+      await submitServiceSubmission({
+        serviceKey: "general",
+        contactName: form.name,
+        phone: form.phone,
+        email: form.email,
+        details: {
+          date: form.date,
+          group: form.group,
+          note: form.note,
+        },
+        privacyConsent: formData.get("privacy_consent") === "true",
+      })
+      setSubmitted(true)
+    } catch (error) {
+      setSubmitError(submissionErrorMessage(error))
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -817,7 +849,11 @@ function Contact() {
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <form onSubmit={handleSubmit} aria-busy={submitting} className="relative flex flex-col gap-5">
+              <div aria-hidden="true" className="absolute left-[-10000px] h-px w-px overflow-hidden">
+                <label htmlFor="contact-website">Website</label>
+                <input id="contact-website" name="website" tabIndex={-1} autoComplete="off" />
+              </div>
               <div className="mb-2">
                 <h3 className="font-display text-3xl tracking-[-0.05em] text-[#183024]">
                   Bắt đầu từ đây.
@@ -826,6 +862,11 @@ function Contact() {
                   Điền vài thông tin, phần còn lại để chúng tôi lo.
                 </p>
               </div>
+              {submitError ? (
+                <p role="alert" className="rounded-2xl bg-[#fff4ef] px-4 py-3 text-sm leading-6 text-[#b4502f]">
+                  {submitError}
+                </p>
+              ) : null}
               <div className="grid gap-5 sm:grid-cols-2">
                 <label className="block">
                   <span className="form-label">Họ và tên *</span>
@@ -903,11 +944,24 @@ function Contact() {
                   placeholder="Trekking, văn hóa, nghỉ dưỡng... hoặc chỉ viết 'tôi muốn đi'"
                 />
               </label>
+              <label className="flex items-start gap-3 text-xs leading-5 text-[#69746b]">
+                <input
+                  required
+                  name="privacy_consent"
+                  value="true"
+                  type="checkbox"
+                  className="mt-1 h-4 w-4 shrink-0 accent-[#d56742]"
+                />
+                <span>
+                  Tôi đồng ý để Gia Lai Eco Tourist sử dụng thông tin này cho việc tư vấn và liên hệ về yêu cầu của tôi.
+                </span>
+              </label>
               <button
                 type="submit"
+                disabled={submitting}
                 className="group mt-1 inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#d56742] px-6 py-4 text-[10px] font-bold uppercase tracking-[0.16em] text-white transition-all hover:bg-[#e27b57] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
               >
-                Gửi yêu cầu{" "}
+                {submitting ? "Đang gửi..." : "Gửi yêu cầu"}{" "}
                 <ArrowRight
                   className="h-4 w-4 transition-transform group-hover:translate-x-1"
                   aria-hidden="true"
