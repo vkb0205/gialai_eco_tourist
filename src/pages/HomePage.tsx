@@ -66,30 +66,40 @@ function Hero() {
   return (
     <section
       id="home"
-      className="relative isolate overflow-hidden bg-[#183024] text-white"
+      className="relative isolate min-h-[760px] overflow-hidden bg-[#183024] text-white lg:min-h-[860px]"
     >
-      <div className="grid 2xl:min-h-[860px] 2xl:grid-cols-[minmax(0,0.84fr)_minmax(0,1.16fr)]">
-        {/*
-         * Keep the copy and the photographic subject in separate layout
-         * regions. The image is never a backdrop for this panel, so its
-         * tower/road crop cannot move underneath the headline at a new size.
-         */}
-        <div className="relative z-10 flex min-w-0 min-h-[640px] flex-col justify-between overflow-hidden bg-[#183024] px-6 pb-10 pt-32 sm:px-10 2xl:min-h-[860px] 2xl:px-12 2xl:pb-20">
-          <div className="mx-auto w-full max-w-[40rem] 2xl:mx-0">
-            <h1 className="max-w-full break-words font-display font-medium tracking-[-0.065em]">
-              <span className="block text-[clamp(2.7rem,6vw,5rem)] leading-[1.05]">
-                Vi vu muôn phương
-              </span>
-              <span className="block text-[clamp(2.65rem,6vw,5.8rem)] leading-[1.05] text-[#fef2a0]">
-                Chạm ngàn cung đường
-              </span>
-            </h1>
-            <p className="mt-10 max-w-[34rem] text-base leading-7 text-white/75 2xl:mt-14 2xl:text-lg">
+      {/* Keep the photograph full-bleed so the copy remains over the image. */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <img
+          src={img0}
+          alt="Phong cảnh xanh của Gia Lai"
+          className="absolute inset-0 h-full w-full object-cover object-[30%_50%] md:object-[34%_50%] lg:object-[40%_50%] xl:object-center"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0c2a1d]/75 via-[#0f2c20]/25 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#081a13]/55 via-transparent to-[#081a13]/20" />
+      </div>
+
+      <div className="pointer-events-none absolute inset-0 z-10 bg-noise opacity-[0.035] mix-blend-overlay" />
+
+      <div className="relative z-20 mx-auto flex min-h-[760px] max-w-[1440px] flex-col justify-between px-6 pb-14 pt-32 lg:min-h-[860px] lg:px-12 lg:pb-20">
+        <div className="max-w-[56rem]">
+          <h1 className="max-w-[min(100%,54rem)] break-words font-display font-medium tracking-[-0.065em]">
+            <span className="block text-[clamp(2.7rem,7vw,5rem)] leading-[1.05]">
+              Vi vu muôn phương
+            </span>
+            <span className="block text-[clamp(2.65rem,7vw,6rem)] leading-[1.05] text-[#fef2a0]">
+              Chạm ngàn cung đường
+            </span>
+          </h1>
+
+          {/* The paragraph stays in a left-side safe zone, away from the tower crop. */}
+          <div className="mt-10 w-fit max-w-full lg:mt-14">
+            <p className="max-w-[17rem] text-base leading-7 text-white/80 sm:max-w-[min(30rem,42vw)] lg:max-w-[min(34rem,34vw)] lg:text-lg">
               Từ phố thị đến biển xanh nắng vàng và cao nguyên rộng mở, mỗi
               chuyến đi đều là một trải nghiệm mới đầy cảm hứng.
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-4 2xl:mt-9">
+            <div className="mt-8 flex max-w-[17rem] flex-wrap items-center gap-4 sm:max-w-[min(30rem,42vw)] lg:mt-9 lg:max-w-[min(34rem,34vw)]">
               <a
                 href="#/explore"
                 onClick={(event) => {
@@ -119,26 +129,15 @@ function Hero() {
               </a>
             </div>
           </div>
-
-          <div className="flex items-end justify-between border-t border-white/20 pt-5">
-            <a
-              href="#story"
-              className="group flex items-center gap-3 text-[15px] font-bold uppercase tracking-[0.18em] text-white/75 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:text-[17px] sm:tracking-[0.2em]"
-            >
-              Khám phá tiếp <ArrowDown className="h-4 w-4" aria-hidden="true" />
-            </a>
-          </div>
         </div>
 
-        {/* The tower and the road have their own stable, responsive image region. */}
-        <div className="relative min-w-0 min-h-[380px] overflow-hidden border-t border-white/10 2xl:min-h-[860px] 2xl:border-l 2xl:border-t-0">
-          <img
-            src={img0}
-            alt="Phong cảnh xanh của Gia Lai"
-            className="absolute inset-0 h-full w-full object-cover object-[50%_52%]"
-          />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#183024]/30 via-transparent to-[#10261a]/10" />
-          <div className="pointer-events-none absolute inset-0 bg-noise opacity-[0.035] mix-blend-overlay" />
+        <div className="flex items-end justify-between border-t border-white/20 pt-5">
+          <a
+            href="#story"
+            className="group flex items-center gap-3 text-[15px] font-bold uppercase tracking-[0.18em] text-white/75 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:text-[17px] sm:tracking-[0.2em]"
+          >
+            Khám phá tiếp <ArrowDown className="h-4 w-4" aria-hidden="true" />
+          </a>
         </div>
       </div>
     </section>
