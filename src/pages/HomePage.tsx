@@ -66,44 +66,30 @@ function Hero() {
   return (
     <section
       id="home"
-      className="relative isolate min-h-[760px] overflow-hidden bg-[#183024] text-white lg:min-h-[860px]"
+      className="relative isolate overflow-hidden bg-[#183024] text-white"
     >
-      {/* Photographic band with the Explore header's layered forest scrim. */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <img
-          src={img0}
-          alt="Phong cảnh xanh của Gia Lai"
-          className="absolute inset-0 h-full w-full object-cover object-center"
-        />
-        {/* <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(12,31,23,0.0)_0%,rgba(15,42,30,0.13)_0%,rgba(15,42,30,0.13)_100%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(8,26,19,0)_0%,transparent_45%,rgba(8,26,19,0.25)_100%)]" /> */}
-      </div>
-
-      {/* Film-grain overlay, matching the Explore header. */}
-      <div className="pointer-events-none absolute inset-0 z-10 bg-noise opacity-[0.035] mix-blend-overlay" />
-
-      <div className="relative z-20 mx-auto flex min-h-[760px] max-w-[1440px] flex-col justify-between px-6 pb-14 pt-32 lg:min-h-[860px] lg:px-12 lg:pb-20">
-        <div className="grid items-end gap-14 lg:grid-cols-[minmax(0,760px)_1fr]">
-          <div>
-            {/* <div className="mb-7 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em] text-[#f2b08e]">
-              <span className="h-px w-10 bg-[#f2b08e]" />
-              Tây Nguyên · Việt Nam
-            </div> */}
-            <h1 className="translate-y-7 max-w-5xl font-display font-medium tracking-[-0.075em]">
-              <span className="block text-[clamp(2.4rem,7vw,5rem)] leading-[1.05]">
+      <div className="grid lg:min-h-[860px] lg:grid-cols-[minmax(0,0.84fr)_minmax(0,1.16fr)]">
+        {/*
+         * Keep the copy and the photographic subject in separate layout
+         * regions. The image is never a backdrop for this panel, so its
+         * tower/road crop cannot move underneath the headline at a new size.
+         */}
+        <div className="relative z-10 flex min-h-[640px] flex-col justify-between bg-[#183024] px-6 pb-10 pt-32 sm:px-10 lg:min-h-[860px] lg:px-12 lg:pb-20">
+          <div className="mx-auto w-full max-w-[40rem] lg:mx-0">
+            <h1 className="max-w-full font-display font-medium tracking-[-0.065em]">
+              <span className="block text-[clamp(2.7rem,6vw,5rem)] leading-[1.05]">
                 Vi vu muôn phương
               </span>
-              <span className="block whitespace-nowrap text-[#fef2a0] text-[clamp(2.4rem,7vw,6rem)] leading-[1.05]">
+              <span className="block text-[clamp(2.65rem,6vw,5.8rem)] leading-[1.05] text-[#fef2a0]">
                 Chạm ngàn cung đường
               </span>
             </h1>
-            <p className="mt-16 w-full whitespace-nowrap lg:max-w-[50%] text-base leading-7 text-white/75 lg:text-lg">
-              Từ phố thị đến biển xanh nắng vàng và cao nguyên rộng mở,
-              <br />
-              mỗi chuyến đi đều là một trải nghiệm mới đầy cảm hứng.
+            <p className="mt-10 max-w-[34rem] text-base leading-7 text-white/75 lg:mt-14 lg:text-lg">
+              Từ phố thị đến biển xanh nắng vàng và cao nguyên rộng mở, mỗi
+              chuyến đi đều là một trải nghiệm mới đầy cảm hứng.
             </p>
 
-            <div className="mt-9 flex flex-wrap items-center gap-4">
+            <div className="mt-8 flex flex-wrap items-center gap-4 lg:mt-9">
               <a
                 href="#/explore"
                 onClick={(event) => {
@@ -134,50 +120,25 @@ function Hero() {
             </div>
           </div>
 
-          {/* <div className="hidden justify-self-end lg:block">
-            <div className="mb-7 flex items-center justify-end gap-3 text-right text-[10px] font-bold uppercase tracking-[0.25em] text-white/60">
-              <span>13°58&apos;N · 108°00&apos;E</span>
-              <span className="h-px w-10 bg-white/40" />
-            </div>
-            <div className="grid grid-cols-2 gap-px overflow-hidden rounded-[10px] border border-[#e0dcd2] bg-white shadow-[0_18px_40px_rgba(10,25,17,0.18)]">
-              <div className="min-w-[120px] bg-white px-6 py-5">
-                <span className="font-display text-4xl text-[#d56742]">12</span>
-                <p className="mt-2 max-w-[90px] text-[10px] uppercase leading-4 tracking-[0.13em] text-[#69746b]">
-                  năm dẫn lối
-                </p>
-              </div>
-              <div className="min-w-[120px] bg-white px-6 py-5">
-                <span className="font-display text-4xl text-[#d56742]">26</span>
-                <p className="mt-2 max-w-[90px] text-[10px] uppercase leading-4 tracking-[0.13em] text-[#69746b]">
-                  cung đường
-                </p>
-              </div>
-              <div className="min-w-[120px] border-t border-[#e0dcd2] bg-white px-6 py-5">
-                <span className="font-display text-4xl text-[#d56742]">8</span>
-                <p className="mt-2 max-w-[90px] text-[10px] uppercase leading-4 tracking-[0.13em] text-[#69746b]">
-                  vùng miền
-                </p>
-              </div>
-              <div className="min-w-[120px] border-l border-t border-[#e0dcd2] bg-white px-6 py-5">
-                <span className="font-display text-4xl text-[#d56742]">12</span>
-                <p className="mt-2 max-w-[90px] text-[10px] uppercase leading-4 tracking-[0.13em] text-[#69746b]">
-                  người tối đa
-                </p>
-              </div>
-            </div>
-          </div> */}
+          <div className="flex items-end justify-between border-t border-white/20 pt-5">
+            <a
+              href="#story"
+              className="group flex items-center gap-3 text-[15px] font-bold uppercase tracking-[0.18em] text-white/75 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:text-[17px] sm:tracking-[0.2em]"
+            >
+              Khám phá tiếp <ArrowDown className="h-4 w-4" aria-hidden="true" />
+            </a>
+          </div>
         </div>
 
-        <div className="flex items-end justify-between border-t border-white/20 pt-5">
-          {/* <span className="text-[20px] font-bold uppercase tracking-[0.25em] text-white/60">
-            Gialai Eco Tourist
-          </span> */}
-          <a
-            href="#story"
-            className="group flex items-center gap-3 text-[17px] font-bold uppercase tracking-[0.2em] text-white/75 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-          >
-            Khám phá tiếp <ArrowDown className="h-4 w-4" aria-hidden="true" />
-          </a>
+        {/* The tower and the road have their own stable, responsive image region. */}
+        <div className="relative min-h-[380px] overflow-hidden border-t border-white/10 lg:min-h-[860px] lg:border-l lg:border-t-0">
+          <img
+            src={img0}
+            alt="Phong cảnh xanh của Gia Lai"
+            className="absolute inset-0 h-full w-full object-cover object-[50%_52%]"
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#183024]/30 via-transparent to-[#10261a]/10" />
+          <div className="pointer-events-none absolute inset-0 bg-noise opacity-[0.035] mix-blend-overlay" />
         </div>
       </div>
     </section>
@@ -849,10 +810,22 @@ function Contact() {
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} aria-busy={submitting} className="relative flex flex-col gap-5">
-              <div aria-hidden="true" className="absolute left-[-10000px] h-px w-px overflow-hidden">
+            <form
+              onSubmit={handleSubmit}
+              aria-busy={submitting}
+              className="relative flex flex-col gap-5"
+            >
+              <div
+                aria-hidden="true"
+                className="absolute left-[-10000px] h-px w-px overflow-hidden"
+              >
                 <label htmlFor="contact-website">Website</label>
-                <input id="contact-website" name="website" tabIndex={-1} autoComplete="off" />
+                <input
+                  id="contact-website"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
               </div>
               <div className="mb-2">
                 <h3 className="font-display text-3xl tracking-[-0.05em] text-[#183024]">
@@ -863,7 +836,10 @@ function Contact() {
                 </p>
               </div>
               {submitError ? (
-                <p role="alert" className="rounded-2xl bg-[#fff4ef] px-4 py-3 text-sm leading-6 text-[#b4502f]">
+                <p
+                  role="alert"
+                  className="rounded-2xl bg-[#fff4ef] px-4 py-3 text-sm leading-6 text-[#b4502f]"
+                >
                   {submitError}
                 </p>
               ) : null}
@@ -953,7 +929,8 @@ function Contact() {
                   className="mt-1 h-4 w-4 shrink-0 accent-[#d56742]"
                 />
                 <span>
-                  Tôi đồng ý để Gia Lai Eco Tourist sử dụng thông tin này cho việc tư vấn và liên hệ về yêu cầu của tôi.
+                  Tôi đồng ý để Gia Lai Eco Tourist sử dụng thông tin này cho
+                  việc tư vấn và liên hệ về yêu cầu của tôi.
                 </span>
               </label>
               <button
