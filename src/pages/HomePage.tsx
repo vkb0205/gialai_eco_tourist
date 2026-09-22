@@ -75,8 +75,6 @@ function Hero() {
           alt="Phong cảnh xanh của Gia Lai"
           className="absolute inset-0 h-full w-full object-cover object-[30%_50%] md:object-[34%_50%] lg:object-[40%_50%] xl:object-center"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0c2a1d]/75 via-[#0f2c20]/25 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#081a13]/55 via-transparent to-[#081a13]/20" />
       </div>
 
       <div className="pointer-events-none absolute inset-0 z-10 bg-noise opacity-[0.035] mix-blend-overlay" />
