@@ -68,15 +68,15 @@ function Hero() {
       id="home"
       className="relative isolate overflow-hidden bg-[#183024] text-white"
     >
-      <div className="grid lg:min-h-[860px] lg:grid-cols-[minmax(0,0.84fr)_minmax(0,1.16fr)]">
+      <div className="grid 2xl:min-h-[860px] 2xl:grid-cols-[minmax(0,0.84fr)_minmax(0,1.16fr)]">
         {/*
          * Keep the copy and the photographic subject in separate layout
          * regions. The image is never a backdrop for this panel, so its
          * tower/road crop cannot move underneath the headline at a new size.
          */}
-        <div className="relative z-10 flex min-h-[640px] flex-col justify-between bg-[#183024] px-6 pb-10 pt-32 sm:px-10 lg:min-h-[860px] lg:px-12 lg:pb-20">
-          <div className="mx-auto w-full max-w-[40rem] lg:mx-0">
-            <h1 className="max-w-full font-display font-medium tracking-[-0.065em]">
+        <div className="relative z-10 flex min-w-0 min-h-[640px] flex-col justify-between overflow-hidden bg-[#183024] px-6 pb-10 pt-32 sm:px-10 2xl:min-h-[860px] 2xl:px-12 2xl:pb-20">
+          <div className="mx-auto w-full max-w-[40rem] 2xl:mx-0">
+            <h1 className="max-w-full break-words font-display font-medium tracking-[-0.065em]">
               <span className="block text-[clamp(2.7rem,6vw,5rem)] leading-[1.05]">
                 Vi vu muôn phương
               </span>
@@ -84,12 +84,12 @@ function Hero() {
                 Chạm ngàn cung đường
               </span>
             </h1>
-            <p className="mt-10 max-w-[34rem] text-base leading-7 text-white/75 lg:mt-14 lg:text-lg">
+            <p className="mt-10 max-w-[34rem] text-base leading-7 text-white/75 2xl:mt-14 2xl:text-lg">
               Từ phố thị đến biển xanh nắng vàng và cao nguyên rộng mở, mỗi
               chuyến đi đều là một trải nghiệm mới đầy cảm hứng.
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-4 lg:mt-9">
+            <div className="mt-8 flex flex-wrap items-center gap-4 2xl:mt-9">
               <a
                 href="#/explore"
                 onClick={(event) => {
@@ -131,7 +131,7 @@ function Hero() {
         </div>
 
         {/* The tower and the road have their own stable, responsive image region. */}
-        <div className="relative min-h-[380px] overflow-hidden border-t border-white/10 lg:min-h-[860px] lg:border-l lg:border-t-0">
+        <div className="relative min-w-0 min-h-[380px] overflow-hidden border-t border-white/10 2xl:min-h-[860px] 2xl:border-l 2xl:border-t-0">
           <img
             src={img0}
             alt="Phong cảnh xanh của Gia Lai"
