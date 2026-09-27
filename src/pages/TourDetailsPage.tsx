@@ -202,7 +202,7 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
         />
         {tour.imageCredit && (
           <p className="m-0 px-3 py-2 text-[10px] leading-4 text-[#69746b]">
-            Ảnh minh họa: {\" \"}
+            Ảnh minh họa: {" "}
             <a
               href={tour.imageCredit.href}
               target="_blank"
