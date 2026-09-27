@@ -350,7 +350,7 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
         </aside>
       </section>
 
-      <section className="mt-20 grid gap-12 border-t border-[#d9d4c9] pt-10 md:grid-cols-2 lg:grid-cols-4">
+      <section className="mt-20 grid gap-12 border-t border-[#d9d4c9] pt-10 md:grid-cols-2 lg:grid-cols-3">
         <div>
           <h2 className="font-display text-2xl tracking-[-0.03em] text-[#183024]">
             Bao gồm
@@ -373,14 +373,6 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
           </h2>
           <NoteBlock label="Lưu trú" value={tour.accommodationNotes} />
           <NoteBlock label="Di chuyển" value={tour.transportNotes} />
-        </div>
-        <div className="space-y-5">
-          <h2 className="font-display text-2xl tracking-[-0.03em] text-[#183024]">
-            Chính sách
-          </h2>
-          <NoteBlock label="Trẻ em" value={tour.childPolicy} />
-          <NoteBlock label="Phụ thu" value={tour.surchargePolicy} />
-          <NoteBlock label="Hủy tour" value={tour.cancellationPolicy} />
         </div>
       </section>
     </>
