@@ -127,6 +127,18 @@ function numberArray(value: unknown): number[] {
     : []
 }
 
+function mealArray(value: unknown): string[] {
+  const priority = (meal: string) => {
+    const normalized = meal.toLocaleLowerCase("vi-VN")
+    if (normalized.includes("sáng")) return 0
+    if (normalized.includes("trưa")) return 1
+    if (normalized.includes("tối")) return 2
+    return 3
+  }
+
+  return stringArray(value).sort((left, right) => priority(left) - priority(right))
+}
+
 function routeNames(value: unknown): string[] {
   if (!Array.isArray(value)) return []
 
@@ -261,7 +273,7 @@ function mapItinerary(value: unknown): TourItineraryDay[] {
         title,
         body: itineraryBody(title, day.items),
         items,
-        meals: stringArray(day.meals),
+        meals: mealArray(day.meals),
         overnightLocation:
           typeof day.overnight_destination === "string"
             ? day.overnight_destination
@@ -276,22 +288,18 @@ function mapItinerary(value: unknown): TourItineraryDay[] {
 }
 
 function childPolicyText(row: PublicTourDetailRow): string | null {
-  if (row.child_pricing_note) return row.child_pricing_note
+  const ruleText = Array.isArray(row.child_price_rules)
+    ? row.child_price_rules
+        .map((rawRule) => {
+          const rule = asObject(rawRule)
+          if (!rule) return ""
+          return typeof rule.description === "string" ? rule.description : ""
+        })
+        .filter(Boolean)
+        .join("\n")
+    : ""
 
-  if (!Array.isArray(row.child_price_rules) || row.child_price_rules.length === 0) {
-    return null
-  }
-
-  return (
-    row.child_price_rules
-      .map((rawRule) => {
-        const rule = asObject(rawRule)
-        if (!rule) return ""
-        return typeof rule.description === "string" ? rule.description : ""
-      })
-      .filter(Boolean)
-      .join("\n") || null
-  )
+  return [row.child_pricing_note, ruleText].filter(Boolean).join("\n") || null
 }
 
 function mapPriceOptions(value: unknown): TourPriceOption[] {
