@@ -52,6 +52,17 @@ export type TourItineraryDay = {
   meals: string[]
   overnightLocation: string | null
   accommodationNotes: string | null
+  items: TourItineraryItem[]
+}
+
+export type TourItineraryItem = {
+  order: number
+  startTime: string | null
+  endTime: string | null
+  timeLabel: string | null
+  title: string
+  description: string
+  destination: string | null
 }
 
 export type TourPriceOption = {
@@ -217,11 +228,39 @@ function mapItinerary(value: unknown): TourItineraryDay[] {
     if (!day || typeof day.day_number !== "number") return []
 
     const title = typeof day.title === "string" ? day.title : ""
+    const items = Array.isArray(day.items)
+      ? day.items.flatMap((rawItem) => {
+          const item = asObject(rawItem)
+          if (!item) return []
+
+          return [
+            {
+              order: typeof item.order === "number" ? item.order : 0,
+              startTime:
+                typeof item.start_time === "string"
+                  ? item.start_time.slice(0, 5)
+                  : null,
+              endTime:
+                typeof item.end_time === "string"
+                  ? item.end_time.slice(0, 5)
+                  : null,
+              timeLabel: timeLabel(item),
+              title: typeof item.title === "string" ? item.title : "",
+              description:
+                typeof item.description === "string" ? item.description : "",
+              destination:
+                typeof item.destination === "string" ? item.destination : null,
+            },
+          ]
+        })
+      : []
+
     return [
       {
         dayNumber: day.day_number,
         title,
         body: itineraryBody(title, day.items),
+        items,
         meals: stringArray(day.meals),
         overnightLocation:
           typeof day.overnight_destination === "string"

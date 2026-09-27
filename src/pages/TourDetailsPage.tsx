@@ -10,6 +10,8 @@ import { regionName } from "@/data/regions"
 import {
   loadPublishedTourDetails,
   type TourDetails,
+  type TourItineraryDay,
+  type TourItineraryItem,
   type TourPriceOption,
 } from "@/data/toursRepository"
 import { formatVnd } from "@/lib/text"
@@ -120,6 +122,75 @@ function TourSummary({ tour }: { tour: TourDetails }) {
   )
 }
 
+function itineraryTime(item: TourItineraryItem): string {
+  if (item.timeLabel) return item.timeLabel
+  if (item.startTime && item.endTime) {
+    return `${item.startTime}–${item.endTime}`
+  }
+  if (item.startTime) return item.startTime
+  if (item.endTime) return item.endTime
+  return "Theo chương trình"
+}
+
+function DayTimeline({ day }: { day: TourItineraryDay }) {
+  if (day.items.length === 0) {
+    return (
+      <p className="mt-5 whitespace-pre-line text-sm leading-7 text-[#55605a]">
+        {day.body || "Lịch trình đang được cập nhật."}
+      </p>
+    )
+  }
+
+  return (
+    <ol className="mt-7 m-0 list-none space-y-0 p-0">
+      {day.items.map((item, index) => {
+        const isLegacySummary =
+          !item.timeLabel &&
+          !item.startTime &&
+          !item.endTime &&
+          item.title === day.title
+
+        return (
+          <li
+            key={`${day.dayNumber}-${item.order}-${item.title}`}
+            className="grid grid-cols-[5.5rem_1rem_minmax(0,1fr)] gap-3 sm:grid-cols-[6.5rem_1rem_minmax(0,1fr)] sm:gap-4"
+          >
+            <div className="pt-0.5 text-right text-[10px] font-bold uppercase leading-5 tracking-[0.12em] text-[#b4502f]">
+              {itineraryTime(item)}
+            </div>
+            <div className="relative flex justify-center">
+              <span className="relative z-10 mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-[#d56742] ring-4 ring-[#f6f3ec]" />
+              {index < day.items.length - 1 && (
+                <span
+                  aria-hidden="true"
+                  className="absolute left-1/2 top-3 h-full w-px -translate-x-1/2 bg-[#c8cfc3]"
+                />
+              )}
+            </div>
+            <div className="pb-8 last:pb-0">
+              {!isLegacySummary && item.title && (
+                <h4 className="m-0 font-display text-xl tracking-[-0.03em] text-[#183024]">
+                  {item.title}
+                </h4>
+              )}
+              {item.description && (
+                <p className="whitespace-pre-line text-sm leading-7 text-[#55605a]">
+                  {item.description}
+                </p>
+              )}
+              {item.destination && (
+                <p className="mt-2 text-xs text-[#69746b]">
+                  Địa điểm: {item.destination}
+                </p>
+              )}
+            </div>
+          </li>
+        )
+      })}
+    </ol>
+  )
+}
+
 function TourDetailsContent({ tour }: { tour: TourDetails }) {
   return (
     <>
@@ -210,18 +281,22 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
           </div>
 
           {tour.itinerary.length > 0 ? (
-            <ol className="m-0 list-none space-y-8 p-0">
-              {tour.itinerary.map((day) => (
+            <ol className="m-0 list-none space-y-12 p-0">
+              {tour.itinerary.map((day, index) => (
                 <li key={day.dayNumber} className="relative pl-16">
+                  {index < tour.itinerary.length - 1 && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute bottom-[-3rem] left-[19px] top-10 w-px bg-[#c8cfc3]"
+                    />
+                  )}
                   <span className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full bg-[#183024] font-display text-lg text-white">
                     {String(day.dayNumber).padStart(2, "0")}
                   </span>
                   <h3 className="m-0 font-display text-2xl tracking-[-0.03em] text-[#183024]">
                     {day.title}
                   </h3>
-                  <p className="mt-3 whitespace-pre-line text-sm leading-7 text-[#55605a]">
-                    {day.body}
-                  </p>
+                  <DayTimeline day={day} />
                   {day.meals.length > 0 && (
                     <p className="mt-3 text-xs uppercase tracking-[0.1em] text-[#69746b]">
                       Bữa ăn: {day.meals.join(" · ")}
