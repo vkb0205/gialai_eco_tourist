@@ -2,6 +2,7 @@ import fallbackForest from "@/imports/image-1.png"
 import fallbackLake from "@/imports/image.png"
 import fallbackPeople from "@/imports/image-2.png"
 import { regionName } from "@/data/regions"
+import { tourImageBySlug, tourImageCreditBySlug } from "@/data/tourImages"
 import type { RegionSlug } from "@/data/regions"
 import type { Difficulty, Theme, Tour } from "@/data/tours"
 import { isSupabaseConfigured, supabase } from "@/lib/supabase"
@@ -190,7 +191,8 @@ function mapTour(row: PublicTourCardRow): Tour {
     difficulty: toDifficulty(row.difficulty),
     groupMax: row.group_max,
     departureMonths: numberArray(row.departure_months),
-    image: fallbackImages[regionSlug],
+    image: tourImageBySlug[row.slug] ?? fallbackImages[regionSlug],
+    imageCredit: tourImageCreditBySlug[row.slug],
     blurb: row.summary,
     highlights: stringArray(row.highlights),
     impact: row.impact,

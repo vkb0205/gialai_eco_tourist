@@ -83,6 +83,11 @@ export type Tour = {
   /** Months (1-12) the journey runs in. */
   departureMonths: number[]
   image: string
+  /** Credit link for temporary licensed destination photography. */
+  imageCredit?: {
+    label: string
+    href: string
+  }
   /** Two-line description shown on the card. */
   blurb: string
   /** Short phrases, also searched by the keyword filter. */

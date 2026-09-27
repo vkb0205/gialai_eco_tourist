@@ -200,6 +200,19 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
           alt={`${tour.title}, ${regionName(tour.regionSlug)}`}
           className="h-[min(48vw,520px)] w-full object-cover"
         />
+        {tour.imageCredit && (
+          <p className="m-0 px-3 py-2 text-[10px] leading-4 text-[#69746b]">
+            Ảnh minh họa: {\" \"}
+            <a
+              href={tour.imageCredit.href}
+              target="_blank"
+              rel="noreferrer"
+              className="underline underline-offset-2"
+            >
+              {tour.imageCredit.label}
+            </a>
+          </p>
+        )}
       </div>
       <section className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-16">
         <div>
