@@ -37,6 +37,12 @@ export default function Footer() {
               Những trải nghiệm có trách nhiệm giữa thiên nhiên và văn hóa Tây
               Nguyên.
             </p>
+            <address className="mt-6 max-w-xs text-[15px] not-italic leading-6 text-white">
+              <strong className="block font-semibold">
+                CÔNG TY TNHH THƯƠNG MẠI DU LỊCH SINH THÁI GIALAI
+              </strong>
+              82 Hùng Vương, Phường Pleiku, Gia Lai, Việt Nam
+            </address>
           </div>
 
           <div>
