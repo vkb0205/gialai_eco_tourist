@@ -1,0 +1,108 @@
+name: Deploy to VPS
+
+# Every push to main (and manual runs) builds the site with base "/" and
+# publishes it to the Nginx document root on the VPS.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+# Never run two deploys at once, and never cancel one half-way through.
+concurrency:
+  group: vps-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: ${{ vars.SITE_URL || 'https://gialaiecotourist.com' }}
+
+    env:
+      VPS_HOST: ${{ secrets.VPS_HOST }}
+      VPS_USER: ${{ secrets.VPS_USER }}
+      SITE_URL: ${{ vars.SITE_URL || 'https://gialaiecotourist.com' }}
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npm run lint
+
+      - name: Build for the VPS (base path /)
+        env:
+          VITE_BASE_PATH: /
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: npm run build
+
+      - name: Verify asset paths
+        run: |
+          grep -q '"/assets/' dist/index.html || { echo "index.html does not reference /assets/"; exit 1; }
+          if grep -q '/gialai_eco_tourist/assets/' dist/index.html; then
+            echo "Wrong base path in build"; exit 1
+          fi
+
+      - name: Configure SSH
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          test -n "$VPS_HOST" && test -n "$VPS_USER" && test -n "$VPS_SSH_KEY" && test -n "$VPS_KNOWN_HOSTS" \
+            || { echo "Missing VPS_* secrets"; exit 1; }
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          # Pinned host keys: the connection fails if the server identity changes.
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<EOF
+          Host vps
+            HostName $VPS_HOST
+            User $VPS_USER
+            IdentityFile ~/.ssh/deploy_key
+            IdentitiesOnly yes
+            StrictHostKeyChecking yes
+            ServerAliveInterval 30
+          EOF
+
+      - name: Upload and publish
+        run: |
+          release_id="$(date -u +%Y%m%d-%H%M%S)-${GITHUB_SHA::7}"
+          tar -czf "gialai-$release_id.tar.gz" -C dist .
+          ssh vps 'mkdir -p ~/releases'
+          scp "gialai-$release_id.tar.gz" "vps:releases/"
+          ssh vps "bash -s -- '$release_id'" < scripts/deploy/publish.sh
+          echo "### Deployed \`$release_id\` to $SITE_URL" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Smoke test
+        run: |
+          html="$(curl -fsS --retry 3 --retry-delay 5 "$SITE_URL/")"
+          js="$(printf '%s' "$html" | grep -o '/assets/[^"]*\.js' | head -n1)"
+          test -n "$js" || { echo "No JS asset in served HTML"; exit 1; }
+          ctype="$(curl -fsSI "$SITE_URL$js" | tr -d '\r' | awk -F': ' 'tolower($1)=="content-type"{print $2}')"
+          echo "$js -> $ctype"
+          case "$ctype" in
+            *javascript*) echo "Smoke test passed" ;;
+            *) echo "Asset served as '$ctype' (SPA fallback hiding a missing file?)"; exit 1 ;;
+          esac
+
+      - name: Remove SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key

@@ -11,9 +11,12 @@ export default defineConfig(({ mode }) => {
   const emitSourcemaps = mode === "development"
 
   return {
-    base: process.env.FIGMA_PUBLIC_URL
-      ? `${process.env.FIGMA_PUBLIC_URL}/`
-      : "/gialai_eco_tourist/",
+    // VITE_BASE_PATH wins (the VPS build sets it to "/"), then Figma, then GitHub Pages.
+    base:
+      process.env.VITE_BASE_PATH ||
+      (process.env.FIGMA_PUBLIC_URL
+        ? `${process.env.FIGMA_PUBLIC_URL}/`
+        : "/gialai_eco_tourist/"),
     build: {
       sourcemap: emitSourcemaps ? "inline" : false,
       minify: !emitSourcemaps,
