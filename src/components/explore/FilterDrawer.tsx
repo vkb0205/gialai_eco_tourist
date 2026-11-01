@@ -98,7 +98,7 @@ export default function FilterDrawer({
   return (
     <div className="fixed inset-0 z-[60] lg:hidden">
       <div
-        className="absolute inset-0 bg-[#10231a]/60 backdrop-blur-[2px] motion-safe:animate-[fade-in_180ms_ease-out]"
+        className="absolute inset-0 bg-[#10231a]/60 motion-safe:animate-[fade-in_180ms_ease-out]"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -108,28 +108,28 @@ export default function FilterDrawer({
         role="dialog"
         aria-modal="true"
         aria-labelledby="filter-drawer-title"
-        className="absolute inset-y-0 right-0 flex w-full max-w-[26rem] flex-col bg-[#f6f3ec] shadow-[0_0_60px_rgba(16,35,26,0.35)] motion-safe:animate-[slide-in-right_220ms_ease-out]"
+        className="absolute inset-y-0 right-0 flex w-full max-w-[26rem] flex-col bg-[#ecebe5] shadow-[0_0_60px_rgba(16,35,26,0.35)] motion-safe:animate-[slide-in-right_220ms_ease-out]"
       >
-        <div className="flex items-center justify-between gap-4 border-b border-[#e0dcd2] px-6 py-4">
+        <div className="flex items-center justify-between gap-4 bg-white px-6 py-4">
           <div>
-            <p className="m-0 font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-[#69746b]">
-              Bộ lọc hành trình
-            </p>
             <h2
               id="filter-drawer-title"
-              className="mt-1 text-[14px] font-bold tracking-[-0.01em] text-[#183024]"
+              className="m-0 font-display text-2xl tracking-[-0.02em] text-[#183024]"
             >
+              Bộ lọc hành trình
+            </h2>
+            <p className="m-0 mt-1 text-[15px] text-[#2f3d35]">
               {activeCount > 0
                 ? `Đang chọn ${activeCount} điều kiện`
                 : "Chọn điều kiện"}
-            </h2>
+            </p>
           </div>
           <button
             ref={closeButtonRef}
             type="button"
             onClick={onClose}
             aria-label="Đóng bộ lọc"
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#c8c8be] text-[#183024] transition-colors hover:border-[#183024] hover:bg-[#e9e6dd] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#ecebe5] text-[#183024] transition-colors hover:bg-[#dddbd3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
           >
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
@@ -144,19 +144,19 @@ export default function FilterDrawer({
           />
         </div>
 
-        <div className="flex items-center gap-3 border-t border-[#e0dcd2] bg-[#f6f3ec] px-6 py-4">
+        <div className="flex items-center gap-3 bg-white px-6 py-4">
           <button
             type="button"
             onClick={onClearAll}
             disabled={activeCount === 0}
-            className="rounded-full border border-[#c8c4b8] px-5 py-3 text-[10px] font-bold uppercase tracking-[0.12em] text-[#42524a] transition-colors hover:border-[#183024] hover:text-[#183024] disabled:cursor-not-allowed disabled:border-[#dcd8ce] disabled:text-[#9aa199] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
+            className="min-h-12 rounded-full bg-[#ecebe5] px-5 text-[15px] font-semibold text-[#183024] transition-colors hover:bg-[#dddbd3] disabled:cursor-not-allowed disabled:text-[#4f5b53] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
           >
             Xóa tất cả
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 rounded-full bg-[#183024] px-5 py-3 text-[10px] font-bold uppercase tracking-[0.12em] text-white transition-all duration-200 hover:bg-[#b4502f] hover:shadow-[0_10px_24px_rgba(180,80,47,0.28)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+            className="min-h-12 flex-1 rounded-full bg-[#183024] px-5 text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-[#a24627] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
           >
             Xem {resultCount} hành trình
           </button>

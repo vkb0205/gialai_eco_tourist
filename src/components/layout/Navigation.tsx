@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import { ArrowUpRight, CaretDown, List, X } from "@phosphor-icons/react"
-import logo from "@/imports/logo.png"
-import logoWhite from "@/imports/logo_white.png"
+import logoWhite from "@/imports/logo_white.webp"
 import { navigateTo, useHashRoute } from "@/lib/useHashRoute"
 import type { RoutePath } from "@/lib/useHashRoute"
 
@@ -189,21 +188,21 @@ export default function Navigation() {
             }}
           >
             <img
-              src={solid || !atHeroTop ? logoWhite : logo}
+              src={logoWhite}
               alt="Gia Lai Eco-Tourist Co.,Ltd"
               className="h-12 w-12 object-contain"
             />
             <span className="flex flex-col leading-none">
               <span
                 className={`font-display text-[17px] font-semibold tracking-[-0.03em] transition-colors ${
-                  solid || !atHeroTop ? "text-white" : "text-[#6f4e37]"
+                  solid || !atHeroTop ? "text-white" : "text-white"
                 }`}
               >
                 Gialai
               </span>
               <span
-                className={`mt-1 text-[9px] font-semibold uppercase tracking-[0.28em] transition-colors ${
-                  solid || !atHeroTop ? "text-white/80" : "text-[#6f4e37]"
+                className={`mt-1 text-xs font-semibold uppercase tracking-[0.16em] transition-colors ${
+                  solid || !atHeroTop ? "text-white/80" : "text-white"
                 }`}
               >
                 Eco Tourist
@@ -229,11 +228,11 @@ export default function Navigation() {
                   className={`whitespace-nowrap text-[12px] font-semibold uppercase tracking-[0.1em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742] ${
                     solid || !atHeroTop
                       ? active
-                        ? "text-[#d56742]"
+                        ? "text-[#f2b08e] underline decoration-2 underline-offset-[10px]"
                         : "text-white/85 hover:text-white"
                       : active
-                        ? "text-[#6f4e37]"
-                        : "text-[#6f4e37] hover:text-[#6f4e37]"
+                        ? "text-white"
+                        : "text-white hover:text-[#f2b08e]"
                   }`}
                 >
                   {link.label}
@@ -246,7 +245,7 @@ export default function Navigation() {
                           key={child.query}
                           type="button"
                           onClick={() => navigateTo("/explore", child.query)}
-                          className="rounded-xl px-4 py-2.5 text-left text-[11px] font-semibold normal-case tracking-normal text-[#183024] transition-colors hover:bg-[#e9e6dd] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
+                          className="rounded-xl px-4 py-2.5 text-left text-xs font-semibold normal-case tracking-normal text-[#183024] transition-colors hover:bg-[#e9e6dd] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
                         >
                           {child.label}
                         </button>
@@ -264,11 +263,11 @@ export default function Navigation() {
                 className={`inline-flex items-center gap-1.5 whitespace-nowrap text-[12px] font-semibold uppercase tracking-[0.1em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742] ${
                   solid || !atHeroTop
                     ? route.path === "/services"
-                      ? "text-[#d56742]"
+                      ? "text-[#f2b08e] underline decoration-2 underline-offset-[10px]"
                       : "text-white/85 hover:text-white"
                     : route.path === "/services"
-                      ? "text-[#6f4e37]"
-                      : "text-[#6f4e37] hover:text-[#6f4e37]"
+                      ? "text-white"
+                      : "text-white hover:text-[#f2b08e]"
                 }`}
               >
                 Dịch vụ khác
@@ -280,7 +279,7 @@ export default function Navigation() {
                     key={option.slug}
                     type="button"
                     onClick={() => navigateTo("/services", option.query)}
-                    className="block w-full rounded-xl px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.1em] text-[#183024] transition-colors hover:bg-[#e9e6dd] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
+                    className="block w-full rounded-xl px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.1em] text-[#183024] transition-colors hover:bg-[#e9e6dd] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
                   >
                     {option.label}
                   </button>
@@ -292,7 +291,7 @@ export default function Navigation() {
               className={`whitespace-nowrap text-[12px] font-semibold uppercase tracking-[0.1em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742] ${
                 solid || !atHeroTop
                   ? "text-white/85 hover:text-white"
-                  : "text-[#6f4e37] hover:text-[#6f4e37]"
+                  : "text-white hover:text-[#f2b08e]"
               }`}
             >
               Nhật ký hành trình
@@ -300,10 +299,10 @@ export default function Navigation() {
             <a
               href="#contact"
               onClick={goToEnquiry}
-              className={`ml-1 inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-5 py-3 text-[11px] font-bold uppercase tracking-[0.1em] transition-all hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] ${
+              className={`ml-1 inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-5 py-3 text-xs font-bold uppercase tracking-[0.1em] transition-all hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] ${
                 solid
-                  ? "bg-[#fed24f] text-[#6f4e37] hover:bg-[#fed24f]"
-                  : "bg-[#fed24f] text-[#6f4e37] hover:bg-[#fed24f]"
+                  ? "bg-[#fed24f] text-[#4a3220] hover:bg-[#ffe07a]"
+                  : "bg-[#fed24f] text-[#4a3220] hover:bg-[#ffe07a]"
               }`}
             >
               Đặt hành trình{" "}
@@ -316,7 +315,7 @@ export default function Navigation() {
             className={`flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742] lg:hidden ${
               solid
                 ? "bg-[#183024] text-white"
-                : "bg-white/15 text-[#6f4e37] backdrop-blur-md"
+                : "bg-white/15 text-white backdrop-blur-md"
             }`}
             onClick={() => setMenuOpen((current) => !current)}
             aria-label={menuOpen ? "Đóng menu" : "Mở menu"}
@@ -399,7 +398,7 @@ export default function Navigation() {
               </div>
               <a
                 href="#contact"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#d56742] px-5 py-3 text-[11px] font-bold uppercase tracking-[0.12em] text-[#6f4e37] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#b4502f] px-5 py-3 text-xs font-bold uppercase tracking-[0.12em] text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
                 onClick={(event) => {
                   setMenuOpen(false)
                   goToEnquiry(event)

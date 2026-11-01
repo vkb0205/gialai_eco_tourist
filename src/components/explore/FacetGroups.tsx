@@ -1,3 +1,4 @@
+import { CaretDown } from "@phosphor-icons/react"
 import { facetGroups } from "@/data/filters"
 import type { FacetKey } from "@/data/filters"
 import type { FilterState } from "@/lib/filterTours"
@@ -23,25 +24,27 @@ export default function FacetGroups({
   idPrefix: string
 }) {
   return (
-    <div className="flex flex-col gap-0 divide-y divide-[#e0dcd2]">
+    <div className="flex flex-col gap-3">
       {facetGroups.map((group) => {
         const selected = state.facets[group.key] ?? []
         const isSingle = group.mode === "single"
 
         return (
-          <details key={group.key} className="group/details">
-            <summary className="flex cursor-pointer items-center justify-between gap-3 px-1 py-3 text-[11px] font-bold uppercase tracking-[0.18em] text-[#5b665d] select-none outline-none focus-visible:rounded-[2px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]">
+          <details
+            key={group.key}
+            className="group/details"
+            open={group.key === "theme" || group.key === "duration" || selected.length > 0}
+          >
+            <summary className="flex min-h-11 cursor-pointer select-none items-center justify-between gap-3 rounded-[2px] bg-[#ecebe5] px-4 py-2 text-[16px] font-semibold text-[#183024] outline-none transition-colors hover:bg-[#e2e1d9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]">
               <span>{group.label}</span>
-              <span
+              <CaretDown
                 aria-hidden="true"
-                className="transition-transform duration-200 group-open/details:rotate-180"
-              >
-                ▼
-              </span>
+                className="h-4 w-4 transition-transform duration-200 group-open/details:rotate-180"
+              />
             </summary>
 
-            <div className="pb-4 pl-0 pr-1">
-              <div className="space-y-1">
+            <div className="px-1 pb-2 pt-2">
+              <div className="space-y-0.5">
                 {group.options.map((option) => {
                   const count = counts[group.key]?.[option.value] ?? 0
                   const checked = selected.includes(option.value)
@@ -60,7 +63,7 @@ export default function FacetGroups({
                           checked={checked}
                           disabled={disabled}
                           onChange={() => onToggle(group.key, option.value)}
-                          className="peer h-4 w-4 shrink-0 cursor-pointer accent-[#183024] disabled:cursor-not-allowed"
+                          className="peer h-[18px] w-[18px] shrink-0 cursor-pointer accent-[#183024] disabled:cursor-not-allowed"
                         />
                       ) : (
                         <input
@@ -69,24 +72,22 @@ export default function FacetGroups({
                           checked={checked}
                           disabled={disabled}
                           onChange={() => onToggle(group.key, option.value)}
-                          className="peer h-4 w-4 shrink-0 cursor-pointer accent-[#183024] disabled:cursor-not-allowed"
+                          className="peer h-[18px] w-[18px] shrink-0 cursor-pointer accent-[#183024] disabled:cursor-not-allowed"
                         />
                       )}
                       <label
                         htmlFor={inputId}
-                        className={`flex flex-1 cursor-pointer items-baseline justify-between gap-3 rounded-md py-1.5 pl-3 text-[13px] leading-5 transition-colors peer-disabled:cursor-not-allowed peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#d56742] ${
+                        className={`flex flex-1 cursor-pointer items-baseline justify-between gap-3 min-h-9 rounded-[2px] py-1.5 pl-3 text-[16px] leading-6 transition-colors peer-disabled:cursor-not-allowed peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#183024] ${
                           disabled
-                            ? "text-[#9aa199]"
+                            ? "text-[#4f5b53]"
                             : checked
                               ? "font-semibold text-[#183024]"
-                              : "text-[#42524a] hover:text-[#183024]"
+                              : "text-[#2f3d35] hover:text-[#183024]"
                         }`}
                       >
                         <span>{option.label}</span>
                         <span
-                          className={`text-[11px] tabular-nums ${
-                            disabled ? "text-[#9aa199]" : "text-[#69746b]"
-                          }`}
+                          className="text-sm tabular-nums text-[#4f5b53]"
                         >
                           {count}
                         </span>

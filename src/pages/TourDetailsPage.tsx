@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useId, useState } from "react"
 import {
   ArrowLeft,
   ArrowUpRight,
@@ -37,18 +37,18 @@ function PriceOption({ option }: { option: TourPriceOption }) {
               ? "Liên hệ để biết giá"
               : formatVnd(option.amountVnd)}
           </p>
-          <p className="mt-1 text-xs leading-5 text-[#69746b]">
+          <p className="mt-1 text-xs leading-5 text-[#566259]">
             {guests ?? "Theo điều kiện chương trình"}
             {option.priceBasis === "per_group" ? " · theo đoàn" : " · / khách"}
           </p>
         </div>
         {option.isCardPrice && (
-          <span className="rounded-full bg-[#eef1e7] px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-[#61703f]">
+          <span className="rounded-full bg-[#eef1e7] px-2.5 py-1 text-xs font-bold uppercase tracking-[0.12em] text-[#4f5d34]">
             Giá từ
           </span>
         )}
       </div>
-      <p className="mt-2 text-xs leading-5 text-[#69746b]">
+      <p className="mt-2 text-xs leading-5 text-[#566259]">
         {option.conditionText}
       </p>
     </li>
@@ -61,8 +61,8 @@ function BulletList({ items }: { items: string[] }) {
   return (
     <ul className="m-0 grid list-none gap-3 p-0">
       {items.map((item) => (
-        <li key={item} className="flex gap-3 text-sm leading-6 text-[#55605a]">
-          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#d56742]" />
+        <li key={item} className="flex gap-3 text-[15px] leading-6 text-[#47524a]">
+          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#b4502f]" />
           <span>{item}</span>
         </li>
       ))}
@@ -80,10 +80,10 @@ function NoteBlock({ label, value }: NoteBlockProps) {
 
   return (
     <div className="border-t border-[#e5e1d8] pt-5">
-      <p className="m-0 text-[10px] font-bold uppercase tracking-[0.15em] text-[#69746b]">
+      <p className="m-0 text-xs font-bold uppercase tracking-[0.15em] text-[#566259]">
         {label}
       </p>
-      <p className="mt-2 whitespace-pre-line text-sm leading-6 text-[#55605a]">
+      <p className="mt-2 whitespace-pre-line text-[15px] leading-6 text-[#47524a]">
         {value}
       </p>
     </div>
@@ -95,21 +95,21 @@ function TourSummary({ tour }: { tour: TourDetails }) {
     <div className="mt-7 grid grid-cols-2 gap-3 border-y border-[#e5e1d8] py-5 sm:grid-cols-3">
       <div className="flex gap-2.5 text-sm text-[#42524a]">
         <Clock
-          className="mt-0.5 h-4 w-4 shrink-0 text-[#69746b]"
+          className="mt-0.5 h-4 w-4 shrink-0 text-[#566259]"
           aria-hidden="true"
         />
         <span>{tour.durationLabel}</span>
       </div>
       <div className="flex gap-2.5 text-sm text-[#42524a]">
         <MapPin
-          className="mt-0.5 h-4 w-4 shrink-0 text-[#69746b]"
+          className="mt-0.5 h-4 w-4 shrink-0 text-[#566259]"
           aria-hidden="true"
         />
         <span>{regionName(tour.regionSlug)}</span>
       </div>
       <div className="flex gap-2.5 text-sm text-[#42524a]">
         <Users
-          className="mt-0.5 h-4 w-4 shrink-0 text-[#69746b]"
+          className="mt-0.5 h-4 w-4 shrink-0 text-[#566259]"
           aria-hidden="true"
         />
         <span>
@@ -132,12 +132,50 @@ function itineraryTime(item: TourItineraryItem): string {
   return "Theo chương trình"
 }
 
+const COLLAPSE_AT = 320
+
+/**
+ * Long itinerary copy stays scannable: past COLLAPSE_AT characters it clamps to
+ * four lines behind a real toggle button, so each day reads as a short outline
+ * that opens on demand.
+ */
+function ExpandableText({ text, className = "" }: { text: string; className?: string }) {
+  const [open, setOpen] = useState(false)
+  const long = text.length > COLLAPSE_AT
+  const id = useId()
+
+  return (
+    <div className={className}>
+      <p
+        id={id}
+        className={`m-0 max-w-[68ch] whitespace-pre-line text-base leading-7 text-[#47524a] ${
+          long && !open ? "line-clamp-4" : ""
+        }`}
+      >
+        {text}
+      </p>
+      {long && (
+        <button
+          type="button"
+          onClick={() => setOpen((value) => !value)}
+          aria-expanded={open}
+          aria-controls={id}
+          className="mt-1 inline-flex min-h-11 items-center text-xs font-bold uppercase tracking-[0.12em] text-[#a24627] underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a24627]"
+        >
+          {open ? "Thu gọn" : "Xem thêm"}
+        </button>
+      )}
+    </div>
+  )
+}
+
 function DayTimeline({ day }: { day: TourItineraryDay }) {
   if (day.items.length === 0) {
     return (
-      <p className="mt-5 whitespace-pre-line text-sm leading-7 text-[#55605a]">
-        {day.body || "Lịch trình đang được cập nhật."}
-      </p>
+      <ExpandableText
+        className="mt-5"
+        text={day.body || "Lịch trình đang được cập nhật."}
+      />
     )
   }
 
@@ -155,11 +193,11 @@ function DayTimeline({ day }: { day: TourItineraryDay }) {
             key={`${day.dayNumber}-${item.order}-${item.title}`}
             className="grid grid-cols-[5.5rem_1rem_minmax(0,1fr)] gap-3 sm:grid-cols-[6.5rem_1rem_minmax(0,1fr)] sm:gap-4"
           >
-            <div className="pt-0.5 text-right text-[10px] font-bold uppercase leading-5 tracking-[0.12em] text-[#b4502f]">
+            <div className="pt-0.5 text-right text-xs font-bold uppercase leading-5 tracking-[0.12em] text-[#a24627]">
               {itineraryTime(item)}
             </div>
             <div className="relative flex justify-center">
-              <span className="relative z-10 mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-[#d56742] ring-4 ring-[#f6f3ec]" />
+              <span className="relative z-10 mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-[#b4502f] ring-4 ring-[#f6f3ec]" />
               {index < day.items.length - 1 && (
                 <span
                   aria-hidden="true"
@@ -169,17 +207,15 @@ function DayTimeline({ day }: { day: TourItineraryDay }) {
             </div>
             <div className="pb-8 last:pb-0">
               {!isLegacySummary && item.title && (
-                <h4 className="m-0 font-display text-xl tracking-[-0.03em] text-[#183024]">
+                <h4 className="m-0 mb-1 font-display text-xl leading-snug tracking-[-0.02em] text-[#183024]">
                   {item.title}
                 </h4>
               )}
               {item.description && (
-                <p className="whitespace-pre-line text-sm leading-7 text-[#55605a]">
-                  {item.description}
-                </p>
+                <ExpandableText className="mt-1" text={item.description} />
               )}
               {item.destination && (
-                <p className="mt-2 text-xs text-[#69746b]">
+                <p className="mt-2 text-xs text-[#566259]">
                   Địa điểm: {item.destination}
                 </p>
               )}
@@ -198,16 +234,18 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
         <img
           src={tour.image}
           alt={`${tour.title}, ${regionName(tour.regionSlug)}`}
-          className="h-[min(48vw,520px)] w-full object-cover"
+          fetchPriority="high"
+          decoding="async"
+          className="h-[min(56vw,520px)] w-full object-cover"
         />
         {tour.imageCredit && (
-          <p className="m-0 px-3 py-2 text-[10px] leading-4 text-[#69746b]">
+          <p className="m-0 px-3 py-2 text-xs leading-4 text-[#566259]">
             Ảnh minh họa: {" "}
             <a
               href={tour.imageCredit.href}
               target="_blank"
               rel="noreferrer"
-              className="underline underline-offset-2"
+              className="inline-flex min-h-6 items-center underline underline-offset-2"
             >
               {tour.imageCredit.label}
             </a>
@@ -216,17 +254,17 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
       </div>
       <section className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-16">
         <div>
-          <div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#69746b]">
+          <div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-bold uppercase tracking-[0.16em] text-[#566259]">
             <span>{regionName(tour.regionSlug)}</span>
             <span aria-hidden="true" className="text-[#c8c4b8]">
               /
             </span>
             <span>{tour.durationLabel}</span>
           </div>
-          <h1 className="max-w-4xl font-display text-[clamp(2.7rem,6vw,5.6rem)] leading-[0.95] tracking-[-0.06em] text-[#183024]">
+          <h1 className="max-w-4xl text-balance font-display text-[clamp(2.1rem,4.6vw,4rem)] leading-[1.04] tracking-[-0.04em] text-[#183024]">
             {tour.title}
           </h1>
-          <p className="mt-6 max-w-3xl text-base leading-7 text-[#69746b]">
+          <p className="mt-6 max-w-3xl text-base leading-7 text-[#566259]">
             {tour.blurb}
           </p>
           <TourSummary tour={tour} />
@@ -244,14 +282,14 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
         </div>
 
         <aside className="h-fit rounded-[2px] border border-[#e0dcd2] bg-white p-6 lg:p-7">
-          <p className="m-0 text-[10px] font-bold uppercase tracking-[0.16em] text-[#69746b]">
+          <p className="m-0 text-xs font-bold uppercase tracking-[0.16em] text-[#566259]">
             Giá tham khảo
           </p>
-          <p className="mt-2 font-display text-4xl tracking-[-0.04em] text-[#b4502f]">
+          <p className="mt-2 font-display text-4xl tracking-[-0.04em] text-[#a24627]">
             {tour.priceVnd === null ? "Liên hệ" : formatVnd(tour.priceVnd)}
           </p>
           {tour.departureText && (
-            <p className="mt-3 border-t border-[#e5e1d8] pt-4 text-sm leading-6 text-[#55605a]">
+            <p className="mt-3 border-t border-[#e5e1d8] pt-4 text-[15px] leading-6 text-[#47524a]">
               <strong className="font-semibold text-[#183024]">
                 Khởi hành:
               </strong>{" "}
@@ -259,14 +297,14 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
             </p>
           )}
           {tour.groupLabel && (
-            <p className="mt-2 text-sm leading-6 text-[#55605a]">
+            <p className="mt-2 text-[15px] leading-6 text-[#47524a]">
               {tour.groupLabel}
             </p>
           )}
           <a
             href="#contact"
             onClick={goToEnquiry}
-            className="group mt-6 inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#183024] px-5 py-3.5 text-[10px] font-bold uppercase tracking-[0.14em] text-white transition-colors hover:bg-[#b4502f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+            className="group mt-6 inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#183024] px-5 py-3.5 text-xs font-bold uppercase tracking-[0.14em] text-white transition-colors hover:bg-[#a24627] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
           >
             Đặt hành trình
             <ArrowUpRight
@@ -274,7 +312,7 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
               aria-hidden="true"
             />
           </a>
-          <p className="mt-4 text-center text-xs leading-5 text-[#69746b]">
+          <p className="mt-4 text-center text-xs leading-5 text-[#566259]">
             Giá và lịch khởi hành được xác nhận lại trước khi đặt.
           </p>
         </aside>
@@ -284,7 +322,7 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
         <div>
           <div className="mb-8 flex items-end justify-between gap-5 border-b border-[#d9d4c9] pb-5">
             <div>
-              <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#b4502f]">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-[#a24627]">
                 Lịch trình
               </p>
               <h2 className="font-display text-4xl tracking-[-0.05em] text-[#183024]">
@@ -311,12 +349,12 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
                   </h3>
                   <DayTimeline day={day} />
                   {day.meals.length > 0 && (
-                    <p className="mt-3 text-xs uppercase tracking-[0.1em] text-[#69746b]">
+                    <p className="mt-3 text-xs uppercase tracking-[0.1em] text-[#566259]">
                       Bữa ăn: {day.meals.join(" · ")}
                     </p>
                   )}
                   {day.overnightLocation && (
-                    <p className="mt-2 text-xs text-[#69746b]">
+                    <p className="mt-2 text-xs text-[#566259]">
                       Nghỉ đêm: {day.overnightLocation}
                       {day.accommodationNotes
                         ? ` — ${day.accommodationNotes}`
@@ -327,7 +365,7 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
               ))}
             </ol>
           ) : (
-            <p className="text-sm leading-6 text-[#69746b]">
+            <p className="text-sm leading-6 text-[#566259]">
               Lịch trình đang được cập nhật.
             </p>
           )}
@@ -335,7 +373,7 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
 
         <aside className="space-y-7">
           <div className="rounded-[2px] border border-[#e0dcd2] bg-white p-6 lg:p-7">
-            <p className="mb-5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#69746b]">
+            <p className="mb-5 text-xs font-bold uppercase tracking-[0.16em] text-[#566259]">
               Bảng giá
             </p>
             {tour.priceOptions.length > 0 ? (
@@ -348,14 +386,14 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
                 ))}
               </ul>
             ) : (
-              <p className="m-0 text-sm leading-6 text-[#69746b]">
+              <p className="m-0 text-sm leading-6 text-[#566259]">
                 Liên hệ để nhận báo giá phù hợp với đoàn.
               </p>
             )}
           </div>
 
           <div className="rounded-[2px] bg-[#e9e6dd] p-6 lg:p-7">
-            <p className="mb-5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#69746b]">
+            <p className="mb-5 text-xs font-bold uppercase tracking-[0.16em] text-[#566259]">
               Điểm nổi bật
             </p>
             <BulletList items={tour.highlights} />
@@ -428,13 +466,13 @@ export default function TourDetailsPage({ query }: { query: string }) {
     return (
       <section className="bg-[#f6f3ec] px-6 py-32 lg:px-12">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm text-[#69746b]">
+          <p className="text-sm text-[#566259]">
             Không tìm thấy hành trình này.
           </p>
           <button
             type="button"
             onClick={() => navigateTo("/explore")}
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#183024] px-5 py-3 text-[10px] font-bold uppercase tracking-[0.14em] text-white"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#183024] px-5 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Về danh mục
@@ -450,7 +488,7 @@ export default function TourDetailsPage({ query }: { query: string }) {
         <button
           type="button"
           onClick={() => navigateTo("/explore")}
-          className="mb-10 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.15em] text-[#69746b] transition-colors hover:text-[#b4502f]"
+          className="mb-10 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.15em] text-[#566259] transition-colors hover:text-[#8f3d21]"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           Tất cả hành trình
@@ -466,13 +504,13 @@ export default function TourDetailsPage({ query }: { query: string }) {
             role="alert"
             className="rounded-[2px] border border-[#e0dcd2] bg-white px-6 py-14 text-center"
           >
-            <p className="text-sm text-[#69746b]">
+            <p className="text-sm text-[#566259]">
               Không thể tải nội dung hành trình lúc này.
             </p>
             <button
               type="button"
               onClick={() => navigateTo("/explore")}
-              className="mt-6 rounded-full bg-[#183024] px-5 py-3 text-[10px] font-bold uppercase tracking-[0.14em] text-white"
+              className="mt-6 rounded-full bg-[#183024] px-5 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white"
             >
               Về danh mục
             </button>

@@ -1,5 +1,5 @@
 import { forwardRef } from "react"
-import { FunnelSimple, X } from "@phosphor-icons/react"
+import { CaretDown, FunnelSimple, X } from "@phosphor-icons/react"
 import { facetOptionLabel } from "@/data/filters"
 import type { FacetKey } from "@/data/filters"
 import { regionName } from "@/data/regions"
@@ -89,50 +89,50 @@ const ResultsToolbar = forwardRef<HTMLButtonElement, {
   filterTriggerRef,
 ) {
   return (
-    <div className="border-b border-[#e0dcd2] pb-5">
+    <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p
           aria-live="polite"
           aria-atomic="true"
-          className="m-0 text-sm text-[#42524a]"
+          className="m-0 text-lg text-[#2f3d35]"
         >
           <strong className="font-semibold text-[#183024]">{total}</strong> hành
           trình
         </p>
 
-        <div className="flex items-center gap-2">
+        <div className="flex w-full items-center gap-2 sm:w-auto">
           <button
             ref={filterTriggerRef}
             type="button"
             onClick={onOpenFilters}
             aria-expanded={filtersOpen}
             aria-haspopup="dialog"
-            className="inline-flex items-center gap-2 rounded-full border border-[#c8c4b8] bg-white px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#183024] transition-all duration-200 hover:border-[#183024] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742] lg:hidden"
+            className="inline-flex items-center gap-2 whitespace-nowrap min-h-11 rounded-full bg-white px-5 text-[15px] font-semibold text-[#183024] transition-colors duration-200 hover:bg-[#dddbd3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] lg:hidden"
           >
             <FunnelSimple className="h-4 w-4" aria-hidden="true" />
             Bộ lọc
             {activeCount > 0 && (
-              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#183024] px-1.5 text-[10px] font-bold tabular-nums text-white">
+              <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-[#183024] px-1.5 text-sm font-semibold tabular-nums text-white">
                 {activeCount}
               </span>
             )}
           </button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-0 flex-1 items-center gap-2 sm:flex-none">
             <label
               htmlFor="sort-select"
-              className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#5b665d]"
+              className="sr-only text-[15px] font-semibold text-[#2f3d35] sm:not-sr-only"
             >
               Sắp xếp
             </label>
-            <div className="relative">
+            <div className="relative min-w-0 flex-1 sm:flex-none">
               <select
                 id="sort-select"
                 value={sort}
                 onChange={(event) =>
                   onSortChange(event.target.value as SortMode)
                 }
-                className="cursor-pointer appearance-none rounded-full border border-[#c8c4b8] bg-white py-2.5 pl-4 pr-9 text-[12px] text-[#183024] transition-colors hover:border-[#183024] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
+                className="min-h-11 w-full cursor-pointer appearance-none rounded-full bg-white py-2.5 pl-5 pr-10 text-[15px] font-semibold text-[#183024] transition-colors hover:bg-[#dddbd3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
               >
                 {SORT_MODES.map((mode) => (
                   <option key={mode} value={mode}>
@@ -140,12 +140,10 @@ const ResultsToolbar = forwardRef<HTMLButtonElement, {
                   </option>
                 ))}
               </select>
-              <span
+              <CaretDown
                 aria-hidden="true"
-                className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[9px] text-[#69746b]"
-              >
-                ▼
-              </span>
+                className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#183024]"
+              />
             </div>
           </div>
         </div>
@@ -161,7 +159,7 @@ const ResultsToolbar = forwardRef<HTMLButtonElement, {
               }-${chip.value}`}
               type="button"
               onClick={() => onRemoveChip(chip)}
-              className="inline-flex items-center gap-2 rounded-full bg-[#183024] py-2 pl-4 pr-3 text-[11px] font-semibold text-white transition-colors hover:bg-[#b4502f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742] motion-safe:animate-[fade-in_160ms_ease-out]"
+              className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#183024] pl-5 pr-4 text-[15px] font-semibold text-white transition-colors hover:bg-[#a24627] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] motion-safe:animate-[fade-in_160ms_ease-out]"
             >
               {chip.label}
               <X className="h-3.5 w-3.5" aria-hidden="true" />
@@ -172,7 +170,7 @@ const ResultsToolbar = forwardRef<HTMLButtonElement, {
           <button
             type="button"
             onClick={onClearAll}
-            className="ml-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#b4502f] underline decoration-[#b4502f]/40 underline-offset-4 transition-colors hover:text-[#183024] hover:decoration-[#183024] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
+            className="ml-1 min-h-11 text-[15px] font-semibold text-[#183024] underline underline-offset-4 transition-colors hover:text-[#a24627] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
           >
             Xóa tất cả
           </button>

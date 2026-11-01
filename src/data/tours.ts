@@ -1,6 +1,6 @@
-import img0 from "@/imports/image.png"
-import img1 from "@/imports/image-1.png"
-import img2 from "@/imports/image-2.png"
+import img0 from "@/imports/photos/bien-ho-aerial.webp"
+import img1 from "@/imports/tours/kon-tum-church.webp"
+import img2 from "@/imports/tours/buon-don.webp"
 import type { RegionSlug } from "./regions"
 
 /**

@@ -1,18 +1,9 @@
-import { useState } from "react"
-import type { FormEvent } from "react"
-import { Leaf } from "@phosphor-icons/react"
+import { ArrowRight } from "@phosphor-icons/react"
+import logoWhite from "@/imports/logo_white.webp"
 import { followNavLink, goToEnquiry, hrefFor, navLinks } from "./Navigation"
 import { navigateTo } from "@/lib/useHashRoute"
 
 export default function Footer() {
-  const [email, setEmail] = useState("")
-  const [subscribed, setSubscribed] = useState(false)
-
-  const handleSubscribe = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    if (email.trim()) setSubscribed(true)
-  }
-
   return (
     <footer className="bg-[#10231a] px-6 pb-8 pt-16 text-white lg:px-12">
       <div className="mx-auto max-w-[1240px]">
@@ -26,19 +17,23 @@ export default function Footer() {
                 navigateTo("/", "", { scrollTo: "home" })
               }}
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#d56742] text-white">
-                <Leaf className="h-5 w-5" aria-hidden="true" />
-              </span>
+              <img
+                src={logoWhite}
+                alt=""
+                width={48}
+                height={36}
+                className="h-11 w-auto object-contain"
+              />
               <span className="flex flex-col leading-none">
                 <span className="font-display text-[17px] font-semibold">
                   Gialai
                 </span>
-                <span className="mt-1 text-[9px] font-semibold uppercase tracking-[0.28em] text-white/55">
+                <span className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-white/70">
                   Eco Tourist
                 </span>
               </span>
             </a>
-            <p className="mt-6 max-w-xs text-sm leading-6 text-white/60">
+            <p className="mt-6 max-w-xs text-sm leading-6 text-white/75">
               Những trải nghiệm có trách nhiệm giữa thiên nhiên và văn hóa Tây
               Nguyên.
             </p>
@@ -46,13 +41,13 @@ export default function Footer() {
 
           <div>
             <h2 className="footer-heading">Khám phá</h2>
-            <div className="flex flex-col items-start gap-3">
+            <div className="flex flex-col items-start">
               {navLinks.map((link) => (
                 <a
                   key={link.label}
                   href={hrefFor(link)}
                   onClick={(event) => followNavLink(event, link)}
-                  className="text-sm text-white/65 transition-colors hover:text-[#f2b08e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f2b08e]"
+                  className="inline-flex min-h-11 items-center text-sm text-white/80 transition-colors hover:text-[#f2b08e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f2b08e]"
                 >
                   {link.label}
                 </a>
@@ -60,7 +55,7 @@ export default function Footer() {
               <a
                 href="#contact"
                 onClick={goToEnquiry}
-                className="text-sm text-white/65 transition-colors hover:text-[#f2b08e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f2b08e]"
+                className="inline-flex min-h-11 items-center text-sm text-white/80 transition-colors hover:text-[#f2b08e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f2b08e]"
               >
                 Đặt hành trình
               </a>
@@ -68,44 +63,26 @@ export default function Footer() {
           </div>
 
           <div>
-            <h2 className="footer-heading">Nhận câu chuyện mới</h2>
-            <p className="mb-4 max-w-sm text-sm leading-6 text-white/60">
-              Một email mỗi tháng về những cung đường, người bạn và điều đẹp đẽ
-              ở lại.
+            <h2 className="footer-heading">Bắt đầu hành trình</h2>
+            <p className="mb-5 max-w-sm text-sm leading-6 text-white/75">
+              Kể chúng tôi nghe bạn muốn đi đâu. Một người địa phương sẽ phản
+              hồi và cùng bạn phác thảo chuyến đi.
             </p>
-            {subscribed ? (
-              <p className="text-sm text-[#f2b08e]">
-                Đã đăng ký. Hẹn gặp bạn trong hộp thư.
-              </p>
-            ) : (
-              <form
-                onSubmit={handleSubscribe}
-                className="flex max-w-sm border-b border-white/25 pb-2"
-              >
-                <label htmlFor="footer-email" className="sr-only">
-                  Email của bạn
-                </label>
-                <input
-                  id="footer-email"
-                  required
-                  type="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  placeholder="email@cuaban.com"
-                  className="min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-white/45"
-                />
-                <button
-                  type="submit"
-                  className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#f2b08e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f2b08e]"
-                >
-                  Đăng ký
-                </button>
-              </form>
-            )}
+            <a
+              href="#contact"
+              onClick={goToEnquiry}
+              className="group inline-flex min-h-11 items-center gap-3 rounded-full bg-[#fed24f] px-6 text-xs font-bold uppercase tracking-[0.12em] text-[#4a3220] transition-colors hover:bg-[#ffe07a] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            >
+              Gửi yêu cầu
+              <ArrowRight
+                className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                aria-hidden="true"
+              />
+            </a>
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col justify-between gap-3 border-t border-white/10 pt-6 text-[10px] uppercase tracking-[0.14em] text-white/45 sm:flex-row">
+        <div className="mt-16 flex flex-col justify-between gap-3 border-t border-white/10 pt-6 text-xs uppercase tracking-[0.12em] text-white/70 sm:flex-row">
           <span>© {new Date().getFullYear()} Gialai Eco Tourist</span>
           <span>Đi chậm. Nhìn kỹ. Sống sâu.</span>
         </div>

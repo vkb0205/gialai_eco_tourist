@@ -1,18 +1,23 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import type { ReactNode } from "react"
 import type { ChangeEvent, FormEvent } from "react"
 import {
   ArrowDown,
+  ArrowLeft,
   ArrowRight,
   ArrowUpRight,
   Leaf,
   Play,
-  ShieldCheck,
-  Users,
 } from "@phosphor-icons/react"
-import img0 from "@/imports/image.jpeg"
-import img1 from "@/imports/image-1.png"
-import img2 from "@/imports/image-2.png"
+import heroImage from "@/imports/photos/bien-ho-aerial.webp"
+import churchImage from "@/imports/tours/kon-tum-church.webp"
+import drayNurImage from "@/imports/tours/dray-nur.webp"
+import buonDonImage from "@/imports/tours/buon-don.webp"
+import hoLakImage from "@/imports/tours/ho-lak.webp"
+import coffeeImage from "@/imports/tours/coffee-buon-ma-thuot.webp"
 import { goToEnquiry } from "@/components/layout/Navigation"
+import { imageCredits } from "@/data/tourImages"
+import { festivalBanner, siteMediaUrl } from "@/data/siteMedia"
 import { loadPublishedTours } from "@/data/toursRepository"
 import type { Tour } from "@/data/tours"
 import { formatVnd } from "@/lib/text"
@@ -22,244 +27,428 @@ import {
 } from "@/lib/submitServiceSubmission"
 import { navigateTo } from "@/lib/useHashRoute"
 
-const destinations = [
+type GalleryImage = {
+  src: string
+  alt: string
+  caption: string
+  className: string
+  credit?: { label: string; href: string }
+}
+
+/** Real Gia Lai / Tây Nguyên photography. Credits are listed under the grid. */
+const galleryImages: GalleryImage[] = [
   {
-    index: "01",
-    name: "Biển Hồ",
-    caption: "Mặt nước trong miệng núi lửa",
-    image: img0,
+    src: heroImage,
+    alt: "Biển Hồ nhìn từ trên cao, mặt nước xanh thẫm ôm lấy dải đất phủ thông",
+    caption: "Biển Hồ nhìn từ trên cao",
+    className: "sm:col-span-2 sm:row-span-2",
   },
   {
-    index: "02",
-    name: "Kon Ka Kinh",
-    caption: "Rừng già và những tầng mây",
-    image:
-      "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=85",
+    src: drayNurImage,
+    alt: "Dòng thác Dray Nur đổ xuống giữa vách đá và tán rừng",
+    caption: "Thác Dray Nur",
+    className: "",
+    credit: imageCredits.drayNur,
   },
   {
-    index: "03",
-    name: "Làng Bahnar",
-    caption: "Văn hóa sống bên bếp lửa",
-    image: img2,
+    src: buonDonImage,
+    alt: "Hai người chèo thuyền độc mộc trên mặt sông ở Buôn Đôn",
+    caption: "Thuyền độc mộc, Buôn Đôn",
+    className: "",
+    credit: imageCredits.buonDon,
   },
   {
-    index: "04",
-    name: "Kon Chư Răng",
-    caption: "Thác nước giữa đại ngàn",
-    image:
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=85",
+    src: coffeeImage,
+    alt: "Chùm cà phê chín đỏ trên cành ở Buôn Ma Thuột",
+    caption: "Cà phê Buôn Ma Thuột",
+    className: "",
+    credit: imageCredits.coffee,
+  },
+  {
+    src: hoLakImage,
+    alt: "Hồ Lắk trong xanh dưới bầu trời cao nguyên",
+    caption: "Hồ Lắk",
+    className: "",
+    credit: imageCredits.hoLak,
   },
 ]
 
-const galleryImages = [
-  { src: img1, alt: "Đường mòn xuyên rừng", className: "md:row-span-2" },
-  { src: img0, alt: "Biển Hồ lúc bình minh", className: "" },
-  {
-    src: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1100&q=85",
-    alt: "Bữa cơm bên hiên nhà",
-    className: "",
-  },
-  { src: img2, alt: "Gương mặt người Tây Nguyên", className: "md:col-span-2" },
-]
+/** Fades and lifts its children once as they scroll into view. Reduced motion shows them at rest. */
+function Reveal({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: ReactNode
+  className?: string
+  delay?: number
+}) {
+  const ref = useRef<HTMLDivElement | null>(null)
+  const [shown, setShown] = useState(false)
+
+  useEffect(() => {
+    const node = ref.current
+    if (!node || typeof IntersectionObserver === "undefined") {
+      setShown(true)
+      return
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setShown(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: "0px 0px -6% 0px", threshold: 0.05 },
+    )
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <div
+      ref={ref}
+      style={{ transitionDelay: shown ? `${delay}ms` : undefined }}
+      className={`motion-safe:transition-[opacity,transform] motion-safe:duration-700 motion-safe:ease-[cubic-bezier(0.32,0.72,0,1)] ${
+        shown
+          ? "opacity-100"
+          : "motion-safe:translate-y-6 motion-safe:opacity-0"
+      } ${className}`}
+    >
+      {children}
+    </div>
+  )
+}
+
+/** Loads the festival banner from Supabase Storage; resolves to its URL only once the file really exists. */
+function useFestivalBannerUrl(): string | null {
+  const [url, setUrl] = useState<string | null>(null)
+
+  useEffect(() => {
+    const candidate = siteMediaUrl(festivalBanner.path)
+    if (!candidate) return
+    let active = true
+    const probe = new Image()
+    probe.onload = () => {
+      if (active) setUrl(candidate)
+    }
+    probe.src = candidate
+    return () => {
+      active = false
+    }
+  }, [])
+
+  return url
+}
 
 function Hero() {
+  const bannerUrl = useFestivalBannerUrl()
+  const slideCount = bannerUrl ? 2 : 1
+  const trackRef = useRef<HTMLDivElement | null>(null)
+  const [active, setActive] = useState(0)
+
+  const goTo = (index: number) => {
+    const track = trackRef.current
+    if (!track) return
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches
+    track.scrollTo({
+      left: index * track.clientWidth,
+      behavior: reduced ? "auto" : "smooth",
+    })
+  }
+
+  const onScroll = () => {
+    const track = trackRef.current
+    if (!track || track.clientWidth === 0) return
+    setActive(Math.round(track.scrollLeft / track.clientWidth))
+  }
+
   return (
     <section
       id="home"
-      className="relative isolate min-h-[760px] overflow-hidden bg-[#183024] text-white lg:min-h-[860px]"
+      aria-roledescription="carousel"
+      aria-label="Giới thiệu nổi bật"
+      className="relative bg-[#183024] text-white"
     >
-      {/* Keep the photograph full-bleed so the copy remains over the image. */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <img
-          src={img0}
-          alt="Phong cảnh xanh của Gia Lai"
-          className="absolute inset-0 h-full w-full object-cover object-[30%_50%] md:object-[34%_50%] lg:object-[40%_50%] xl:object-center"
-        />
-      </div>
+      <div
+        ref={trackRef}
+        onScroll={onScroll}
+        className="scrollbar-hide flex snap-x snap-mandatory overflow-x-auto overflow-y-hidden overscroll-x-contain"
+      >
+        <div
+          role="group"
+          aria-roledescription="slide"
+          aria-label={`1 / ${slideCount}`}
+          className="relative isolate min-h-[100svh] w-full min-w-full shrink-0 basis-full snap-start overflow-hidden"
+        >
+          {/* Keep the photograph full-bleed so the copy remains over the image. */}
+          <div className="absolute inset-0 -z-10 overflow-hidden">
+            <img
+              src={heroImage}
+              alt="Biển Hồ nhìn từ trên cao, mặt nước xanh thẫm ôm lấy dải đất phủ thông"
+              width={2000}
+              height={1116}
+              fetchPriority="high"
+              decoding="async"
+              className="absolute inset-0 h-full w-full object-cover object-[30%_50%] md:object-[34%_50%] lg:object-[40%_50%] xl:object-center"
+            />
+          </div>
 
-      <div className="pointer-events-none absolute inset-0 z-10 bg-noise opacity-[0.035] mix-blend-overlay" />
+          <div className="pointer-events-none absolute inset-0 z-10 bg-noise opacity-[0.035] mix-blend-overlay" />
 
-      <div className="relative z-20 mx-auto flex min-h-[760px] max-w-[1440px] flex-col justify-between px-6 pb-14 pt-32 lg:min-h-[860px] lg:px-12 lg:pb-20">
-        <div className="max-w-[56rem]">
-          <h1 className="max-w-[min(100%,54rem)] break-words font-display font-medium tracking-[-0.065em]">
-            <span className="block text-[clamp(2.7rem,7vw,5rem)] leading-[1.05]">
-              Vi vu muôn phương
-            </span>
-            <span className="block text-[clamp(2.65rem,7vw,6rem)] leading-[1.05] text-[#fef2a0]">
-              Chạm ngàn cung đường
-            </span>
-          </h1>
+          <div className="relative z-20 mx-auto flex min-h-[100svh] max-w-[1440px] flex-col justify-between px-6 pb-10 pt-32 lg:px-12 lg:pb-14">
+            <div className="max-w-[56rem]">
+              <h1 className="max-w-[min(100%,54rem)] break-words font-display font-medium tracking-[-0.065em]">
+                <span className="block text-[clamp(2.7rem,7vw,5rem)] leading-[1.05]">
+                  Vi vu muôn phương
+                </span>
+                <span className="block text-[clamp(2.65rem,7vw,6rem)] leading-[1.05] text-[#fef2a0]">
+                  Chạm ngàn cung đường
+                </span>
+              </h1>
 
-          {/* The paragraph stays in a left-side safe zone, away from the tower crop. */}
-          <div className="mt-10 w-fit max-w-full lg:mt-14">
-            <p className="max-w-[17rem] text-base leading-7 text-white/80 sm:max-w-[min(30rem,42vw)] lg:max-w-[min(34rem,34vw)] lg:text-lg">
-              Từ phố thị đến biển xanh nắng vàng và cao nguyên rộng mở, mỗi
-              chuyến đi đều là một trải nghiệm mới đầy cảm hứng.
-            </p>
+              {/* The paragraph stays in a left-side safe zone, away from the tower crop. */}
+              <div className="mt-10 w-fit max-w-full lg:mt-14">
+                <p className="max-w-[17rem] text-base leading-7 text-white/80 sm:max-w-[min(30rem,42vw)] lg:max-w-[min(34rem,34vw)] lg:text-lg">
+                  Từ phố thị đến biển xanh nắng vàng và cao nguyên rộng mở, mỗi
+                  chuyến đi đều là một trải nghiệm mới đầy cảm hứng.
+                </p>
 
-            <div className="mt-8 flex max-w-[17rem] flex-wrap items-center gap-4 sm:max-w-[min(30rem,42vw)] lg:mt-9 lg:max-w-[min(34rem,34vw)]">
-              <a
-                href="#/explore"
-                onClick={(event) => {
-                  event.preventDefault()
-                  navigateTo("/explore")
-                }}
-                className="group inline-flex items-center gap-3 rounded-full bg-[#fed24f] px-6 py-4 text-xs font-bold uppercase tracking-[0.12em] text-[#6f4e37] transition-all hover:-translate-y-1 hover:bg-[#fed24f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-              >
-                Xem hành trình{" "}
-                <ArrowRight
-                  className="h-4 w-4 transition-transform group-hover:translate-x-1"
-                  aria-hidden="true"
-                />
-              </a>
+                <div className="mt-8 flex max-w-[17rem] flex-wrap items-center gap-4 sm:max-w-[min(30rem,42vw)] lg:mt-9 lg:max-w-[min(34rem,34vw)]">
+                  <a
+                    href="#/explore"
+                    onClick={(event) => {
+                      event.preventDefault()
+                      navigateTo("/explore")
+                    }}
+                    className="group inline-flex items-center gap-3 rounded-full bg-[#fed24f] px-6 py-4 text-xs font-bold uppercase tracking-[0.12em] text-[#6f4e37] transition-all hover:-translate-y-1 hover:bg-[#fed24f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  >
+                    Xem hành trình{" "}
+                    <ArrowRight
+                      className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                      aria-hidden="true"
+                    />
+                  </a>
+                  <a
+                    href="#story"
+                    className="group inline-flex items-center gap-3 px-3 py-4 text-xs font-bold uppercase tracking-[0.12em] text-white/85 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  >
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/35">
+                      <Play
+                        weight="fill"
+                        className="ml-0.5 h-3.5 w-3.5"
+                        aria-hidden="true"
+                      />
+                    </span>
+                    Câu chuyện của chúng tôi
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-end justify-between border-t border-white/20 pt-5">
               <a
                 href="#story"
-                className="group inline-flex items-center gap-3 px-3 py-4 text-xs font-bold uppercase tracking-[0.12em] text-white/85 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="group flex items-center gap-3 text-[15px] font-bold uppercase tracking-[0.18em] text-white/75 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:text-[17px] sm:tracking-[0.2em]"
               >
-                <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/35">
-                  <Play
-                    weight="fill"
-                    className="ml-0.5 h-3.5 w-3.5"
-                    aria-hidden="true"
-                  />
-                </span>
-                Câu chuyện của chúng tôi
+                Khám phá tiếp{" "}
+                <ArrowDown className="h-4 w-4" aria-hidden="true" />
               </a>
             </div>
           </div>
         </div>
 
-        <div className="flex items-end justify-between border-t border-white/20 pt-5">
-          <a
-            href="#story"
-            className="group flex items-center gap-3 text-[15px] font-bold uppercase tracking-[0.18em] text-white/75 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:text-[17px] sm:tracking-[0.2em]"
-          >
-            Khám phá tiếp <ArrowDown className="h-4 w-4" aria-hidden="true" />
-          </a>
+        {bannerUrl && (
+        <div
+          role="group"
+          aria-roledescription="slide"
+          aria-label="2 / 2: Festival Cồng Chiêng 2026"
+          className="relative isolate flex min-h-[100svh] w-full min-w-full shrink-0 basis-full snap-start flex-col justify-center overflow-hidden bg-[#b9d3e3] md:block"
+        >
+          {/* Phones are portrait: the banner sits whole over a soft copy of itself, with its text set below. */}
+          <img
+            src={bannerUrl}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 -z-10 h-full w-full scale-110 object-cover blur-2xl md:hidden"
+          />
+          <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[#0c1f17]/55 md:hidden" />
+          <img
+            src={bannerUrl}
+            alt={festivalBanner.alt}
+            width={festivalBanner.width}
+            height={festivalBanner.height}
+            decoding="async"
+            className="relative h-auto w-full md:absolute md:inset-0 md:h-full md:object-cover md:object-center"
+          />
+          {/* Keeps the fixed navigation legible over the pale sky. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#10231a]/70 to-transparent"
+          />
+          <div className="px-6 pb-28 pt-8 text-white md:hidden">
+            <p className="m-0 font-display text-3xl leading-tight">Festival Cồng Chiêng 2026</p>
+            <p className="m-0 mt-2 text-lg">Tuần lễ Hoa Dã Quỳ núi lửa Chư Đăng Ya</p>
+            <p className="m-0 mt-4 text-lg font-semibold">
+              30.10 – 08.11.2026 · Quảng trường Đại Đoàn Kết
+            </p>
+          </div>
         </div>
+      )}
       </div>
+
+      {slideCount > 1 && (
+        <div className="absolute bottom-5 right-6 z-30 flex items-center gap-3 lg:bottom-8 lg:right-12">
+          <div
+            role="group"
+            aria-label="Chọn slide"
+            className="flex items-center"
+          >
+            {Array.from({ length: slideCount }, (_, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => goTo(index)}
+                aria-label={`Chuyển tới slide ${index + 1}`}
+                aria-current={index === active ? "true" : undefined}
+                className="group flex h-11 w-7 items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              >
+                <span
+                  className={`h-2.5 rounded-full bg-white transition-all duration-300 ${
+                    index === active
+                      ? "w-7"
+                      : "w-2.5 opacity-60 group-hover:opacity-100"
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => goTo(active - 1)}
+            disabled={active === 0}
+            aria-label="Slide trước"
+            className="flex h-12 w-12 items-center justify-center rounded-full border border-white/60 bg-[#10231a]/45 text-white transition-colors hover:bg-white hover:text-[#183024] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#10231a]/45 disabled:hover:text-white"
+          >
+            <ArrowLeft className="h-5 w-5" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            onClick={() => goTo(active + 1)}
+            disabled={active === slideCount - 1}
+            aria-label="Slide sau"
+            className="flex h-12 w-12 items-center justify-center rounded-full border border-white/60 bg-[#10231a]/45 text-white transition-colors hover:bg-white hover:text-[#183024] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#10231a]/45 disabled:hover:text-white"
+          >
+            <ArrowRight className="h-5 w-5" aria-hidden="true" />
+          </button>
+        </div>
+      )}
     </section>
   )
 }
 
-function IntroStrip() {
+function PhotoCredit({
+  credit,
+  className = "",
+}: {
+  credit: { label: string; href: string }
+  className?: string
+}) {
   return (
-    <section className="border-b border-[#d9d4c9] bg-[#f6f3ec]">
-      <div className="mx-auto grid max-w-[1440px] divide-y divide-[#d9d4c9] px-6 sm:grid-cols-3 sm:divide-x sm:divide-y-0 lg:px-12">
-        {[
-          {
-            value: "01",
-            title: "Nhóm nhỏ",
-            text: "Tối đa 12 người mỗi chuyến",
-          },
-          {
-            value: "02",
-            title: "Người địa phương",
-            text: "Dẫn lối bởi người hiểu đất",
-          },
-          { value: "03", title: "Dấu chân nhẹ", text: "Du lịch để gìn giữ" },
-        ].map((item) => (
-          <div
-            key={item.value}
-            className="flex items-center gap-5 py-6 first:sm:pl-0 last:sm:pr-0 sm:px-8 sm:py-8"
-          >
-            <span className="font-display text-2xl text-[#d56742]">
-              {item.value}
-            </span>
-            <div>
-              <h2 className="text-sm font-bold uppercase tracking-[0.12em] text-[#183024]">
-                {item.title}
-              </h2>
-              <p className="mt-1 text-xs text-[#69746b]">{item.text}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
+    <a
+      href={credit.href}
+      target="_blank"
+      rel="noreferrer noopener"
+      className={`inline-flex min-h-6 items-center text-sm text-[#2f3d35] underline underline-offset-2 hover:text-[#a24627] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] ${className}`}
+    >
+      Ảnh: {credit.label}
+    </a>
   )
 }
 
 function Story() {
   return (
-    <section id="story" className="bg-[#f6f3ec] px-6 py-24 lg:px-12 lg:py-36">
-      <div className="mx-auto grid max-w-[1240px] items-center gap-16 lg:grid-cols-[0.9fr_1fr] lg:gap-28">
-        <div className="relative pl-5 pt-5 lg:pl-8 lg:pt-8">
-          <div className="absolute left-0 top-0 h-[82%] w-[82%] border border-[#d56742]/50" />
-          <div className="relative overflow-hidden rounded-[2px] bg-[#d9d4c9]">
+    <section id="story" className="bg-white px-6 py-24 lg:px-12 lg:py-32">
+      <div className="mx-auto grid max-w-[1440px] items-center gap-12 lg:grid-cols-[0.9fr_1fr] lg:gap-24">
+        <Reveal>
+          <figure className="m-0">
             <img
-              src={img1}
-              alt="Người dân địa phương trên con đường rừng"
-              className="aspect-[4/5] w-full object-cover transition-transform duration-700 hover:scale-105"
+              src={churchImage}
+              alt="Nhà thờ gỗ Kon Tum dưới bầu trời xanh"
+              width={1600}
+              height={1061}
+              loading="lazy"
+              decoding="async"
+              className="aspect-[4/5] w-full object-cover object-[50%_35%]"
             />
-            <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between border-t border-white/30 pt-4 text-white">
-              <span className="text-[10px] font-bold uppercase tracking-[0.22em]">
-                Gia Lai / Việt Nam
-              </span>
-              <span className="font-display text-2xl italic">03°</span>
-            </div>
-          </div>
-          <div className="absolute -bottom-6 -right-5 hidden rounded-full bg-[#6f4e37] px-7 py-7 text-center text-white shadow-xl sm:block">
-            <span className="block font-display text-3xl leading-none">
-              14+
-            </span>
-            <span className="mt-2 block text-[9px] font-bold uppercase tracking-[0.15em]">
-              năm bền bỉ
-            </span>
-          </div>
-        </div>
+            <figcaption className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[15px] text-[#2f3d35]">
+              <span className="font-semibold">Nhà thờ gỗ Kon Tum, Gia Lai</span>
+              <PhotoCredit credit={imageCredits.konTumChurch} />
+            </figcaption>
+          </figure>
+        </Reveal>
 
         <div>
-          <div className="mb-5 ml-auto flex w-fit items-center justify-end gap-4 text-[px] font-bold uppercase tracking-[0.2em] text-[#6f4e37]">
-            <span className="h-px w-70 bg-[#6f4e37]" />
-            Câu chuyện thương hiệu
-          </div>
-
-          <h2 className="max-w-full text-balance font-display text-[clamp(1.5rem,4vw,2.4rem)] font-medium leading-[1.05] tracking-[-0.04em] text-[#183024] sm:max-w-2xl">
-            Kết nối điểm đến, kiến tạo trải nghiệm
-            <br />
-            <em className="whitespace-nowrap text-[#087f3c]">
-              Đồng hành cùng mỗi chuyến đi
-            </em>
-          </h2>
-          <div className="mt-8 max-w-lg space-y-5 text-[15px] leading-7 text-[#55605a]">
-            <p>
+          <Reveal>
+            <h2 className="m-0 max-w-[16ch] font-display text-[clamp(2.25rem,4.6vw,3.75rem)] font-medium leading-[1.05] tracking-[-0.04em] text-[#183024]">
+              Kết nối điểm đến, kiến tạo trải nghiệm
+            </h2>
+          </Reveal>
+          <Reveal
+            delay={80}
+            className="mt-8 flex max-w-xl flex-col gap-5 text-[18px] leading-8 text-[#2f3d35]"
+          >
+            <p className="m-0 font-semibold text-[#183024]">
+              Đồng hành cùng mỗi chuyến đi.
+            </p>
+            <p className="m-0">
               Được thành lập năm 2012, Gia Lai Eco-Tourist khởi nguồn từ niềm
               đam mê du lịch và thế mạnh tại Gia Lai - Tây Nguyên, từng bước mở
               rộng hành trình trong nước và quốc tế.
             </p>
-            <p>
+            <p className="m-0">
               Với nền tảng uy tín, chất lượng và đổi mới, chúng tôi mang đến đa
               dạng dịch vụ từ tour, MICE đến visa, vé máy bay và xe du lịch,
               giúp khách hàng an tâm lên đường và tận hưởng trọn vẹn mỗi chuyến
               đi.
             </p>
-          </div>
-          {/* <div className="mt-9 flex flex-wrap gap-3">
-            <span className="rounded-full border border-[#c8cfc3] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.13em] text-[#42524a]">
-              Đối tác cộng đồng
-            </span>
-            <span className="rounded-full border border-[#c8cfc3] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.13em] text-[#42524a]">
-              Du lịch có trách nhiệm
-            </span>
-            <span className="rounded-full border border-[#c8cfc3] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.13em] text-[#42524a]">
-              Được cấp phép
-            </span>
-          </div> */}
-          {/* <a
-            href="#contact"
-            onClick={goToEnquiry}
-            className="group mt-10 inline-flex items-center gap-3 border-b border-[#183024] pb-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#183024] transition-colors hover:border-[#d56742] hover:text-[#b4502f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
-          >
-            Đọc câu chuyện đầy đủ{" "}
-            <ArrowRight
-              className="h-4 w-4 transition-transform group-hover:translate-x-1"
-              aria-hidden="true"
-            /> */}
-          {/* </a> */}
+          </Reveal>
+          <Reveal delay={160}>
+            <dl className="m-0 mt-10 flex gap-12">
+              {[
+                ["2012", "năm thành lập"],
+                ["14+", "năm bền bỉ"],
+              ].map(([value, label]) => (
+                <div key={label}>
+                  <dd className="m-0 font-display text-5xl leading-none tracking-[-0.03em] text-[#183024]">
+                    {value}
+                  </dd>
+                  <dt className="mt-2 text-[16px] text-[#2f3d35]">{label}</dt>
+                </div>
+              ))}
+            </dl>
+          </Reveal>
         </div>
       </div>
     </section>
   )
+}
+
+/** Take tours with distinct photos first so the home row never repeats an image. */
+function pickVariedTours(tours: Tour[], count: number): Tour[] {
+  const seen = new Set<string>()
+  const varied: Tour[] = []
+  const rest: Tour[] = []
+  for (const tour of tours) {
+    if (seen.has(tour.image)) rest.push(tour)
+    else {
+      seen.add(tour.image)
+      varied.push(tour)
+    }
+  }
+  return [...varied, ...rest].slice(0, count)
 }
 
 function tourCategory(tour: Tour): string {
@@ -268,75 +457,62 @@ function tourCategory(tour: Tour): string {
   return "Tour trong nước"
 }
 
+/** The duration is shown as its own chip, so drop "(3 ngày 2 đêm)" from the title. */
+function shortTitle(title: string): string {
+  return title.replace(/\s*\(\s*\d+\s*ngày[^)]*\)\s*$/i, "").trim() || title
+}
+
 function ExperienceCard({ tour }: { tour: Tour }) {
-  const detailHref = `#/tour?slug=${encodeURIComponent(tour.slug)}`
+  const query = `slug=${encodeURIComponent(tour.slug)}`
 
   return (
-    <article
-      role="link"
-      tabIndex={0}
-      onClick={(event) => {
-        if ((event.target as HTMLElement).closest("a, button")) return
-        navigateTo("/tour", `slug=${encodeURIComponent(tour.slug)}`)
-      }}
-      onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault()
-          navigateTo("/tour", `slug=${encodeURIComponent(tour.slug)}`)
-        }
-      }}
-      className="group relative flex cursor-pointer flex-col overflow-hidden rounded-[2px] bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#183024]"
-    >
-      <div className="relative overflow-hidden">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-[2px] bg-white transition-transform duration-300 motion-safe:hover:-translate-y-1 focus-within:outline focus-within:outline-2 focus-within:outline-offset-4 focus-within:outline-[#183024]">
+      <div className="overflow-hidden bg-[#dddbd3]">
         <img
           src={tour.image}
-          alt={tour.title}
+          alt=""
           loading="lazy"
-          className="aspect-[1.3/1] w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          decoding="async"
+          className="aspect-[4/3] w-full object-cover transition-transform duration-700 motion-safe:group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#10261a]/75 via-transparent to-transparent opacity-80" />
-        <span className="absolute bottom-5 left-5 text-[10px] font-bold uppercase tracking-[0.16em] text-white">
-          {tour.durationLabel}
-        </span>
       </div>
-      <div className="flex flex-1 flex-col border border-t-0 border-[#e5e1d8] p-6">
-        <span className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#69746b]">
-          {tourCategory(tour)}
-        </span>
-        <h3 className="mt-2 font-display text-2xl leading-tight tracking-[-0.04em] text-[#183024]">
+      <div className="flex flex-1 flex-col gap-4 p-5 lg:p-6">
+        <p className="m-0 text-[15px] font-semibold text-[#4f5b53]">
+          {tourCategory(tour)} · {tour.durationLabel}
+        </p>
+        <h3 className="m-0 font-display text-[22px] leading-[1.2] tracking-[-0.02em] text-[#183024]">
+          {/* Stretched link: the whole card is one click target and one tab stop. */}
           <a
-            href={detailHref}
+            href={`#/tour?${query}`}
             onClick={(event) => {
               event.preventDefault()
-              navigateTo("/tour", `slug=${encodeURIComponent(tour.slug)}`)
+              navigateTo("/tour", query)
             }}
-            className="transition-colors hover:text-[#b4502f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
+            className="transition-colors after:absolute after:inset-0 after:content-[''] hover:text-[#a24627] focus-visible:outline-none"
           >
-            {tour.title}
+            {shortTitle(tour.title)}
           </a>
         </h3>
-        <p className="mt-3 flex-1 text-sm leading-6 text-[#69746b]">
+        <p className="m-0 line-clamp-2 text-[16px] leading-6 text-[#2f3d35]">
           {tour.blurb}
         </p>
-        <div className="mt-7 flex items-end justify-between border-t border-[#e5e1d8] pt-4">
-          <div>
-            <span className="block text-[9px] font-bold uppercase tracking-[0.16em] text-[#7f887f]">
-              Giá từ
-            </span>
-            <strong className="mt-1 block text-sm text-[#b4502f]">
+        <div className="mt-auto flex flex-wrap items-end justify-between gap-x-3 gap-y-3 pt-2">
+          <p className="m-0">
+            <span className="block text-sm text-[#4f5b53]">Giá từ</span>
+            <strong className="mt-0.5 block text-lg font-semibold text-[#183024]">
               {tour.priceVnd === null
                 ? "Liên hệ để biết giá"
                 : formatVnd(tour.priceVnd)}
             </strong>
-          </div>
+          </p>
           <a
             href="#contact"
             onClick={goToEnquiry}
-            className="group/link flex items-center gap-2 rounded-full bg-[#183024] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em] text-[#6f4e37] transition-colors hover:bg-[#b4502f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
+            className="group/link relative z-10 inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-full bg-[#183024] px-5 text-[15px] font-semibold text-white transition-colors hover:bg-[#a24627] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
           >
-            <span className="text-[white]">Đặt hành trình</span>
+            Đặt hành trình
             <ArrowUpRight
-              className="h-4 w-4 text-[#6f4e37] transition-transform group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5"
+              className="h-4 w-4 transition-transform group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5"
               aria-hidden="true"
             />
           </a>
@@ -398,38 +574,34 @@ function Experiences() {
   return (
     <section
       id="experiences"
-      className="bg-[#e9e6dd] px-6 py-24 lg:px-12 lg:py-32"
+      className="bg-[#ecebe5] px-6 py-24 lg:px-12 lg:py-32"
     >
-      <div className="mx-auto max-w-[1240px]">
-        <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
-          <div>
-            <div className="mb-5 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em] text-[#b4502f]">
-              <span className="h-px w-10 bg-[#b4502f]" />
-              Hành trình nổi bật
-            </div>
-            <h2 className="max-w-2xl font-display text-5xl font-medium leading-[0.95] tracking-[-0.06em] text-[#183024] sm:text-6xl">
-              Đi theo cách
-              <br />
-              <em className="text-[#61703f]">của riêng bạn.</em>
-            </h2>
-          </div>
-          <p className="max-w-xs text-sm leading-6 text-[#69746b]">
+      <div className="mx-auto max-w-[1440px]">
+        <Reveal className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end lg:gap-16">
+          <h2 className="m-0 max-w-[20ch] text-balance font-display text-[clamp(2.25rem,5vw,4.25rem)] font-medium leading-[1.02] tracking-[-0.04em] text-[#183024]">
+            Đi theo cách của riêng bạn.
+          </h2>
+          <p className="m-0 max-w-md text-[18px] leading-8 text-[#2f3d35]">
             Từ một buổi sớm bên mặt hồ đến bốn ngày trong rừng sâu. Mỗi hành
             trình được thiết kế để bạn có thời gian thực sự ở đó.
           </p>
-        </div>
+        </Reveal>
 
-        <div className="mt-10 flex gap-2 overflow-x-auto border-b border-[#d2d0c6] pb-4">
+        <div
+          className="mt-10 flex flex-wrap gap-2"
+          role="group"
+          aria-label="Lọc loại hành trình"
+        >
           {filters.map((filter) => (
             <button
               key={filter}
               type="button"
               onClick={() => setActiveFilter(filter)}
               aria-pressed={activeFilter === filter}
-              className={`whitespace-nowrap rounded-full px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.14em] transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742] ${
+              className={`min-h-11 whitespace-nowrap rounded-full px-5 text-[15px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] ${
                 activeFilter === filter
                   ? "bg-[#183024] text-white"
-                  : "border border-[#b7b7ad] text-[#5b665d] hover:border-[#183024] hover:text-[#183024]"
+                  : "bg-white text-[#183024] hover:bg-[#183024] hover:text-white"
               }`}
             >
               {filter}
@@ -439,22 +611,22 @@ function Experiences() {
 
         <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {loading ? (
-            <p className="col-span-full py-16 text-center text-sm text-[#69746b]">
+            <p className="col-span-full py-16 text-center text-[17px] text-[#2f3d35]">
               Đang tải các hành trình đã công bố…
             </p>
           ) : loadError ? (
-            <p className="col-span-full py-16 text-center text-sm text-[#69746b]">
+            <p className="col-span-full py-16 text-center text-[17px] text-[#2f3d35]">
               Chưa thể tải hành trình lúc này. Bạn có thể xem toàn bộ danh mục ở
               trang Explore.
             </p>
           ) : (
-            visibleTours
-              .slice(0, 4)
-              .map((tour) => <ExperienceCard key={tour.id} tour={tour} />)
+            pickVariedTours(visibleTours, 4).map((tour) => (
+              <ExperienceCard key={tour.id} tour={tour} />
+            ))
           )}
         </div>
         {!loading && !loadError && visibleTours.length === 0 && (
-          <p className="py-16 text-center text-sm text-[#69746b]">
+          <p className="py-16 text-center text-[17px] text-[#2f3d35]">
             Đang cập nhật hành trình mới.
           </p>
         )}
@@ -465,9 +637,9 @@ function Experiences() {
               event.preventDefault()
               navigateTo("/explore", exploreQuery)
             }}
-            className="group inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.17em] text-[#183024] transition-colors hover:text-[#b4502f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
+            className="group inline-flex min-h-14 items-center gap-3 rounded-full bg-[#183024] px-8 text-[16px] font-semibold text-white transition-colors hover:bg-[#a24627] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
           >
-            {allToursLabel}{" "}
+            {allToursLabel}
             <ArrowRight
               className="h-4 w-4 transition-transform group-hover:translate-x-1"
               aria-hidden="true"
@@ -479,209 +651,58 @@ function Experiences() {
   )
 }
 
-function Destinations() {
-  return (
-    <section
-      id="destinations"
-      className="bg-[#f6f3ec] px-6 py-24 lg:px-12 lg:py-36"
-    >
-      <div className="mx-auto max-w-[1240px]">
-        <div className="mb-12 flex flex-col justify-between gap-7 md:flex-row md:items-end">
-          <div>
-            <div className="mb-5 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em] text-[#b4502f]">
-              <span className="h-px w-10 bg-[#b4502f]" />
-              Điểm đến
-            </div>
-            <h2 className="max-w-2xl font-display text-5xl font-medium leading-[0.95] tracking-[-0.06em] text-[#183024] sm:text-6xl">
-              Nơi rừng xanh
-              <br />
-              <em className="text-[#61703f]">gọi tên bạn.</em>
-            </h2>
-          </div>
-          <a
-            href="#/explore"
-            onClick={(event) => {
-              event.preventDefault()
-              navigateTo("/explore")
-            }}
-            className="group flex items-center gap-3 pb-2 text-[10px] font-bold uppercase tracking-[0.17em] text-[#183024] transition-colors hover:text-[#b4502f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
-          >
-            Xem theo vùng miền{" "}
-            <ArrowUpRight
-              className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-              aria-hidden="true"
-            />
-          </a>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 lg:grid-rows-[260px_260px]">
-          {destinations.map((destination, index) => (
-            <a
-              key={destination.name}
-              href="#/explore"
-              onClick={(event) => {
-                event.preventDefault()
-                navigateTo("/explore")
-              }}
-              className={`group relative min-h-[300px] overflow-hidden rounded-[2px] bg-[#183024] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742] ${
-                index === 0 ? "lg:col-span-2 lg:row-span-2" : ""
-              } ${index === 3 ? "lg:col-span-2" : ""}`}
-            >
-              <img
-                src={destination.image}
-                alt={destination.name}
-                loading="lazy"
-                className="absolute inset-0 h-full w-full object-cover opacity-85 transition duration-700 group-hover:scale-105 group-hover:opacity-100"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0d2418] via-[#0d2418]/25 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-6 lg:p-7">
-                <div className="flex items-end justify-between gap-5">
-                  <div>
-                    <span className="mb-2 block text-[9px] font-bold uppercase tracking-[0.24em] text-[#f2b08e]">
-                      {destination.index} / {destination.caption}
-                    </span>
-                    <h3 className="font-display text-3xl tracking-[-0.05em] text-white lg:text-4xl">
-                      {destination.name}
-                    </h3>
-                  </div>
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/40 text-white transition-all group-hover:border-[#f2b08e] group-hover:bg-[#d56742]">
-                    <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-                  </span>
-                </div>
-              </div>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function Philosophy() {
-  return (
-    <section className="relative overflow-hidden bg-[#183024] px-6 py-24 text-white lg:px-12 lg:py-32">
-      <div className="absolute -right-32 -top-48 h-[580px] w-[580px] rounded-full border border-white/10" />
-      <div className="absolute -right-3 -top-20 h-[360px] w-[360px] rounded-full border border-white/10" />
-      <div className="relative mx-auto max-w-[1240px]">
-        <div className="grid gap-16 lg:grid-cols-[1.1fr_0.9fr] lg:gap-28">
-          <div>
-            <div className="mb-6 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em] text-[#f2b08e]">
-              <span className="h-px w-10 bg-[#f2b08e]" />
-              Điều chúng tôi tin
-            </div>
-            <h2 className="max-w-3xl font-display text-5xl font-medium leading-[0.95] tracking-[-0.06em] sm:text-7xl">
-              Hành trình tốt là hành trình{" "}
-              <em className="text-[#f2b08e]">để lại điều tốt.</em>
-            </h2>
-            <p className="mt-8 max-w-xl text-base leading-7 text-white/75">
-              Mỗi chuyến đi đóng góp trực tiếp cho người dẫn đường, gia đình bản
-              địa và những nỗ lực bảo tồn tại điểm đến. Bạn không chỉ là một vị
-              khách, bạn là một phần của câu chuyện tiếp tục.
-            </p>
-          </div>
-          <div className="grid gap-8 self-end sm:grid-cols-3 lg:grid-cols-1">
-            {[
-              {
-                icon: <Leaf className="h-6 w-6" aria-hidden="true" />,
-                title: "Thiên nhiên",
-                text: "Không để lại gì ngoài dấu chân.",
-              },
-              {
-                icon: <Users className="h-6 w-6" aria-hidden="true" />,
-                title: "Cộng đồng",
-                text: "Giá trị ở lại với người địa phương.",
-              },
-              {
-                icon: <ShieldCheck className="h-6 w-6" aria-hidden="true" />,
-                title: "An toàn",
-                text: "Chuẩn bị kỹ để đi xa hơn.",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="flex gap-4 border-t border-white/15 pt-5"
-              >
-                <span className="text-[#f2b08e]">{item.icon}</span>
-                <div>
-                  <h3 className="text-sm font-bold uppercase tracking-[0.12em]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-5 text-white/70">
-                    {item.text}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="mt-20 grid border-y border-white/15 sm:grid-cols-3">
-          <div className="border-b border-white/15 py-7 sm:border-b-0 sm:border-r sm:pr-8">
-            <span className="font-display text-5xl text-[#f2b08e]">70%</span>
-            <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-white/65">
-              chi phí tour trở về cộng đồng
-            </p>
-          </div>
-          <div className="border-b border-white/15 py-7 sm:border-b-0 sm:border-r sm:px-8">
-            <span className="font-display text-5xl text-[#f2b08e]">0</span>
-            <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-white/65">
-              chai nhựa dùng một lần
-            </p>
-          </div>
-          <div className="py-7 sm:pl-8">
-            <span className="font-display text-5xl text-[#f2b08e]">100%</span>
-            <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-white/65">
-              hướng dẫn viên bản địa
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
 function Journal() {
+  const credited = galleryImages.filter((image) => image.credit)
   return (
-    <section id="journal" className="bg-[#f6f3ec] px-6 py-24 lg:px-12 lg:py-36">
-      <div className="mx-auto max-w-[1240px]">
-        <div className="mb-12 flex flex-col justify-between gap-7 md:flex-row md:items-end">
-          <div>
-            <div className="mb-5 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em] text-[#b4502f]">
-              <span className="h-px w-10 bg-[#b4502f]" />
-              Nhật ký ảnh
-            </div>
-            <h2 className="font-display text-5xl font-medium leading-[0.95] tracking-[-0.06em] text-[#183024] sm:text-6xl">
-              Những điều
-              <br />
-              <em className="text-[#61703f]">mắt thấy, tim nhớ.</em>
-            </h2>
-          </div>
-          <p className="max-w-xs text-sm leading-6 text-[#69746b]">
-            Một vài lát cắt từ những ngày chúng ta cùng nhau đi qua rừng, qua
-            làng, qua những buổi chiều rất dài.
+    <section id="journal" className="bg-white px-6 py-24 lg:px-12 lg:py-32">
+      <div className="mx-auto max-w-[1440px]">
+        <Reveal className="mb-12 flex flex-col justify-between gap-6 lg:flex-row lg:items-end lg:gap-16">
+          <h2 className="m-0 max-w-[20ch] text-balance font-display text-[clamp(2.25rem,5vw,4.25rem)] font-medium leading-[1.02] tracking-[-0.04em] text-[#183024]">
+            Những điều mắt thấy, tim nhớ.
+          </h2>
+          <p className="m-0 max-w-md text-[18px] leading-8 text-[#2f3d35]">
+            Một vài lát cắt từ Gia Lai và Tây Nguyên: mặt hồ lúc sớm, thác nước
+            giữa rừng, những chuyến thuyền độc mộc trên sông.
           </p>
-        </div>
-        <div className="grid auto-rows-[190px] gap-4 sm:auto-rows-[230px] md:grid-cols-3 md:grid-rows-[250px_250px]">
+        </Reveal>
+        <Reveal className="grid auto-rows-[220px] gap-4 sm:grid-cols-2 sm:auto-rows-[200px] lg:grid-cols-4 lg:auto-rows-[260px]">
           {galleryImages.map((image) => (
             <figure
-              key={image.alt}
-              className={`group relative m-0 overflow-hidden rounded-[2px] bg-[#d9d4c9] ${image.className}`}
+              key={image.caption}
+              className={`group relative m-0 overflow-hidden rounded-[2px] bg-[#dddbd3] ${image.className.replace("sm:col-span-2", "sm:col-span-2 lg:col-span-2")}`}
             >
               <img
                 src={image.src}
                 alt={image.alt}
                 loading="lazy"
-                className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                decoding="async"
+                className="h-full w-full object-cover transition-transform duration-700 motion-safe:group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#10261a]/85 via-[#10261a]/20 to-transparent" />
-              <figcaption className="absolute bottom-4 left-4 right-4 text-[10px] font-bold uppercase tracking-[0.14em] text-white">
-                {image.alt}
+              <figcaption className="absolute bottom-3 left-3 rounded-full bg-white px-4 py-1.5 text-[15px] font-semibold text-[#183024]">
+                {image.caption}
               </figcaption>
             </figure>
           ))}
-        </div>
+        </Reveal>
+        <p className="m-0 mt-6 flex flex-wrap gap-x-5 gap-y-1">
+          {credited.map((image) => (
+            <PhotoCredit key={image.caption} credit={image.credit!} />
+          ))}
+        </p>
       </div>
     </section>
   )
+}
+
+const fieldLabel = "mb-2 block text-[15px] font-semibold text-[#183024]"
+const fieldInput =
+  "min-h-12 w-full rounded-[2px] bg-[#ecebe5] px-4 text-[16px] text-[#183024] outline-none transition-colors placeholder:text-[#4f5b53] hover:bg-[#e4e3dc] focus:bg-white focus:outline focus:outline-2 focus:outline-[#183024]"
+
+/** Example month shown in the form, always a few months ahead of today. */
+function exampleDeparture(): string {
+  const date = new Date()
+  date.setMonth(date.getMonth() + 2)
+  return `Ví dụ: tháng ${date.getMonth() + 1}/${date.getFullYear()}`
 }
 
 function Contact() {
@@ -738,70 +759,68 @@ function Contact() {
   }
 
   return (
-    <section id="contact" className="bg-[#e9e6dd] px-6 py-24 lg:px-12 lg:py-32">
-      <div className="mx-auto grid max-w-[1240px] overflow-hidden rounded-[2px] bg-white shadow-[0_18px_60px_rgba(24,48,36,0.08)] lg:grid-cols-[0.82fr_1.18fr]">
-        <div className="relative overflow-hidden bg-[#183024] p-8 text-white sm:p-12 lg:p-14">
-          <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full border border-white/10" />
-          <div className="relative flex h-full flex-col">
-            <div className="mb-6 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em] text-[#f2b08e]">
-              <span className="h-px w-10 bg-[#f2b08e]" />
-              Liên hệ
-            </div>
-            <h2 className="max-w-sm font-display text-5xl font-medium leading-[0.93] tracking-[-0.06em] sm:text-6xl">
-              Để rừng
-              <br />
-              <em className="text-[#f2b08e]">gọi đúng tên bạn.</em>
+    <section id="contact" className="bg-[#ecebe5] px-6 py-24 lg:px-12 lg:py-32">
+      <Reveal className="mx-auto grid max-w-[1440px] overflow-hidden rounded-[2px] bg-white lg:grid-cols-[0.82fr_1.18fr]">
+        <div className="bg-[#183024] p-8 text-white sm:p-12 lg:p-14">
+          <div className="flex h-full flex-col">
+            <h2 className="m-0 max-w-[12ch] font-display text-[clamp(2.25rem,4.4vw,3.75rem)] font-medium leading-[1.05] tracking-[-0.04em]">
+              Để rừng gọi đúng tên bạn.
             </h2>
-            <p className="mt-7 max-w-sm text-sm leading-6 text-white/75">
+            <p className="m-0 mt-7 max-w-sm text-[18px] leading-8">
               Bạn đã có cung đường trong đầu, hay chỉ biết mình muốn đi? Kể
               chúng tôi nghe. Một người địa phương sẽ trả lời trong vòng 24 giờ.
             </p>
-            <div className="mt-auto space-y-5 pt-14">
-              <a
-                href="tel:+84905123456"
-                className="flex items-center gap-4 text-sm text-white/85 transition-colors hover:text-[#f2b08e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f2b08e]"
-              >
-                <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/25 text-xs">
-                  01
-                </span>
-                +84 905 123 456
-              </a>
-              <a
-                href="mailto:hello@gialai-eco.vn"
-                className="flex items-center gap-4 text-sm text-white/85 transition-colors hover:text-[#f2b08e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f2b08e]"
-              >
-                <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/25 text-xs">
-                  02
-                </span>
-                hello@gialai-eco.vn
-              </a>
-              <div className="flex items-center gap-4 text-sm text-white/85">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/25 text-xs">
-                  03
-                </span>
-                Pleiku, Gia Lai
+            {/* TODO(owner): these are placeholder contact details, replace before launch. */}
+            <dl className="m-0 mt-auto grid gap-6 pt-14">
+              <div>
+                <dt className="text-[15px]">Điện thoại</dt>
+                <dd className="m-0 mt-1">
+                  <a
+                    href="tel:+84905123456"
+                    className="text-xl font-semibold underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                  >
+                    +84 905 123 456
+                  </a>
+                </dd>
               </div>
-            </div>
+              <div>
+                <dt className="text-[15px]">Email</dt>
+                <dd className="m-0 mt-1">
+                  <a
+                    href="mailto:hello@gialai-eco.vn"
+                    className="text-xl font-semibold underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                  >
+                    hello@gialai-eco.vn
+                  </a>
+                </dd>
+              </div>
+              <div>
+                <dt className="text-[15px]">Văn phòng</dt>
+                <dd className="m-0 mt-1 text-xl font-semibold">
+                  Pleiku, Gia Lai
+                </dd>
+              </div>
+            </dl>
           </div>
         </div>
 
         <div className="p-8 sm:p-12 lg:p-14">
           {submitted ? (
             <div className="flex h-full min-h-[460px] flex-col justify-center">
-              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#e4eee4] text-[#3d5c3c]">
+              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#183024] text-white">
                 <Leaf className="h-7 w-7" aria-hidden="true" />
               </span>
-              <h3 className="mt-7 font-display text-4xl tracking-[-0.05em] text-[#183024]">
+              <h3 className="m-0 mt-7 font-display text-4xl tracking-[-0.03em] text-[#183024]">
                 Đã nhận lời nhắn.
               </h3>
-              <p className="mt-4 max-w-sm text-sm leading-6 text-[#69746b]">
+              <p className="m-0 mt-4 max-w-sm text-[17px] leading-7 text-[#2f3d35]">
                 Cảm ơn {form.name || "bạn"}. Chúng tôi sẽ liên hệ lại trong vòng
                 24 giờ để cùng bạn phác thảo hành trình phù hợp.
               </p>
               <button
                 type="button"
                 onClick={() => setSubmitted(false)}
-                className="mt-8 self-start text-[10px] font-bold uppercase tracking-[0.16em] text-[#b4502f] underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
+                className="mt-8 min-h-12 self-start rounded-full bg-[#ecebe5] px-6 text-[15px] font-semibold text-[#183024] transition-colors hover:bg-[#dddbd3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
               >
                 Gửi yêu cầu khác
               </button>
@@ -810,7 +829,7 @@ function Contact() {
             <form
               onSubmit={handleSubmit}
               aria-busy={submitting}
-              className="relative flex flex-col gap-5"
+              className="grid gap-6"
             >
               <div
                 aria-hidden="true"
@@ -824,79 +843,75 @@ function Contact() {
                   autoComplete="off"
                 />
               </div>
-              <div className="mb-2">
-                <h3 className="font-display text-3xl tracking-[-0.05em] text-[#183024]">
+              <div>
+                <h3 className="m-0 font-display text-3xl tracking-[-0.03em] text-[#183024]">
                   Bắt đầu từ đây.
                 </h3>
-                <p className="mt-2 text-sm text-[#69746b]">
+                <p className="m-0 mt-2 text-[17px] text-[#2f3d35]">
                   Điền vài thông tin, phần còn lại để chúng tôi lo.
                 </p>
               </div>
               {submitError ? (
                 <p
                   role="alert"
-                  className="rounded-2xl bg-[#fff4ef] px-4 py-3 text-sm leading-6 text-[#b4502f]"
+                  className="m-0 rounded-[2px] bg-[#f4dfd6] px-4 py-3 text-[16px] leading-6 text-[#6b2a14]"
                 >
                   {submitError}
                 </p>
               ) : null}
               <div className="grid gap-5 sm:grid-cols-2">
                 <label className="block">
-                  <span className="form-label">Họ và tên *</span>
+                  <span className={fieldLabel}>Họ và tên *</span>
                   <input
                     required
                     name="name"
                     value={form.name}
                     onChange={handleChange}
-                    className="form-input"
+                    className={fieldInput}
                     placeholder="Tên của bạn"
                   />
                 </label>
                 <label className="block">
-                  <span className="form-label">Email *</span>
+                  <span className={fieldLabel}>Email *</span>
                   <input
                     required
                     type="email"
                     name="email"
                     value={form.email}
                     onChange={handleChange}
-                    className="form-input"
+                    className={fieldInput}
                     placeholder="ban@email.com"
                   />
                 </label>
-              </div>
-              <div className="grid gap-5 sm:grid-cols-2">
                 <label className="block">
-                  <span className="form-label">Số điện thoại *</span>
+                  <span className={fieldLabel}>Số điện thoại *</span>
                   <input
                     required
                     type="tel"
                     name="phone"
                     value={form.phone}
                     onChange={handleChange}
-                    className="form-input"
-                    placeholder="0905 123 456"
+                    className={fieldInput}
+                    placeholder="09xx xxx xxx"
                   />
                 </label>
                 <label className="block">
-                  <span className="form-label">Thời gian dự kiến</span>
+                  <span className={fieldLabel}>Thời gian dự kiến</span>
                   <input
                     name="date"
                     value={form.date}
                     onChange={handleChange}
-                    className="form-input"
-                    placeholder="Tháng 10, 2025"
+                    className={fieldInput}
+                    placeholder={exampleDeparture()}
                   />
                 </label>
-              </div>
-              <div className="grid gap-5 sm:grid-cols-2">
-                <label className="block">
-                  <span className="form-label">Số người</span>
+                <label className="block sm:col-span-2">
+                  <span className={fieldLabel}>Số người</span>
                   <select
                     name="group"
                     value={form.group}
                     onChange={handleChange}
-                    className="form-input"
+                    className={fieldInput}
                   >
                     <option value="">Chọn số người</option>
                     <option value="1-2">1 – 2 người</option>
@@ -904,26 +919,25 @@ function Contact() {
                     <option value="7-12">7 – 12 người</option>
                   </select>
                 </label>
-                <div />
               </div>
               <label className="block">
-                <span className="form-label">Bạn muốn trải nghiệm gì?</span>
+                <span className={fieldLabel}>Bạn muốn trải nghiệm gì?</span>
                 <textarea
                   name="note"
                   value={form.note}
                   onChange={handleChange}
                   rows={4}
-                  className="form-input resize-none"
+                  className={`${fieldInput} resize-y py-3`}
                   placeholder="Trekking, văn hóa, nghỉ dưỡng... hoặc chỉ viết 'tôi muốn đi'"
                 />
               </label>
-              <label className="flex items-start gap-3 text-xs leading-5 text-[#69746b]">
+              <label className="flex items-start gap-3 text-[15px] leading-6 text-[#2f3d35]">
                 <input
                   required
                   name="privacy_consent"
                   value="true"
                   type="checkbox"
-                  className="mt-1 h-4 w-4 shrink-0 accent-[#d56742]"
+                  className="mt-1 h-[18px] w-[18px] shrink-0 accent-[#183024]"
                 />
                 <span>
                   Tôi đồng ý để Gia Lai Eco Tourist sử dụng thông tin này cho
@@ -933,7 +947,7 @@ function Contact() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="group mt-1 inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#d56742] px-6 py-4 text-[10px] font-bold uppercase tracking-[0.16em] text-white transition-all hover:bg-[#e27b57] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+                className="group inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-[#183024] px-8 text-[16px] font-semibold text-white transition-colors hover:bg-[#a24627] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
               >
                 {submitting ? "Đang gửi..." : "Gửi yêu cầu"}{" "}
                 <ArrowRight
@@ -941,13 +955,13 @@ function Contact() {
                   aria-hidden="true"
                 />
               </button>
-              <p className="text-center text-[10px] leading-4 text-[#7f887f]">
+              <p className="m-0 text-center text-[15px] text-[#2f3d35]">
                 Thông tin của bạn chỉ được dùng để tư vấn hành trình.
               </p>
             </form>
           )}
         </div>
-      </div>
+      </Reveal>
     </section>
   )
 }
@@ -956,10 +970,8 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      {/* <IntroStrip /> */}
       <Story />
       <Experiences />
-      {/* <Philosophy /> */}
       <Journal />
       <Contact />
     </>

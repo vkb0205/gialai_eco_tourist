@@ -178,21 +178,21 @@ export default function ExplorePage({ query }: { query: string }) {
   }, [currentPage])
 
   return (
-    <div className="bg-[#f6f3ec] pb-24 lg:pb-32">
+    <div className="bg-[#ecebe5] pb-24 lg:pb-32">
       <ExploreHeader
         keyword={state.keyword}
         onKeywordChange={onKeywordChange}
         catalogueSize={dataset.length}
       />
 
-      <div className="mx-auto max-w-[1440px] px-6 pt-10 lg:px-12 lg:pt-12">
+      <div className="mx-auto max-w-[1440px] px-6 pt-12 lg:px-12 lg:pt-16">
         <RegionStrip
           selected={state.regions}
           counts={result.regionCounts}
           onToggle={onToggleRegion}
         />
 
-        <div className="mt-12 grid gap-12 lg:grid-cols-[288px_minmax(0,1fr)] lg:gap-14 xl:grid-cols-[308px_minmax(0,1fr)]">
+        <div className="mt-10 grid gap-10 lg:grid-cols-[288px_minmax(0,1fr)] lg:gap-14 xl:grid-cols-[308px_minmax(0,1fr)]">
           <FilterRail
             state={state}
             counts={result.facetCounts}
@@ -219,11 +219,11 @@ export default function ExplorePage({ query }: { query: string }) {
               filtersOpen={drawerOpen}
             />
 
-            <div ref={resultsRef} className="pt-8">
+            <div ref={resultsRef} className="pt-6">
               {!ready || loading ? (
                 <ul
                   aria-hidden="true"
-                  className="grid list-none grid-cols-1 gap-6 p-0 md:grid-cols-2 xl:grid-cols-3"
+                  className="grid list-none grid-cols-1 gap-6 p-0 md:grid-cols-2 2xl:grid-cols-3"
                 >
                   {Array.from({ length: SKELETON_COUNT }, (_, index) => (
                     <li key={index}>
@@ -234,7 +234,7 @@ export default function ExplorePage({ query }: { query: string }) {
               ) : loadError ? (
                 <div
                   role="alert"
-                  className="rounded-2xl border border-[#e0dcd2] bg-white px-6 py-12 text-center text-sm text-[#69746b]"
+                  className="rounded-[2px] bg-white px-6 py-12 text-center text-[17px] text-[#2f3d35]"
                 >
                   {loadError}
                 </div>
@@ -246,7 +246,7 @@ export default function ExplorePage({ query }: { query: string }) {
                 />
               ) : (
                 <>
-                  <ul className="grid list-none grid-cols-1 gap-6 p-0 md:grid-cols-2 xl:grid-cols-3">
+                  <ul className="grid list-none grid-cols-1 gap-6 p-0 md:grid-cols-2 2xl:grid-cols-3">
                     {visible.map((tour, index) => (
                       <li
                         key={tour.id}

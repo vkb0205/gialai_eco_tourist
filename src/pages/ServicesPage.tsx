@@ -3,18 +3,13 @@ import type { FormEvent, ReactNode } from "react"
 import {
   AirplaneTilt,
   ArrowUpRight,
-  CalendarBlank,
   CarProfile,
   CheckCircle,
   FileText,
-  MapPin,
-  PhoneCall,
-  ShieldCheck,
-  Users,
 } from "@phosphor-icons/react"
-import img0 from "@/imports/image.jpeg"
-import img1 from "@/imports/image-1.png"
-import img2 from "@/imports/image-2.png"
+import img0 from "@/imports/photos/bien-ho-aerial.webp"
+import img1 from "@/imports/tours/kon-tum-church.webp"
+import img2 from "@/imports/tours/buon-don.webp"
 import {
   submissionErrorMessage,
   submitServiceSubmission,
@@ -39,7 +34,7 @@ const serviceOptions: ServiceOption[] = [
     title: "Thuê xe du lịch",
     summary: "Xe riêng, tài xế địa phương và lịch trình linh hoạt cho cá nhân, gia đình hoặc đoàn nhỏ.",
     image: img1,
-    icon: <CarProfile weight="duotone" className="h-5 w-5" aria-hidden="true" />,
+    icon: <CarProfile weight="regular" className="h-5 w-5" aria-hidden="true" />,
     benefits: ["Xe 4-45 chỗ", "Đưa đón sân bay", "Báo giá theo hành trình"],
   },
   {
@@ -48,7 +43,7 @@ const serviceOptions: ServiceOption[] = [
     title: "Tư vấn visa",
     summary: "Tư vấn hồ sơ, lịch nộp và các giấy tờ cần chuẩn bị cho chuyến đi nước ngoài.",
     image: img2,
-    icon: <FileText weight="duotone" className="h-5 w-5" aria-hidden="true" />,
+    icon: <FileText weight="regular" className="h-5 w-5" aria-hidden="true" />,
     benefits: ["Kiểm tra hồ sơ", "Nhắc lịch nộp", "Theo sát từng trường hợp"],
   },
   {
@@ -57,7 +52,7 @@ const serviceOptions: ServiceOption[] = [
     title: "Vé máy bay",
     summary: "Tìm chuyến bay phù hợp, so sánh khung giờ và giữ vé theo thông tin bạn cung cấp.",
     image: img0,
-    icon: <AirplaneTilt weight="duotone" className="h-5 w-5" aria-hidden="true" />,
+    icon: <AirplaneTilt weight="regular" className="h-5 w-5" aria-hidden="true" />,
     benefits: ["Nội địa và quốc tế", "Một chiều hoặc khứ hồi", "Hỗ trợ đoàn"],
   },
 ]
@@ -65,7 +60,7 @@ const serviceOptions: ServiceOption[] = [
 function Field({ id, label, children }: { id: string; label: string; children: ReactNode }) {
   return (
     <div className="grid gap-2">
-      <label htmlFor={id} className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#526257]">
+      <label htmlFor={id} className="text-[15px] font-semibold text-[#183024]">
         {label}
       </label>
       {children}
@@ -73,14 +68,14 @@ function Field({ id, label, children }: { id: string; label: string; children: R
   )
 }
 
-const inputClass = "min-h-12 rounded-xl border border-[#d9d4c9] bg-white px-4 text-sm text-[#183024] outline-none transition-colors placeholder:text-[#7a857d] focus:border-[#d56742] focus:ring-2 focus:ring-[#d56742]/20"
+const inputClass = "min-h-12 w-full rounded-[2px] bg-[#ecebe5] px-4 text-[16px] text-[#183024] outline-none transition-colors placeholder:text-[#4f5b53] hover:bg-[#e4e3dc] focus:bg-white focus:outline focus:outline-2 focus:outline-[#183024]"
 const textareaClass = `${inputClass} min-h-28 resize-y py-3`
 
 function SubmitButton({ children }: { children: ReactNode }) {
   return (
     <button
       type="submit"
-      className="group inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#183024] px-7 py-4 text-xs font-bold uppercase tracking-[0.12em] text-white transition-all hover:-translate-y-0.5 hover:bg-[#d56742] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742] sm:w-auto"
+      className="group inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-[#183024] px-8 text-[16px] font-semibold text-white transition-colors hover:bg-[#a24627] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#183024] sm:w-auto"
     >
       {children}
       <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
@@ -149,7 +144,7 @@ function FormShell({ activeService, children }: { activeService: ServiceOption; 
     <form
       onSubmit={handleSubmit}
       aria-busy={submitting}
-      className="overflow-hidden rounded-[24px] border border-[#d9d4c9] bg-white shadow-[0_18px_46px_rgba(24,48,36,0.08)]"
+      className="overflow-hidden rounded-[2px] bg-white"
     >
       <div aria-hidden="true" className="absolute left-[-10000px] h-px w-px overflow-hidden">
         <label htmlFor="website">Website</label>
@@ -158,19 +153,16 @@ function FormShell({ activeService, children }: { activeService: ServiceOption; 
       <div className="grid lg:grid-cols-[0.82fr_1.18fr]">
         <div className="relative min-h-[280px] bg-[#183024] text-white lg:min-h-full">
           <img src={activeService.image} alt={activeService.title} className="absolute inset-0 h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(24,48,36,0.16)_0%,rgba(24,48,36,0.84)_100%)]" />
+          <div className="absolute inset-0 bg-[#0c1f17]/65" />
           <div className="relative flex min-h-[280px] flex-col justify-end p-6 lg:min-h-[560px] lg:p-8">
-            <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#d56742]">
-              {activeService.icon}
-            </div>
-            <h2 className="font-display text-3xl font-semibold leading-tight tracking-[-0.03em] lg:text-4xl">
+            <h2 className="font-display text-3xl font-medium leading-tight tracking-[-0.03em] lg:text-4xl">
               {activeService.title}
             </h2>
-            <p className="mt-4 max-w-sm text-sm leading-6 text-white/78">{activeService.summary}</p>
+            <p className="mt-4 max-w-sm text-[17px] leading-7 text-white">{activeService.summary}</p>
             <div className="mt-7 grid gap-3">
               {activeService.benefits.map((benefit) => (
-                <span key={benefit} className="flex items-center gap-3 text-sm text-white/86">
-                  <CheckCircle weight="fill" className="h-5 w-5 text-[#fed24f]" aria-hidden="true" />
+                <span key={benefit} className="flex items-center gap-3 text-[16px] text-white">
+                  <CheckCircle weight="fill" className="h-5 w-5 shrink-0 text-white" aria-hidden="true" />
                   {benefit}
                 </span>
               ))}
@@ -179,20 +171,20 @@ function FormShell({ activeService, children }: { activeService: ServiceOption; 
         </div>
         <div className="p-6 lg:p-8">
           {submitted ? (
-            <div className="flex min-h-[480px] flex-col items-start justify-center rounded-2xl bg-[#f6f3ec] p-8">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#d56742] text-white">
+            <div className="flex min-h-[480px] flex-col items-start justify-center rounded-[2px] bg-[#ecebe5] p-8">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#183024] text-white">
                 <CheckCircle weight="fill" className="h-7 w-7" aria-hidden="true" />
               </div>
-              <h3 className="mt-6 font-display text-3xl font-semibold tracking-[-0.03em] text-[#183024]">
+              <h3 className="mt-6 font-display text-3xl font-medium tracking-[-0.03em] text-[#183024]">
                 Đã ghi nhận yêu cầu
               </h3>
-              <p className="mt-4 max-w-md text-sm leading-7 text-[#526257]">
+              <p className="mt-4 max-w-md text-[17px] leading-7 text-[#2f3d35]">
                 Cảm ơn bạn. Đội ngũ tư vấn sẽ liên hệ lại để xác nhận thông tin và gửi báo giá phù hợp.
               </p>
               <button
                 type="button"
                 onClick={() => setSubmitted(false)}
-                className="mt-7 rounded-full border border-[#d9d4c9] bg-white px-6 py-3 text-xs font-bold uppercase tracking-[0.12em] text-[#183024] transition-colors hover:border-[#d56742] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
+                className="mt-7 min-h-12 rounded-full bg-white px-6 text-[15px] font-semibold text-[#183024] transition-colors hover:bg-[#dddbd3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#183024]"
               >
                 Gửi yêu cầu mới
               </button>
@@ -200,7 +192,7 @@ function FormShell({ activeService, children }: { activeService: ServiceOption; 
           ) : (
             <>
               {submitError ? (
-                <p role="alert" className="mb-5 rounded-2xl bg-[#fff4ef] px-4 py-3 text-sm leading-6 text-[#b4502f]">
+                <p role="alert" className="mb-5 rounded-[2px] bg-[#f4dfd6] px-4 py-3 text-[16px] leading-6 text-[#6b2a14]">
                   {submitError}
                 </p>
               ) : null}
@@ -218,8 +210,8 @@ function CarForm() {
     <>
       <div className="grid gap-4 sm:grid-cols-3">
         {["Xe 4-7 chỗ", "Xe 16-29 chỗ", "Xe 35-45 chỗ"].map((item) => (
-          <label key={item} className="flex cursor-pointer items-center gap-3 rounded-2xl border border-[#d9d4c9] bg-[#f6f3ec] p-4 text-sm font-semibold text-[#183024] has-[:checked]:border-[#d56742] has-[:checked]:bg-[#fff4ef]">
-            <input required name="vehicle" type="radio" className="h-4 w-4 accent-[#d56742]" />
+          <label key={item} className="flex min-h-14 cursor-pointer items-center justify-center rounded-[2px] bg-[#ecebe5] px-4 text-[16px] font-semibold text-[#183024] transition-colors hover:bg-[#e0dfd7] has-[:checked]:bg-[#183024] has-[:checked]:text-white has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[#183024]">
+            <input required name="vehicle" type="radio" className="sr-only" />
             {item}
           </label>
         ))}
@@ -249,7 +241,7 @@ function VisaForm() {
       </div>
       <Field id="visa-note" label="Tình trạng hồ sơ hiện tại"><textarea id="visa-note" name="note" className={textareaClass} placeholder="Bạn đã có hộ chiếu, lịch bay hoặc thư mời chưa" /></Field>
       <ContactFields prefix="visa" />
-      <div className="rounded-2xl bg-[#f6f3ec] p-4 text-sm leading-6 text-[#526257]">
+      <div className="rounded-[2px] bg-[#ecebe5] p-4 text-[16px] leading-6 text-[#183024]">
         Phí và thời gian xử lý phụ thuộc vào từng lãnh sự quán. Tư vấn viên sẽ kiểm tra trước khi báo giá.
       </div>
       <ConsentField />
@@ -263,8 +255,8 @@ function FlightForm() {
     <>
       <div className="grid gap-4 sm:grid-cols-2">
         {["Một chiều", "Khứ hồi"].map((item) => (
-          <label key={item} className="flex cursor-pointer items-center gap-3 rounded-2xl border border-[#d9d4c9] bg-[#f6f3ec] p-4 text-sm font-semibold text-[#183024] has-[:checked]:border-[#d56742] has-[:checked]:bg-[#fff4ef]">
-            <input required name="trip" type="radio" className="h-4 w-4 accent-[#d56742]" />
+          <label key={item} className="flex min-h-14 cursor-pointer items-center justify-center rounded-[2px] bg-[#ecebe5] px-4 text-[16px] font-semibold text-[#183024] transition-colors hover:bg-[#e0dfd7] has-[:checked]:bg-[#183024] has-[:checked]:text-white has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[#183024]">
+            <input required name="trip" type="radio" className="sr-only" />
             {item}
           </label>
         ))}
@@ -286,7 +278,7 @@ function FlightForm() {
 
 function ContactFields({ prefix }: { prefix: string }) {
   return (
-    <div className="grid gap-5 border-t border-[#e0dcd2] pt-6 md:grid-cols-2">
+    <div className="grid gap-5 pt-2 md:grid-cols-2">
       <Field id={`${prefix}-name`} label="Họ và tên"><input id={`${prefix}-name`} name="full_name" required className={inputClass} placeholder="Nguyễn Minh Anh" /></Field>
       <Field id={`${prefix}-phone`} label="Số điện thoại"><input id={`${prefix}-phone`} name="phone" required type="tel" className={inputClass} placeholder="090 000 0000" /></Field>
       <Field id={`${prefix}-email`} label="Email"><input id={`${prefix}-email`} name="email" type="email" className={inputClass} placeholder="email@cuaban.com" /></Field>
@@ -297,13 +289,13 @@ function ContactFields({ prefix }: { prefix: string }) {
 
 function ConsentField() {
   return (
-    <label className="flex items-start gap-3 text-xs leading-5 text-[#69746b]">
+    <label className="flex items-start gap-3 text-[15px] leading-6 text-[#2f3d35]">
       <input
         required
         name="privacy_consent"
         value="true"
         type="checkbox"
-        className="mt-1 h-4 w-4 shrink-0 accent-[#d56742]"
+        className="mt-1 h-[18px] w-[18px] shrink-0 accent-[#183024]"
       />
       <span>
         Tôi đồng ý để Gia Lai Eco Tourist sử dụng thông tin này cho việc tư vấn và liên hệ về yêu cầu của tôi.
@@ -337,57 +329,58 @@ export default function ServicesPage({ query = "" }: { query?: string }) {
   )
 
   return (
-    <div className="bg-[#f6f3ec] pt-[78px] text-[#183024]">
-      <section className="border-b border-[#d9d4c9] px-6 py-14 lg:px-12 lg:py-20">
-        <div className="mx-auto grid max-w-[1440px] gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(420px,0.6fr)] lg:items-end">
-          <div>
-            <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.2em] text-[#d56742]">Dịch vụ khác</p>
-            <h1 className="font-display text-[clamp(2.4rem,6vw,4.7rem)] font-semibold leading-[1.04] tracking-[-0.05em]">
+    <div className="bg-[#ecebe5] text-[#183024]">
+      <header className="relative isolate overflow-hidden bg-[#10231a]">
+        <div className="absolute inset-0 -z-10">
+          <img src={img0} alt="" aria-hidden="true" decoding="async" className="h-full w-full object-cover object-[50%_40%]" />
+          <div className="absolute inset-0 bg-[#0c1f17]/65" />
+        </div>
+        <div className="mx-auto grid max-w-[1440px] items-end gap-10 px-6 pb-12 pt-32 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-16 lg:px-12 lg:pb-16 lg:pt-44">
+          <div className="motion-safe:animate-[rise-in_700ms_cubic-bezier(0.32,0.72,0,1)_both]">
+            <h1 className="m-0 max-w-[16ch] font-display text-[clamp(2.5rem,6vw,4.75rem)] font-medium leading-[1] tracking-[-0.04em] text-white">
               Cần thêm hỗ trợ cho chuyến đi?
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-[#526257] lg:text-lg">
-              Chọn dịch vụ, để lại thông tin. Tư vấn viên sẽ kiểm tra và phản hồi phương án phù hợp.
+            <p className="m-0 mt-6 max-w-[34rem] text-lg leading-7 text-white">
+              Thuê xe, visa hoặc vé máy bay: chọn dịch vụ, để lại thông tin. Tư vấn viên sẽ kiểm tra và phản hồi phương án phù hợp.
             </p>
           </div>
-          <div className="grid gap-4 rounded-[24px] border border-[#d9d4c9] bg-white p-5 shadow-[0_14px_34px_rgba(24,48,36,0.06)] sm:grid-cols-3 lg:grid-cols-1">
-            {[{ icon: <MapPin className="h-5 w-5" />, text: "Lịch trình rõ ràng" }, { icon: <PhoneCall className="h-5 w-5" />, text: "Liên hệ trong ngày" }, { icon: <ShieldCheck className="h-5 w-5" />, text: "Thông tin được bảo mật" }].map((item) => (
-              <div key={item.text} className="flex items-center gap-3 rounded-2xl bg-[#f6f3ec] p-4 text-sm font-semibold text-[#183024]">
-                <span className="text-[#d56742]">{item.icon}</span>
-                {item.text}
-              </div>
+          <ul className="m-0 flex list-none flex-col gap-3 p-0 text-lg text-white motion-safe:animate-[rise-in_700ms_cubic-bezier(0.32,0.72,0,1)_220ms_both]">
+            {["Lịch trình rõ ràng", "Liên hệ trong ngày", "Thông tin được bảo mật"].map((text) => (
+              <li key={text} className="flex items-center gap-3">
+                <CheckCircle weight="fill" className="h-6 w-6 shrink-0" aria-hidden="true" />
+                {text}
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
-      </section>
+      </header>
 
       <section className="px-6 py-14 lg:px-12 lg:py-20">
-        <div className="mx-auto grid max-w-[1440px] gap-8 lg:grid-cols-[280px_minmax(0,1fr)]">
+        <div className="mx-auto grid max-w-[1440px] gap-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-14">
           <aside className="lg:sticky lg:top-[102px] lg:self-start">
-            <div className="rounded-[24px] border border-[#d9d4c9] bg-white p-3 shadow-[0_14px_34px_rgba(24,48,36,0.05)]">
-              <p className="px-3 py-3 text-[11px] font-bold uppercase tracking-[0.14em] text-[#69746b]">Chọn dịch vụ</p>
-              <div className="grid gap-2">
-                {serviceOptions.map((service) => {
-                  const active = service.key === activeKey
-                  return (
-                    <button
-                      key={service.key}
-                      type="button"
-                      onClick={() => setActiveKey(service.key)}
-                      className={`flex items-center justify-between rounded-2xl px-4 py-4 text-left text-sm font-bold transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742] ${
-                        active ? "bg-[#183024] text-white" : "bg-[#f6f3ec] text-[#183024] hover:bg-[#e9e6dd]"
-                      }`}
-                    >
-                      <span className="flex items-center gap-3">{service.icon}{service.label}</span>
-                      {active ? <CheckCircle weight="fill" className="h-5 w-5 text-[#fed24f]" aria-hidden="true" /> : null}
-                    </button>
-                  )
-                })}
-              </div>
+            <h2 className="m-0 font-display text-2xl tracking-[-0.02em]">Chọn dịch vụ</h2>
+            <div className="mt-4 grid gap-2" role="group" aria-label="Chọn dịch vụ">
+              {serviceOptions.map((service) => {
+                const active = service.key === activeKey
+                return (
+                  <button
+                    key={service.key}
+                    type="button"
+                    onClick={() => setActiveKey(service.key)}
+                    aria-pressed={active}
+                    className={`flex min-h-12 items-center gap-3 rounded-full px-5 text-left text-[16px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] ${
+                      active ? "bg-[#183024] text-white" : "bg-white text-[#183024] hover:bg-[#183024] hover:text-white"
+                    }`}
+                  >
+                    {service.icon}
+                    {service.label}
+                  </button>
+                )
+              })}
             </div>
-            <div className="mt-4 rounded-[24px] border border-[#d9d4c9] bg-[#183024] p-5 text-white">
-              <div className="flex items-center gap-3 text-[#fed24f]"><CalendarBlank className="h-5 w-5" /><Users className="h-5 w-5" /></div>
-              <p className="mt-4 text-sm leading-6 text-white/78">Bạn có thể gửi từng dịch vụ riêng lẻ. Nếu cần trọn gói, hãy ghi rõ trong phần ghi chú.</p>
-            </div>
+            <p className="mt-6 text-[16px] leading-6 text-[#2f3d35]">
+              Bạn có thể gửi từng dịch vụ riêng lẻ. Nếu cần trọn gói, hãy ghi rõ trong phần ghi chú.
+            </p>
           </aside>
 
           <FormShell activeService={activeService}>

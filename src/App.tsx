@@ -1,12 +1,27 @@
-import { useEffect } from "react"
+import { lazy, Suspense, useEffect } from "react"
 import Navigation from "@/components/layout/Navigation"
 import Footer from "@/components/layout/Footer"
 import HomePage from "@/pages/HomePage"
-import ExplorePage from "@/pages/ExplorePage"
-import ServicesPage from "@/pages/ServicesPage"
-import CarRentalPage from "@/pages/CarRentalPage"
-import TourDetailsPage from "@/pages/TourDetailsPage"
 import { useHashRoute } from "@/lib/useHashRoute"
+
+// The landing page ships in the main bundle; every other route loads on demand.
+const ExplorePage = lazy(() => import("@/pages/ExplorePage"))
+const ServicesPage = lazy(() => import("@/pages/ServicesPage"))
+const CarRentalPage = lazy(() => import("@/pages/CarRentalPage"))
+const TourDetailsPage = lazy(() => import("@/pages/TourDetailsPage"))
+
+/** Reserves the page's height while a route chunk loads, so the footer never jumps up. */
+function PageLoading() {
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className="flex min-h-[70vh] items-center justify-center px-6 pt-[78px] text-sm text-[#566259]"
+    >
+      Đang tải trang…
+    </div>
+  )
+}
 
 /**
  * Routing shell. Chrome is rendered once, around whichever page the hash
@@ -28,23 +43,25 @@ export default function App() {
     <div className="min-h-screen bg-[#f6f3ec] text-[#183024]">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-[#183024] focus:px-5 focus:py-3 focus:text-[11px] focus:font-bold focus:uppercase focus:tracking-[0.12em] focus:text-white"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-[#183024] focus:px-5 focus:py-3 focus:text-xs focus:font-bold focus:uppercase focus:tracking-[0.12em] focus:text-white"
       >
         Đến nội dung chính
       </a>
       <Navigation />
       <main id="main">
-        {route.path === "/explore" ? (
-          <ExplorePage query={route.query} />
-        ) : route.path === "/tour" ? (
-          <TourDetailsPage query={route.query} />
-        ) : route.path === "/car-rental" ? (
-          <CarRentalPage query={route.query} />
-        ) : route.path === "/services" ? (
-          <ServicesPage query={route.query} />
-        ) : (
-          <HomePage />
-        )}
+        <Suspense fallback={<PageLoading />}>
+          {route.path === "/explore" ? (
+            <ExplorePage query={route.query} />
+          ) : route.path === "/tour" ? (
+            <TourDetailsPage query={route.query} />
+          ) : route.path === "/car-rental" ? (
+            <CarRentalPage query={route.query} />
+          ) : route.path === "/services" ? (
+            <ServicesPage query={route.query} />
+          ) : (
+            <HomePage />
+          )}
+        </Suspense>
       </main>
       <Footer />
     </div>

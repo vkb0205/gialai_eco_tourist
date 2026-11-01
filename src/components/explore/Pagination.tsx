@@ -61,19 +61,19 @@ export default function Pagination({
   const items = buildPageItems(currentPage, pageCount)
 
   const pageButton = (active: boolean) =>
-    `inline-flex h-10 min-w-10 items-center justify-center rounded-full border px-3 text-[12px] font-bold tabular-nums transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742] ${
+    `inline-flex h-11 min-w-11 items-center justify-center rounded-full px-3 text-[15px] font-semibold tabular-nums transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] ${
       active
-        ? "border-[#183024] bg-[#183024] text-white"
-        : "border-[#c8c4b8] bg-white text-[#183024] hover:border-[#183024]"
+        ? "bg-[#183024] text-white"
+        : "bg-white text-[#183024] hover:bg-[#dddbd3]"
     }`
 
   const arrowButton =
-    "inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#c8c4b8] bg-white text-[#183024] transition-colors hover:border-[#183024] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742] disabled:cursor-not-allowed disabled:border-[#e6e2d8] disabled:text-[#c8c4b8] disabled:hover:border-[#e6e2d8]"
+    "inline-flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#183024] transition-colors hover:bg-[#dddbd3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] disabled:cursor-not-allowed disabled:bg-[#dddbd3] disabled:text-[#4f5b53] disabled:hover:bg-[#dddbd3]"
 
   return (
-    <div className="mt-12 flex flex-col items-center gap-4">
-      <p className="m-0 text-[11px] font-bold uppercase tracking-[0.14em] text-[#5b665d]">
-        Đang xem {firstVisible}–{lastVisible} / {total}
+    <div className="mt-14 flex flex-col items-center gap-4">
+      <p className="m-0 text-[15px] text-[#2f3d35]">
+        Đang xem {firstVisible}–{lastVisible} trên {total} hành trình
       </p>
 
       <nav aria-label="Phân trang" className="flex items-center gap-2">
@@ -92,7 +92,7 @@ export default function Pagination({
             <span
               key={`ellipsis-${index}`}
               aria-hidden="true"
-              className="px-1 text-sm text-[#5b665d]"
+              className="px-1 text-[15px] text-[#4f5b53]"
             >
               …
             </span>

@@ -1,9 +1,9 @@
-import mangDenImage from "@/imports/tours/mang-den.jpg"
-import konTumChurchImage from "@/imports/tours/kon-tum-church.jpg"
-import buonDonImage from "@/imports/tours/buon-don.jpg"
-import drayNurImage from "@/imports/tours/dray-nur.jpg"
-import hoLakImage from "@/imports/tours/ho-lak.jpg"
-import coffeeImage from "@/imports/tours/coffee-buon-ma-thuot.jpg"
+import mangDenImage from "@/imports/tours/mang-den.webp"
+import konTumChurchImage from "@/imports/tours/kon-tum-church.webp"
+import buonDonImage from "@/imports/tours/buon-don.webp"
+import drayNurImage from "@/imports/tours/dray-nur.webp"
+import hoLakImage from "@/imports/tours/ho-lak.webp"
+import coffeeImage from "@/imports/tours/coffee-buon-ma-thuot.webp"
 
 export type TourImageCredit = {
   label: string
@@ -39,7 +39,7 @@ export const tourImageBySlug: Record<string, string> = {
   "buon-ma-thuot-buon-don-dray-nur-ho-lak-4n3d": drayNurImage,
 }
 
-const credits = {
+export const imageCredits = {
   mangDen: {
     label: "Wikimedia Commons · Weendang · CC BY-SA 3.0",
     href: "https://commons.wikimedia.org/wiki/File:Mang_den.jpg",
@@ -67,17 +67,17 @@ const credits = {
 } satisfies Record<string, TourImageCredit>
 
 export const tourImageCreditBySlug: Record<string, TourImageCredit> = {
-  "pleiku-kon-tum-mang-den-3n2d-ghep-doan": credits.mangDen,
-  "hanoi-pleiku-mang-den-cot-moc-3n2d": credits.mangDen,
-  "hanoi-pleiku-mang-den-cot-moc-buon-ma-thuot-3n2d": credits.mangDen,
-  "ha-noi-pleiku-mang-den-buon-ma-thuot-3n2d": credits.coffee,
-  "buon-ma-thuot-buon-don-nui-da-voi-ho-lak-3n2d": credits.hoLak,
-  "pleiku-kon-tum-mang-den-buon-ma-thuot-4n3d-ghep-doan": credits.konTumChurch,
-  "hanoi-buon-ma-thuot-pleiku-4n3d": credits.buonDon,
-  "hanoi-pleiku-buon-ma-thuot-hai-phong-4n3d": credits.drayNur,
-  "hanoi-pleiku-mang-den-cot-moc-kon-ka-kinh-4n3d": credits.mangDen,
-  "pleiku-mang-den-kon-tum-buon-ma-thuot-5n4d-4sao": credits.konTumChurch,
-  "hanoi-pleiku-cot-moc-buon-ma-thuot-2n1d": credits.coffee,
-  "hue-mang-den-kon-tum-pleiku-3n2d": credits.konTumChurch,
-  "buon-ma-thuot-buon-don-dray-nur-ho-lak-4n3d": credits.drayNur,
+  "pleiku-kon-tum-mang-den-3n2d-ghep-doan": imageCredits.mangDen,
+  "hanoi-pleiku-mang-den-cot-moc-3n2d": imageCredits.mangDen,
+  "hanoi-pleiku-mang-den-cot-moc-buon-ma-thuot-3n2d": imageCredits.mangDen,
+  "ha-noi-pleiku-mang-den-buon-ma-thuot-3n2d": imageCredits.coffee,
+  "buon-ma-thuot-buon-don-nui-da-voi-ho-lak-3n2d": imageCredits.hoLak,
+  "pleiku-kon-tum-mang-den-buon-ma-thuot-4n3d-ghep-doan": imageCredits.konTumChurch,
+  "hanoi-buon-ma-thuot-pleiku-4n3d": imageCredits.buonDon,
+  "hanoi-pleiku-buon-ma-thuot-hai-phong-4n3d": imageCredits.drayNur,
+  "hanoi-pleiku-mang-den-cot-moc-kon-ka-kinh-4n3d": imageCredits.mangDen,
+  "pleiku-mang-den-kon-tum-buon-ma-thuot-5n4d-4sao": imageCredits.konTumChurch,
+  "hanoi-pleiku-cot-moc-buon-ma-thuot-2n1d": imageCredits.coffee,
+  "hue-mang-den-kon-tum-pleiku-3n2d": imageCredits.konTumChurch,
+  "buon-ma-thuot-buon-don-dray-nur-ho-lak-4n3d": imageCredits.drayNur,
 }
