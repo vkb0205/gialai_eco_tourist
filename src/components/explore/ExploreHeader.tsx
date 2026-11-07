@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
+import PageBackdrop from "@/components/layout/PageBackdrop"
 import { MagnifyingGlass, X } from "@phosphor-icons/react"
-import forestImage from "@/imports/tours/dray-nur.webp"
 
 /**
  * Explore page masthead: a photographic band with the title and a plain
@@ -55,25 +55,15 @@ export default function ExploreHeader({
   }
 
   return (
-    <header className="relative isolate overflow-hidden bg-[#10231a]">
+    <header className="relative isolate overflow-hidden bg-[#e1f2f8]">
       {/* Photograph with one flat scrim, kept light enough to stay a picture. */}
-      <div className="absolute inset-0 -z-10">
-        <img
-          src={forestImage}
-          alt=""
-          aria-hidden="true"
-          decoding="async"
-          className="h-full w-full object-cover object-[50%_30%]"
-        />
-        <div className="absolute inset-0 bg-[#0c1f17]/65" />
-      </div>
-
-      <div className="mx-auto grid max-w-[1440px] items-end gap-10 px-6 pb-12 pt-32 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)] lg:gap-16 lg:px-12 lg:pb-16 lg:pt-44">
+      <PageBackdrop />
+      <div className="mx-auto grid max-w-[1440px] items-end gap-10 px-6 pb-10 pt-28 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)] lg:gap-16 lg:px-12 lg:pb-12 lg:pt-36">
         <div className="motion-safe:animate-[rise-in_700ms_cubic-bezier(0.32,0.72,0,1)_both]">
-          <h1 className="m-0 font-display text-[clamp(2.5rem,6vw,4.75rem)] font-medium leading-[1] tracking-[-0.04em] text-white">
+          <h1 className="m-0 font-display text-[clamp(2.2rem,5vw,4rem)] font-medium leading-[1] tracking-[-0.04em] text-[#15602b]">
             Khám phá hành trình
           </h1>
-          <p className="m-0 mt-6 max-w-[34rem] text-lg leading-7 text-white">
+          <p className="m-0 mt-6 max-w-[34rem] text-lg leading-7 text-[#183024]">
             {catalogueSize > 0 ? `${catalogueSize} chuyến đi` : "Các chuyến đi"}{" "}
             qua Gia Lai và Tây Nguyên. Lọc theo vùng, số ngày hoặc mức giá để
             tìm chuyến hợp với bạn.
@@ -91,7 +81,7 @@ export default function ExploreHeader({
           <label htmlFor="explore-search" className="sr-only">
             Tìm hành trình
           </label>
-          <div className="flex items-center rounded-full bg-white pl-5 pr-2 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-white">
+          <div className="flex items-center rounded-full bg-[#f0f7f1] pl-5 pr-2 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-white">
             <MagnifyingGlass
               className="pointer-events-none h-5 w-5 shrink-0 text-[#183024]"
               aria-hidden="true"
@@ -111,7 +101,7 @@ export default function ExploreHeader({
                 type="button"
                 onClick={clear}
                 aria-label="Xóa từ khóa"
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[#183024] transition-colors hover:bg-[#e4e3dc] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[#183024] transition-colors hover:bg-[#eaf4ec] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
               >
                 <X className="h-4 w-4" aria-hidden="true" />
               </button>

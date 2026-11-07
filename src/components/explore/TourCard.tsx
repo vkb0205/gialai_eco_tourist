@@ -47,9 +47,9 @@ export default function TourCard({ tour }: { tour: Tour }) {
         navigateTo("/tour", `slug=${encodeURIComponent(tour.slug)}`)
       }}
       aria-label={`Xem chi tiết ${tour.title}`}
-      className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-[2px] bg-white transition-transform duration-300 motion-safe:hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#183024]"
+      className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-[2px] bg-[#f0f7f1] transition-transform duration-300 motion-safe:hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#183024]"
     >
-      <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-[#dddbd3]">
+      <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-[#e1f0e4]">
         {imageFailed ? (
           <div className="flex h-full w-full items-center justify-center text-[#4f5b53]">
             <Mountains className="h-9 w-9" aria-hidden="true" />
@@ -73,7 +73,7 @@ export default function TourCard({ tour }: { tour: Tour }) {
           {tour.theme ? themeLabel(tour.theme) : "Đang cập nhật"}
         </p>
 
-        <h3 className="m-0 font-display text-[20px] leading-[1.2] sm:text-[24px] sm:leading-[1.15] tracking-[-0.02em] text-[#183024]">
+        <h3 className="m-0 font-display text-[20px] leading-[1.2] sm:text-[24px] sm:leading-[1.15] tracking-[-0.02em] text-[#1f7a3a]">
           {shortTitle(tour.title)}
         </h3>
 
@@ -85,7 +85,7 @@ export default function TourCard({ tour }: { tour: Tour }) {
           {facts.map((fact) => (
             <div
               key={fact.label}
-              className="rounded-full bg-[#ecebe5] px-3 py-1.5 text-sm font-medium text-[#183024]"
+              className="rounded-full bg-white px-3 py-1.5 text-sm font-medium text-[#183024]"
             >
               <dt className="sr-only">{fact.label}</dt>
               <dd className="m-0 whitespace-nowrap">{fact.value}</dd>
@@ -104,7 +104,7 @@ export default function TourCard({ tour }: { tour: Tour }) {
           </p>
           <span
             aria-hidden="true"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#183024] text-white transition-colors group-hover:bg-[#a24627]"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#1f7a3a] text-white transition-colors group-hover:bg-[#15602b]"
           >
             <ArrowUpRight className="h-5 w-5" />
           </span>

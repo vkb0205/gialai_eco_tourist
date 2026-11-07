@@ -18,20 +18,20 @@
 }
 
 :root {
-  --background: #f6f3ec;
+  --background: #ffffff;
   --foreground: #183024;
   --card: #ffffff;
   --card-foreground: #183024;
-  --primary: #183024;
-  --primary-foreground: #f6f3ec;
-  --secondary: #e9e6dd;
+  --primary: #1f7a3a;
+  --primary-foreground: #ffffff;
+  --secondary: #eaf4ec;
   --secondary-foreground: #526257;
-  --muted: #e9e6dd;
+  --muted: #eaf4ec;
   --muted-foreground: #778078;
-  --accent: #d56742;
+  --accent: #1f7a3a;
   --accent-foreground: #ffffff;
-  --border: #d9d4c9;
-  --ring: #d56742;
+  --border: #d3e5d7;
+  --ring: #1f7a3a;
 }
 
 * {
@@ -41,7 +41,7 @@
 /* Default keyboard focus ring. :where() keeps specificity at zero, so any
    component-level focus style still wins. */
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-  outline: 2px solid #a24627;
+  outline: 2px solid #15602b;
   outline-offset: 2px;
 }
 
@@ -56,7 +56,7 @@ body {
   margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: 'DM Sans', Arial, sans-serif;
+  font-family: 'Be Vietnam Pro', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -67,14 +67,17 @@ body {
 }
 
 .font-display {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Be Vietnam Pro', Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
 }
 
 .form-label {
   display: block;
   margin-bottom: 0.55rem;
   color: #566259;
-  font-family: 'DM Sans', Arial, sans-serif;
+  font-family: 'Be Vietnam Pro', Arial, sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -85,12 +88,12 @@ body {
 .form-input {
   width: 100%;
   border: 0;
-  border-bottom: 1px solid #d9d4c9;
+  border-bottom: 1px solid #d3e5d7;
   border-radius: 0;
   background: transparent;
   padding: 0.75rem 0.1rem;
   color: #183024;
-  font-family: 'DM Sans', Arial, sans-serif;
+  font-family: 'Be Vietnam Pro', Arial, sans-serif;
   font-size: 0.875rem;
   outline: none;
   transition: border-color 180ms ease;
@@ -101,8 +104,8 @@ body {
 }
 
 .form-input:focus {
-  border-color: #a24627;
-  box-shadow: 0 1px 0 0 #a24627;
+  border-color: #15602b;
+  box-shadow: 0 1px 0 0 #15602b;
 }
 
 form[aria-busy='true'] button[type='submit'] {
@@ -118,7 +121,7 @@ form[aria-busy='true'] button[type='submit'] {
 
 /* Editorial hairline that separates the results toolbar from the grid. */
 .hairline {
-  border-color: #e0dcd2;
+  border-color: #d3e5d7;
 }
 
 /* Hide the native disclosure triangle on <details>/<summary> accordions. */
@@ -139,8 +142,8 @@ details > summary::-webkit-details-marker {
 
 .footer-heading {
   margin-bottom: 1.15rem;
-  color: #f2b08e;
-  font-family: 'DM Sans', Arial, sans-serif;
+  color: #15602b;
+  font-family: 'Be Vietnam Pro', Arial, sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.16em;
@@ -202,4 +205,21 @@ details > summary::-webkit-details-marker {
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Hero scene motion: slow and ambient, switched off by motion-safe. */
+@keyframes hero-drift {
+  from { transform: translateX(-40px); }
+  to { transform: translateX(60px); }
+}
+@keyframes hero-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes hero-shimmer {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.85; }
+}
+@keyframes hero-bird {
+  from { transform: translate(-60px, 10px); }
+  to { transform: translate(90px, -14px); }
 }

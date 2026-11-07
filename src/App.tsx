@@ -40,10 +40,10 @@ export default function App() {
   }, [route.path, route.anchor])
 
   return (
-    <div className="min-h-screen bg-[#f6f3ec] text-[#183024]">
+    <div className="min-h-screen bg-[#ffffff] text-[#183024]">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-[#183024] focus:px-5 focus:py-3 focus:text-xs focus:font-bold focus:uppercase focus:tracking-[0.12em] focus:text-white"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-[#1f7a3a] focus:px-5 focus:py-3 focus:text-xs focus:font-bold focus:uppercase focus:tracking-[0.12em] focus:text-white"
       >
         Đến nội dung chính
       </a>

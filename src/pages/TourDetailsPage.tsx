@@ -29,7 +29,7 @@ function PriceOption({ option }: { option: TourPriceOption }) {
           : null
 
   return (
-    <li className="border-t border-[#e5e1d8] py-4 first:border-t-0 first:pt-0 last:pb-0">
+    <li className="border-t border-[#d3e5d7] py-4 first:border-t-0 first:pt-0 last:pb-0">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="m-0 text-sm font-semibold text-[#183024]">
@@ -62,7 +62,7 @@ function BulletList({ items }: { items: string[] }) {
     <ul className="m-0 grid list-none gap-3 p-0">
       {items.map((item) => (
         <li key={item} className="flex gap-3 text-[15px] leading-6 text-[#47524a]">
-          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#b4502f]" />
+          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#15602b]" />
           <span>{item}</span>
         </li>
       ))}
@@ -79,7 +79,7 @@ function NoteBlock({ label, value }: NoteBlockProps) {
   if (!value) return null
 
   return (
-    <div className="border-t border-[#e5e1d8] pt-5">
+    <div className="border-t border-[#d3e5d7] pt-5">
       <p className="m-0 text-xs font-bold uppercase tracking-[0.15em] text-[#566259]">
         {label}
       </p>
@@ -92,7 +92,7 @@ function NoteBlock({ label, value }: NoteBlockProps) {
 
 function TourSummary({ tour }: { tour: TourDetails }) {
   return (
-    <div className="mt-7 grid grid-cols-2 gap-3 border-y border-[#e5e1d8] py-5 sm:grid-cols-3">
+    <div className="mt-7 grid grid-cols-2 gap-3 border-y border-[#d3e5d7] py-5 sm:grid-cols-3">
       <div className="flex gap-2.5 text-sm text-[#42524a]">
         <Clock
           className="mt-0.5 h-4 w-4 shrink-0 text-[#566259]"
@@ -160,7 +160,7 @@ function ExpandableText({ text, className = "" }: { text: string; className?: st
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-controls={id}
-          className="mt-1 inline-flex min-h-11 items-center text-xs font-bold uppercase tracking-[0.12em] text-[#a24627] underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a24627]"
+          className="mt-1 inline-flex min-h-11 items-center text-xs font-bold uppercase tracking-[0.12em] text-[#15602b] underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#15602b]"
         >
           {open ? "Thu gọn" : "Xem thêm"}
         </button>
@@ -193,11 +193,11 @@ function DayTimeline({ day }: { day: TourItineraryDay }) {
             key={`${day.dayNumber}-${item.order}-${item.title}`}
             className="grid grid-cols-[5.5rem_1rem_minmax(0,1fr)] gap-3 sm:grid-cols-[6.5rem_1rem_minmax(0,1fr)] sm:gap-4"
           >
-            <div className="pt-0.5 text-right text-xs font-bold uppercase leading-5 tracking-[0.12em] text-[#a24627]">
+            <div className="pt-0.5 text-right text-xs font-bold uppercase leading-5 tracking-[0.12em] text-[#15602b]">
               {itineraryTime(item)}
             </div>
             <div className="relative flex justify-center">
-              <span className="relative z-10 mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-[#b4502f] ring-4 ring-[#f6f3ec]" />
+              <span className="relative z-10 mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-[#15602b] ring-4 ring-[#ffffff]" />
               {index < day.items.length - 1 && (
                 <span
                   aria-hidden="true"
@@ -207,7 +207,7 @@ function DayTimeline({ day }: { day: TourItineraryDay }) {
             </div>
             <div className="pb-8 last:pb-0">
               {!isLegacySummary && item.title && (
-                <h4 className="m-0 mb-1 font-display text-xl leading-snug tracking-[-0.02em] text-[#183024]">
+                <h4 className="m-0 mb-1 font-display text-xl leading-snug tracking-[-0.02em] text-[#1f7a3a]">
                   {item.title}
                 </h4>
               )}
@@ -261,7 +261,7 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
             </span>
             <span>{tour.durationLabel}</span>
           </div>
-          <h1 className="max-w-4xl text-balance font-display text-[clamp(2.1rem,4.6vw,4rem)] leading-[1.04] tracking-[-0.04em] text-[#183024]">
+          <h1 className="max-w-4xl text-balance font-display text-[clamp(2.1rem,4.6vw,4rem)] leading-[1.04] tracking-[-0.04em] text-[#1f7a3a]">
             {tour.title}
           </h1>
           <p className="mt-6 max-w-3xl text-base leading-7 text-[#566259]">
@@ -281,15 +281,15 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
           </div>
         </div>
 
-        <aside className="h-fit rounded-[2px] border border-[#e0dcd2] bg-white p-6 lg:p-7">
+        <aside className="h-fit rounded-[2px] border border-[#d3e5d7] bg-[#f0f7f1] p-6 lg:p-7">
           <p className="m-0 text-xs font-bold uppercase tracking-[0.16em] text-[#566259]">
             Giá tham khảo
           </p>
-          <p className="mt-2 font-display text-4xl tracking-[-0.04em] text-[#a24627]">
+          <p className="mt-2 font-display text-4xl tracking-[-0.04em] text-[#15602b]">
             {tour.priceVnd === null ? "Liên hệ" : formatVnd(tour.priceVnd)}
           </p>
           {tour.departureText && (
-            <p className="mt-3 border-t border-[#e5e1d8] pt-4 text-[15px] leading-6 text-[#47524a]">
+            <p className="mt-3 border-t border-[#d3e5d7] pt-4 text-[15px] leading-6 text-[#47524a]">
               <strong className="font-semibold text-[#183024]">
                 Khởi hành:
               </strong>{" "}
@@ -304,7 +304,7 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
           <a
             href="#contact"
             onClick={goToEnquiry}
-            className="group mt-6 inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#183024] px-5 py-3.5 text-xs font-bold uppercase tracking-[0.14em] text-white transition-colors hover:bg-[#a24627] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+            className="group mt-6 inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#1f7a3a] px-5 py-3.5 text-xs font-bold uppercase tracking-[0.14em] text-white transition-colors hover:bg-[#15602b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
           >
             Đặt hành trình
             <ArrowUpRight
@@ -320,12 +320,12 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
 
       <section className="mt-20 grid gap-12 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-16">
         <div>
-          <div className="mb-8 flex items-end justify-between gap-5 border-b border-[#d9d4c9] pb-5">
+          <div className="mb-8 flex items-end justify-between gap-5 border-b border-[#d3e5d7] pb-5">
             <div>
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-[#a24627]">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-[#15602b]">
                 Lịch trình
               </p>
-              <h2 className="font-display text-4xl tracking-[-0.05em] text-[#183024]">
+              <h2 className="font-display text-4xl tracking-[-0.05em] text-[#1f7a3a]">
                 Từng ngày trên đường đi
               </h2>
             </div>
@@ -341,10 +341,10 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
                       className="absolute bottom-[-3rem] left-[19px] top-10 w-px bg-[#c8cfc3]"
                     />
                   )}
-                  <span className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full bg-[#183024] font-display text-lg text-white">
+                  <span className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full bg-[#1f7a3a] font-display text-lg text-white">
                     {String(day.dayNumber).padStart(2, "0")}
                   </span>
-                  <h3 className="m-0 font-display text-2xl tracking-[-0.03em] text-[#183024]">
+                  <h3 className="m-0 font-display text-2xl tracking-[-0.03em] text-[#1f7a3a]">
                     {day.title}
                   </h3>
                   <DayTimeline day={day} />
@@ -372,7 +372,7 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
         </div>
 
         <aside className="space-y-7">
-          <div className="rounded-[2px] border border-[#e0dcd2] bg-white p-6 lg:p-7">
+          <div className="rounded-[2px] border border-[#d3e5d7] bg-[#f0f7f1] p-6 lg:p-7">
             <p className="mb-5 text-xs font-bold uppercase tracking-[0.16em] text-[#566259]">
               Bảng giá
             </p>
@@ -392,7 +392,7 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
             )}
           </div>
 
-          <div className="rounded-[2px] bg-[#e9e6dd] p-6 lg:p-7">
+          <div className="rounded-[2px] bg-[#eaf4ec] p-6 lg:p-7">
             <p className="mb-5 text-xs font-bold uppercase tracking-[0.16em] text-[#566259]">
               Điểm nổi bật
             </p>
@@ -401,9 +401,9 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
         </aside>
       </section>
 
-      <section className="mt-20 grid gap-12 border-t border-[#d9d4c9] pt-10 md:grid-cols-2 lg:grid-cols-3">
+      <section className="mt-20 grid gap-12 border-t border-[#d3e5d7] pt-10 md:grid-cols-2 lg:grid-cols-3">
         <div>
-          <h2 className="font-display text-2xl tracking-[-0.03em] text-[#183024]">
+          <h2 className="font-display text-2xl tracking-[-0.03em] text-[#1f7a3a]">
             Bao gồm
           </h2>
           <div className="mt-5">
@@ -411,7 +411,7 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
           </div>
         </div>
         <div>
-          <h2 className="font-display text-2xl tracking-[-0.03em] text-[#183024]">
+          <h2 className="font-display text-2xl tracking-[-0.03em] text-[#1f7a3a]">
             Không bao gồm
           </h2>
           <div className="mt-5">
@@ -419,7 +419,7 @@ function TourDetailsContent({ tour }: { tour: TourDetails }) {
           </div>
         </div>
         <div className="space-y-5">
-          <h2 className="font-display text-2xl tracking-[-0.03em] text-[#183024]">
+          <h2 className="font-display text-2xl tracking-[-0.03em] text-[#1f7a3a]">
             Thông tin cần biết
           </h2>
           <NoteBlock label="Lưu trú" value={tour.accommodationNotes} />
@@ -464,7 +464,7 @@ export default function TourDetailsPage({ query }: { query: string }) {
 
   if (!slug || (!loading && !tour && !error)) {
     return (
-      <section className="bg-[#f6f3ec] px-6 py-32 lg:px-12">
+      <section className="bg-[#ffffff] px-6 py-32 lg:px-12">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-sm text-[#566259]">
             Không tìm thấy hành trình này.
@@ -472,7 +472,7 @@ export default function TourDetailsPage({ query }: { query: string }) {
           <button
             type="button"
             onClick={() => navigateTo("/explore")}
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#183024] px-5 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#1f7a3a] px-5 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Về danh mục
@@ -483,7 +483,7 @@ export default function TourDetailsPage({ query }: { query: string }) {
   }
 
   return (
-    <div className="bg-[#f6f3ec] px-6 pb-24 pt-28 lg:px-12 lg:pb-32 lg:pt-36">
+    <div className="bg-[#ffffff] px-6 pb-24 pt-28 lg:px-12 lg:pb-32 lg:pt-36">
       <div className="mx-auto max-w-[1240px]">
         <button
           type="button"
@@ -496,13 +496,13 @@ export default function TourDetailsPage({ query }: { query: string }) {
 
         {loading ? (
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px]">
-            <div className="h-96 animate-pulse rounded-[2px] bg-[#e9e6dd]" />
-            <div className="h-80 animate-pulse rounded-[2px] bg-[#e9e6dd]" />
+            <div className="h-96 animate-pulse rounded-[2px] bg-[#eaf4ec]" />
+            <div className="h-80 animate-pulse rounded-[2px] bg-[#eaf4ec]" />
           </div>
         ) : error || !tour ? (
           <div
             role="alert"
-            className="rounded-[2px] border border-[#e0dcd2] bg-white px-6 py-14 text-center"
+            className="rounded-[2px] border border-[#d3e5d7] bg-[#f0f7f1] px-6 py-14 text-center"
           >
             <p className="text-sm text-[#566259]">
               Không thể tải nội dung hành trình lúc này.
@@ -510,7 +510,7 @@ export default function TourDetailsPage({ query }: { query: string }) {
             <button
               type="button"
               onClick={() => navigateTo("/explore")}
-              className="mt-6 rounded-full bg-[#183024] px-5 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white"
+              className="mt-6 rounded-full bg-[#1f7a3a] px-5 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white"
             >
               Về danh mục
             </button>

@@ -20,15 +20,15 @@ export default function EmptyResults({
   onClearAll: () => void
 }) {
   return (
-    <div className="flex flex-col items-start rounded-[2px] bg-white px-6 py-14 text-left lg:items-center lg:px-12 lg:text-center">
+    <div className="flex flex-col items-start rounded-[2px] bg-[#f0f7f1] px-6 py-14 text-left lg:items-center lg:px-12 lg:text-center">
       <span
         aria-hidden="true"
-        className="flex h-16 w-16 items-center justify-center rounded-full bg-[#ecebe5] text-[#183024]"
+        className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-[#183024]"
       >
         <Binoculars className="h-7 w-7" />
       </span>
 
-      <h2 className="mt-7 font-display text-[30px] leading-[1.1] tracking-[-0.03em] text-[#183024]">
+      <h2 className="mt-7 font-display text-[30px] leading-[1.1] tracking-[-0.03em] text-[#1f7a3a]">
         Chưa có hành trình nào khớp
       </h2>
 
@@ -43,7 +43,7 @@ export default function EmptyResults({
           <button
             type="button"
             onClick={() => onRelax(suggestion)}
-            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#183024] px-6 text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-[#a24627] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1f7a3a] px-6 text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-[#15602b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
           >
             Bỏ “{suggestion.label}”
             <span className="font-medium tabular-nums">
@@ -55,7 +55,7 @@ export default function EmptyResults({
         <button
           type="button"
           onClick={onClearAll}
-          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#ecebe5] px-6 text-[15px] font-semibold text-[#183024] transition-colors duration-200 hover:bg-[#dddbd3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-[15px] font-semibold text-[#183024] transition-colors duration-200 hover:bg-[#e1f0e4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
         >
           <ArrowCounterClockwise className="h-4 w-4" aria-hidden="true" />
           Xóa tất cả bộ lọc

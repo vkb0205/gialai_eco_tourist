@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
+import PageBackdrop from "@/components/layout/PageBackdrop"
 import type { FormEvent, ReactNode } from "react"
 import {
   AirplaneTilt,
@@ -68,14 +69,14 @@ function Field({ id, label, children }: { id: string; label: string; children: R
   )
 }
 
-const inputClass = "min-h-12 w-full rounded-[2px] bg-[#ecebe5] px-4 text-[16px] text-[#183024] outline-none transition-colors placeholder:text-[#4f5b53] hover:bg-[#e4e3dc] focus:bg-white focus:outline focus:outline-2 focus:outline-[#183024]"
+const inputClass = "min-h-12 w-full rounded-[2px] bg-white px-4 text-[16px] text-[#183024] outline-none transition-colors placeholder:text-[#4f5b53] hover:bg-[#eaf4ec] focus:bg-[#f0f7f1] focus:outline focus:outline-2 focus:outline-[#183024]"
 const textareaClass = `${inputClass} min-h-28 resize-y py-3`
 
 function SubmitButton({ children }: { children: ReactNode }) {
   return (
     <button
       type="submit"
-      className="group inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-[#183024] px-8 text-[16px] font-semibold text-white transition-colors hover:bg-[#a24627] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#183024] sm:w-auto"
+      className="group inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-[#1f7a3a] px-8 text-[16px] font-semibold text-white transition-colors hover:bg-[#15602b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#183024] sm:w-auto"
     >
       {children}
       <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
@@ -144,14 +145,14 @@ function FormShell({ activeService, children }: { activeService: ServiceOption; 
     <form
       onSubmit={handleSubmit}
       aria-busy={submitting}
-      className="overflow-hidden rounded-[2px] bg-white"
+      className="overflow-hidden rounded-[2px] bg-gradient-to-br from-[#f6fbf6] to-[#e4f2e8]"
     >
       <div aria-hidden="true" className="absolute left-[-10000px] h-px w-px overflow-hidden">
         <label htmlFor="website">Website</label>
         <input id="website" name="website" tabIndex={-1} autoComplete="off" />
       </div>
       <div className="grid lg:grid-cols-[0.82fr_1.18fr]">
-        <div className="relative min-h-[280px] bg-[#183024] text-white lg:min-h-full">
+        <div className="relative min-h-[280px] bg-[#1f7a3a] text-white lg:min-h-full">
           <img src={activeService.image} alt={activeService.title} className="absolute inset-0 h-full w-full object-cover" />
           <div className="absolute inset-0 bg-[#0c1f17]/65" />
           <div className="relative flex min-h-[280px] flex-col justify-end p-6 lg:min-h-[560px] lg:p-8">
@@ -171,11 +172,11 @@ function FormShell({ activeService, children }: { activeService: ServiceOption; 
         </div>
         <div className="p-6 lg:p-8">
           {submitted ? (
-            <div className="flex min-h-[480px] flex-col items-start justify-center rounded-[2px] bg-[#ecebe5] p-8">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#183024] text-white">
+            <div className="flex min-h-[480px] flex-col items-start justify-center rounded-[2px] bg-white p-8">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#1f7a3a] text-white">
                 <CheckCircle weight="fill" className="h-7 w-7" aria-hidden="true" />
               </div>
-              <h3 className="mt-6 font-display text-3xl font-medium tracking-[-0.03em] text-[#183024]">
+              <h3 className="mt-6 font-display text-3xl font-medium tracking-[-0.03em] text-[#1f7a3a]">
                 Đã ghi nhận yêu cầu
               </h3>
               <p className="mt-4 max-w-md text-[17px] leading-7 text-[#2f3d35]">
@@ -184,7 +185,7 @@ function FormShell({ activeService, children }: { activeService: ServiceOption; 
               <button
                 type="button"
                 onClick={() => setSubmitted(false)}
-                className="mt-7 min-h-12 rounded-full bg-white px-6 text-[15px] font-semibold text-[#183024] transition-colors hover:bg-[#dddbd3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#183024]"
+                className="mt-7 min-h-12 rounded-full bg-[#f0f7f1] px-6 text-[15px] font-semibold text-[#183024] transition-colors hover:bg-[#e1f0e4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#183024]"
               >
                 Gửi yêu cầu mới
               </button>
@@ -210,7 +211,7 @@ function CarForm() {
     <>
       <div className="grid gap-4 sm:grid-cols-3">
         {["Xe 4-7 chỗ", "Xe 16-29 chỗ", "Xe 35-45 chỗ"].map((item) => (
-          <label key={item} className="flex min-h-14 cursor-pointer items-center justify-center rounded-[2px] bg-[#ecebe5] px-4 text-[16px] font-semibold text-[#183024] transition-colors hover:bg-[#e0dfd7] has-[:checked]:bg-[#183024] has-[:checked]:text-white has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[#183024]">
+          <label key={item} className="flex min-h-14 cursor-pointer items-center justify-center rounded-[2px] bg-white px-4 text-[16px] font-semibold text-[#183024] transition-colors hover:bg-[#e0dfd7] has-[:checked]:bg-[#1f7a3a] has-[:checked]:text-white has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[#183024]">
             <input required name="vehicle" type="radio" className="sr-only" />
             {item}
           </label>
@@ -241,7 +242,7 @@ function VisaForm() {
       </div>
       <Field id="visa-note" label="Tình trạng hồ sơ hiện tại"><textarea id="visa-note" name="note" className={textareaClass} placeholder="Bạn đã có hộ chiếu, lịch bay hoặc thư mời chưa" /></Field>
       <ContactFields prefix="visa" />
-      <div className="rounded-[2px] bg-[#ecebe5] p-4 text-[16px] leading-6 text-[#183024]">
+      <div className="rounded-[2px] bg-white p-4 text-[16px] leading-6 text-[#183024]">
         Phí và thời gian xử lý phụ thuộc vào từng lãnh sự quán. Tư vấn viên sẽ kiểm tra trước khi báo giá.
       </div>
       <ConsentField />
@@ -255,7 +256,7 @@ function FlightForm() {
     <>
       <div className="grid gap-4 sm:grid-cols-2">
         {["Một chiều", "Khứ hồi"].map((item) => (
-          <label key={item} className="flex min-h-14 cursor-pointer items-center justify-center rounded-[2px] bg-[#ecebe5] px-4 text-[16px] font-semibold text-[#183024] transition-colors hover:bg-[#e0dfd7] has-[:checked]:bg-[#183024] has-[:checked]:text-white has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[#183024]">
+          <label key={item} className="flex min-h-14 cursor-pointer items-center justify-center rounded-[2px] bg-white px-4 text-[16px] font-semibold text-[#183024] transition-colors hover:bg-[#e0dfd7] has-[:checked]:bg-[#1f7a3a] has-[:checked]:text-white has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[#183024]">
             <input required name="trip" type="radio" className="sr-only" />
             {item}
           </label>
@@ -329,22 +330,19 @@ export default function ServicesPage({ query = "" }: { query?: string }) {
   )
 
   return (
-    <div className="bg-[#ecebe5] text-[#183024]">
-      <header className="relative isolate overflow-hidden bg-[#10231a]">
-        <div className="absolute inset-0 -z-10">
-          <img src={img0} alt="" aria-hidden="true" decoding="async" className="h-full w-full object-cover object-[50%_40%]" />
-          <div className="absolute inset-0 bg-[#0c1f17]/65" />
-        </div>
-        <div className="mx-auto grid max-w-[1440px] items-end gap-10 px-6 pb-12 pt-32 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-16 lg:px-12 lg:pb-16 lg:pt-44">
+    <div className="bg-white text-[#183024]">
+      <header className="relative isolate overflow-hidden bg-[#e1f2f8]">
+        <PageBackdrop />
+      <div className="mx-auto grid max-w-[1440px] items-end gap-10 px-6 pb-10 pt-28 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-16 lg:px-12 lg:pb-12 lg:pt-36">
           <div className="motion-safe:animate-[rise-in_700ms_cubic-bezier(0.32,0.72,0,1)_both]">
-            <h1 className="m-0 max-w-[16ch] font-display text-[clamp(2.5rem,6vw,4.75rem)] font-medium leading-[1] tracking-[-0.04em] text-white">
+            <h1 className="m-0 max-w-[16ch] font-display text-[clamp(2.2rem,5vw,4rem)] font-medium leading-[1] tracking-[-0.04em] text-[#15602b]">
               Cần thêm hỗ trợ cho chuyến đi?
             </h1>
-            <p className="m-0 mt-6 max-w-[34rem] text-lg leading-7 text-white">
+            <p className="m-0 mt-6 max-w-[34rem] text-lg leading-7 text-[#183024]">
               Thuê xe, visa hoặc vé máy bay: chọn dịch vụ, để lại thông tin. Tư vấn viên sẽ kiểm tra và phản hồi phương án phù hợp.
             </p>
           </div>
-          <ul className="m-0 flex list-none flex-col gap-3 p-0 text-lg text-white motion-safe:animate-[rise-in_700ms_cubic-bezier(0.32,0.72,0,1)_220ms_both]">
+          <ul className="m-0 flex list-none flex-col gap-3 p-0 text-lg text-[#183024] motion-safe:animate-[rise-in_700ms_cubic-bezier(0.32,0.72,0,1)_220ms_both]">
             {["Lịch trình rõ ràng", "Liên hệ trong ngày", "Thông tin được bảo mật"].map((text) => (
               <li key={text} className="flex items-center gap-3">
                 <CheckCircle weight="fill" className="h-6 w-6 shrink-0" aria-hidden="true" />
@@ -369,7 +367,7 @@ export default function ServicesPage({ query = "" }: { query?: string }) {
                     onClick={() => setActiveKey(service.key)}
                     aria-pressed={active}
                     className={`flex min-h-12 items-center gap-3 rounded-full px-5 text-left text-[16px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] ${
-                      active ? "bg-[#183024] text-white" : "bg-white text-[#183024] hover:bg-[#183024] hover:text-white"
+                      active ? "bg-[#1f7a3a] text-white" : "bg-[#f0f7f1] text-[#183024] hover:bg-[#1f7a3a] hover:text-white"
                     }`}
                   >
                     {service.icon}

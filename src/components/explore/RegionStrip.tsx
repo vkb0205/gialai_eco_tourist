@@ -23,7 +23,7 @@ export default function RegionStrip({
     >
       <h2
         id="region-strip-heading"
-        className="m-0 shrink-0 font-display text-2xl tracking-[-0.02em] text-[#183024]"
+        className="m-0 shrink-0 font-display text-2xl tracking-[-0.02em] text-[#1f7a3a]"
       >
         Chọn vùng miền
       </h2>
@@ -50,10 +50,10 @@ export default function RegionStrip({
               title={region.characterisation}
               className={`group flex min-h-11 items-center gap-2 whitespace-nowrap rounded-full px-5 text-[15px] font-semibold transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] ${
                 active
-                  ? "bg-[#183024] text-white"
+                  ? "bg-[#1f7a3a] text-white"
                   : disabled
-                    ? "cursor-not-allowed bg-[#dddbd3] text-[#4f5b53]"
-                    : "bg-white text-[#183024] enabled:hover:bg-[#183024] enabled:hover:text-white"
+                    ? "cursor-not-allowed bg-[#e1f0e4] text-[#4f5b53]"
+                    : "bg-[#f0f7f1] text-[#183024] enabled:hover:bg-[#1f7a3a] enabled:hover:text-white"
               }`}
             >
               {region.name}

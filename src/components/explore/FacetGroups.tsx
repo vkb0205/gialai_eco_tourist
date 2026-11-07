@@ -35,7 +35,7 @@ export default function FacetGroups({
             className="group/details"
             open={group.key === "theme" || group.key === "duration" || selected.length > 0}
           >
-            <summary className="flex min-h-11 cursor-pointer select-none items-center justify-between gap-3 rounded-[2px] bg-[#ecebe5] px-4 py-2 text-[16px] font-semibold text-[#183024] outline-none transition-colors hover:bg-[#e2e1d9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]">
+            <summary className="flex min-h-11 cursor-pointer select-none items-center justify-between gap-3 rounded-[2px] bg-white px-4 py-2 text-[16px] font-semibold text-[#183024] outline-none transition-colors hover:bg-[#e2e1d9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]">
               <span>{group.label}</span>
               <CaretDown
                 aria-hidden="true"

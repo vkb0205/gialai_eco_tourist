@@ -63,12 +63,12 @@ export default function Pagination({
   const pageButton = (active: boolean) =>
     `inline-flex h-11 min-w-11 items-center justify-center rounded-full px-3 text-[15px] font-semibold tabular-nums transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] ${
       active
-        ? "bg-[#183024] text-white"
-        : "bg-white text-[#183024] hover:bg-[#dddbd3]"
+        ? "bg-[#1f7a3a] text-white"
+        : "bg-[#f0f7f1] text-[#183024] hover:bg-[#e1f0e4]"
     }`
 
   const arrowButton =
-    "inline-flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#183024] transition-colors hover:bg-[#dddbd3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] disabled:cursor-not-allowed disabled:bg-[#dddbd3] disabled:text-[#4f5b53] disabled:hover:bg-[#dddbd3]"
+    "inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#f0f7f1] text-[#183024] transition-colors hover:bg-[#e1f0e4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] disabled:cursor-not-allowed disabled:bg-[#e1f0e4] disabled:text-[#4f5b53] disabled:hover:bg-[#e1f0e4]"
 
   return (
     <div className="mt-14 flex flex-col items-center gap-4">

@@ -178,7 +178,7 @@ export default function ExplorePage({ query }: { query: string }) {
   }, [currentPage])
 
   return (
-    <div className="bg-[#ecebe5] pb-24 lg:pb-32">
+    <div className="bg-white pb-24 lg:pb-32">
       <ExploreHeader
         keyword={state.keyword}
         onKeywordChange={onKeywordChange}
@@ -234,7 +234,7 @@ export default function ExplorePage({ query }: { query: string }) {
               ) : loadError ? (
                 <div
                   role="alert"
-                  className="rounded-[2px] bg-white px-6 py-12 text-center text-[17px] text-[#2f3d35]"
+                  className="rounded-[2px] bg-[#f0f7f1] px-6 py-12 text-center text-[17px] text-[#2f3d35]"
                 >
                   {loadError}
                 </div>

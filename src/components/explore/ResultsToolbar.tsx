@@ -107,12 +107,12 @@ const ResultsToolbar = forwardRef<HTMLButtonElement, {
             onClick={onOpenFilters}
             aria-expanded={filtersOpen}
             aria-haspopup="dialog"
-            className="inline-flex items-center gap-2 whitespace-nowrap min-h-11 rounded-full bg-white px-5 text-[15px] font-semibold text-[#183024] transition-colors duration-200 hover:bg-[#dddbd3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] lg:hidden"
+            className="inline-flex items-center gap-2 whitespace-nowrap min-h-11 rounded-full bg-[#f0f7f1] px-5 text-[15px] font-semibold text-[#183024] transition-colors duration-200 hover:bg-[#e1f0e4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] lg:hidden"
           >
             <FunnelSimple className="h-4 w-4" aria-hidden="true" />
             Bộ lọc
             {activeCount > 0 && (
-              <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-[#183024] px-1.5 text-sm font-semibold tabular-nums text-white">
+              <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-[#1f7a3a] px-1.5 text-sm font-semibold tabular-nums text-white">
                 {activeCount}
               </span>
             )}
@@ -132,7 +132,7 @@ const ResultsToolbar = forwardRef<HTMLButtonElement, {
                 onChange={(event) =>
                   onSortChange(event.target.value as SortMode)
                 }
-                className="min-h-11 w-full cursor-pointer appearance-none rounded-full bg-white py-2.5 pl-5 pr-10 text-[15px] font-semibold text-[#183024] transition-colors hover:bg-[#dddbd3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+                className="min-h-11 w-full cursor-pointer appearance-none rounded-full bg-[#f0f7f1] py-2.5 pl-5 pr-10 text-[15px] font-semibold text-[#183024] transition-colors hover:bg-[#e1f0e4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
               >
                 {SORT_MODES.map((mode) => (
                   <option key={mode} value={mode}>
@@ -159,7 +159,7 @@ const ResultsToolbar = forwardRef<HTMLButtonElement, {
               }-${chip.value}`}
               type="button"
               onClick={() => onRemoveChip(chip)}
-              className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#183024] pl-5 pr-4 text-[15px] font-semibold text-white transition-colors hover:bg-[#a24627] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] motion-safe:animate-[fade-in_160ms_ease-out]"
+              className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1f7a3a] pl-5 pr-4 text-[15px] font-semibold text-white transition-colors hover:bg-[#15602b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] motion-safe:animate-[fade-in_160ms_ease-out]"
             >
               {chip.label}
               <X className="h-3.5 w-3.5" aria-hidden="true" />
@@ -170,7 +170,7 @@ const ResultsToolbar = forwardRef<HTMLButtonElement, {
           <button
             type="button"
             onClick={onClearAll}
-            className="ml-1 min-h-11 text-[15px] font-semibold text-[#183024] underline underline-offset-4 transition-colors hover:text-[#a24627] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+            className="ml-1 min-h-11 text-[15px] font-semibold text-[#183024] underline underline-offset-4 transition-colors hover:text-[#15602b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
           >
             Xóa tất cả
           </button>

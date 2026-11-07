@@ -1,3 +1,4 @@
+import HeroBackdrop from "@/components/layout/HeroBackdrop"
 import { useEffect, useRef, useState } from "react"
 import type { ReactNode } from "react"
 import type { ChangeEvent, FormEvent } from "react"
@@ -146,6 +147,19 @@ function Hero() {
   const slideCount = bannerUrl ? 2 : 1
   const trackRef = useRef<HTMLDivElement | null>(null)
   const [active, setActive] = useState(0)
+  const [paused, setPaused] = useState(false)
+
+  // Auto-advance every 5 seconds, looping. Pauses while the visitor hovers or
+  // focuses the hero, and never runs for visitors who prefer reduced motion.
+  // Depending on `active` restarts the timer after any manual navigation.
+  useEffect(() => {
+    if (slideCount < 2 || paused) return
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
+    const timer = window.setTimeout(() => {
+      goTo((active + 1) % slideCount)
+    }, 5000)
+    return () => window.clearTimeout(timer)
+  }, [active, paused, slideCount])
 
   const goTo = (index: number) => {
     const track = trackRef.current
@@ -170,7 +184,11 @@ function Hero() {
       id="home"
       aria-roledescription="carousel"
       aria-label="Giới thiệu nổi bật"
-      className="relative bg-[#183024] text-white"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+      className="relative bg-[#dff1f8] text-[#183024]"
     >
       <div
         ref={trackRef}
@@ -183,35 +201,22 @@ function Hero() {
           aria-label={`1 / ${slideCount}`}
           className="relative isolate min-h-[100svh] w-full min-w-full shrink-0 basis-full snap-start overflow-hidden"
         >
-          {/* Keep the photograph full-bleed so the copy remains over the image. */}
-          <div className="absolute inset-0 -z-10 overflow-hidden">
-            <img
-              src={heroImage}
-              alt="Biển Hồ nhìn từ trên cao, mặt nước xanh thẫm ôm lấy dải đất phủ thông"
-              width={2000}
-              height={1116}
-              fetchPriority="high"
-              decoding="async"
-              className="absolute inset-0 h-full w-full object-cover object-[30%_50%] md:object-[34%_50%] lg:object-[40%_50%] xl:object-center"
-            />
-          </div>
+          <HeroBackdrop />
 
-          <div className="pointer-events-none absolute inset-0 z-10 bg-noise opacity-[0.035] mix-blend-overlay" />
-
-          <div className="relative z-20 mx-auto flex min-h-[100svh] max-w-[1440px] flex-col justify-between px-6 pb-10 pt-32 lg:px-12 lg:pb-14">
-            <div className="max-w-[56rem]">
-              <h1 className="max-w-[min(100%,54rem)] break-words font-display font-medium tracking-[-0.065em]">
-                <span className="block text-[clamp(2.7rem,7vw,5rem)] leading-[1.05]">
+                    <div className="relative z-20 mx-auto flex min-h-[100svh] max-w-[1440px] flex-col justify-between px-6 pb-10 pt-32 lg:px-12 lg:pb-14">
+            <div className="flex w-full max-w-[56rem] flex-1 flex-col justify-center">
+              <h1 className="max-w-[min(100%,54rem)] break-words font-display font-medium text-[#183024] tracking-[-0.065em]">
+                <span className="block text-[clamp(1.9rem,4.6vw,4.2rem)] leading-[1.05] motion-safe:animate-[rise-in_800ms_cubic-bezier(0.32,0.72,0,1)_100ms_both]">
                   Vi vu muôn phương
                 </span>
-                <span className="block text-[clamp(2.65rem,7vw,6rem)] leading-[1.05] text-[#fef2a0]">
+                <span className="block text-[clamp(1.9rem,4.6vw,4.2rem)] leading-[1.05] text-[#1f7a3a] motion-safe:animate-[rise-in_800ms_cubic-bezier(0.32,0.72,0,1)_260ms_both]">
                   Chạm ngàn cung đường
                 </span>
               </h1>
 
               {/* The paragraph stays in a left-side safe zone, away from the tower crop. */}
-              <div className="mt-10 w-fit max-w-full lg:mt-14">
-                <p className="max-w-[17rem] text-base leading-7 text-white/80 sm:max-w-[min(30rem,42vw)] lg:max-w-[min(34rem,34vw)] lg:text-lg">
+              <div className="mt-10 w-fit max-w-full lg:mt-14 motion-safe:animate-[rise-in_800ms_cubic-bezier(0.32,0.72,0,1)_460ms_both]">
+                <p className="max-w-[17rem] text-base leading-7 text-[#183024] sm:max-w-[min(30rem,42vw)] lg:max-w-[min(34rem,34vw)] lg:text-lg">
                   Từ phố thị đến biển xanh nắng vàng và cao nguyên rộng mở, mỗi
                   chuyến đi đều là một trải nghiệm mới đầy cảm hứng.
                 </p>
@@ -223,7 +228,7 @@ function Hero() {
                       event.preventDefault()
                       navigateTo("/explore")
                     }}
-                    className="group inline-flex items-center gap-3 rounded-full bg-[#fed24f] px-6 py-4 text-xs font-bold uppercase tracking-[0.12em] text-[#6f4e37] transition-all hover:-translate-y-1 hover:bg-[#fed24f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    className="group inline-flex items-center gap-3 rounded-full bg-[#fed24f] px-6 py-4 text-xs font-bold uppercase tracking-[0.12em] text-[#6f4e37] transition-all hover:-translate-y-1 hover:bg-[#fed24f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
                   >
                     Xem hành trình{" "}
                     <ArrowRight
@@ -233,9 +238,9 @@ function Hero() {
                   </a>
                   <a
                     href="#story"
-                    className="group inline-flex items-center gap-3 px-3 py-4 text-xs font-bold uppercase tracking-[0.12em] text-white/85 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    className="group inline-flex items-center gap-3 px-3 py-4 text-xs font-bold uppercase tracking-[0.12em] text-[#183024] transition-colors hover:text-[#15602b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
                   >
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/35">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[#183024]/40">
                       <Play
                         weight="fill"
                         className="ml-0.5 h-3.5 w-3.5"
@@ -248,10 +253,10 @@ function Hero() {
               </div>
             </div>
 
-            <div className="flex items-end justify-between border-t border-white/20 pt-5">
+            <div className="flex items-end justify-between border-t border-white/30 pt-5">
               <a
                 href="#story"
-                className="group flex items-center gap-3 text-[15px] font-bold uppercase tracking-[0.18em] text-white/75 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:text-[17px] sm:tracking-[0.2em]"
+                className="group flex items-center gap-3 text-[15px] font-bold uppercase tracking-[0.18em] text-white transition-colors hover:text-[#ffe07a] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:text-[17px] sm:tracking-[0.2em]"
               >
                 Khám phá tiếp{" "}
                 <ArrowDown className="h-4 w-4" aria-hidden="true" />
@@ -283,18 +288,7 @@ function Hero() {
             decoding="async"
             className="relative h-auto w-full md:absolute md:inset-0 md:h-full md:object-cover md:object-center"
           />
-          {/* Keeps the fixed navigation legible over the pale sky. */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#10231a]/70 to-transparent"
-          />
-          <div className="px-6 pb-28 pt-8 text-white md:hidden">
-            <p className="m-0 font-display text-3xl leading-tight">Festival Cồng Chiêng 2026</p>
-            <p className="m-0 mt-2 text-lg">Tuần lễ Hoa Dã Quỳ núi lửa Chư Đăng Ya</p>
-            <p className="m-0 mt-4 text-lg font-semibold">
-              30.10 – 08.11.2026 · Quảng trường Đại Đoàn Kết
-            </p>
-          </div>
+          
         </div>
       )}
       </div>
@@ -330,7 +324,7 @@ function Hero() {
             onClick={() => goTo(active - 1)}
             disabled={active === 0}
             aria-label="Slide trước"
-            className="flex h-12 w-12 items-center justify-center rounded-full border border-white/60 bg-[#10231a]/45 text-white transition-colors hover:bg-white hover:text-[#183024] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#10231a]/45 disabled:hover:text-white"
+            className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-[#15602b] transition-colors hover:bg-[#15602b] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white disabled:hover:text-[#15602b]"
           >
             <ArrowLeft className="h-5 w-5" aria-hidden="true" />
           </button>
@@ -339,7 +333,7 @@ function Hero() {
             onClick={() => goTo(active + 1)}
             disabled={active === slideCount - 1}
             aria-label="Slide sau"
-            className="flex h-12 w-12 items-center justify-center rounded-full border border-white/60 bg-[#10231a]/45 text-white transition-colors hover:bg-white hover:text-[#183024] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#10231a]/45 disabled:hover:text-white"
+            className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-[#15602b] transition-colors hover:bg-[#15602b] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white disabled:hover:text-[#15602b]"
           >
             <ArrowRight className="h-5 w-5" aria-hidden="true" />
           </button>
@@ -361,7 +355,7 @@ function PhotoCredit({
       href={credit.href}
       target="_blank"
       rel="noreferrer noopener"
-      className={`inline-flex min-h-6 items-center text-sm text-[#2f3d35] underline underline-offset-2 hover:text-[#a24627] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] ${className}`}
+      className={`inline-flex min-h-6 items-center text-sm text-[#2f3d35] underline underline-offset-2 hover:text-[#15602b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] ${className}`}
     >
       Ảnh: {credit.label}
     </a>
@@ -370,7 +364,7 @@ function PhotoCredit({
 
 function Story() {
   return (
-    <section id="story" className="bg-white px-6 py-24 lg:px-12 lg:py-32">
+    <section id="story" className="bg-gradient-to-b from-[#f6fbf6] to-[#e4f2e8] px-6 py-24 lg:px-12 lg:py-32">
       <div className="mx-auto grid max-w-[1440px] items-center gap-12 lg:grid-cols-[0.9fr_1fr] lg:gap-24">
         <Reveal>
           <figure className="m-0">
@@ -392,7 +386,7 @@ function Story() {
 
         <div>
           <Reveal>
-            <h2 className="m-0 max-w-[16ch] font-display text-[clamp(2.25rem,4.6vw,3.75rem)] font-medium leading-[1.05] tracking-[-0.04em] text-[#183024]">
+            <h2 className="m-0 max-w-[16ch] font-display text-[clamp(2.25rem,4.6vw,3.75rem)] font-medium leading-[1.05] tracking-[-0.04em] text-[#1f7a3a]">
               Kết nối điểm đến, kiến tạo trải nghiệm
             </h2>
           </Reveal>
@@ -422,7 +416,7 @@ function Story() {
                 ["14+", "năm bền bỉ"],
               ].map(([value, label]) => (
                 <div key={label}>
-                  <dd className="m-0 font-display text-5xl leading-none tracking-[-0.03em] text-[#183024]">
+                  <dd className="m-0 font-display text-5xl leading-none tracking-[-0.03em] text-[#1f7a3a]">
                     {value}
                   </dd>
                   <dt className="mt-2 text-[16px] text-[#2f3d35]">{label}</dt>
@@ -466,8 +460,8 @@ function ExperienceCard({ tour }: { tour: Tour }) {
   const query = `slug=${encodeURIComponent(tour.slug)}`
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-[2px] bg-white transition-transform duration-300 motion-safe:hover:-translate-y-1 focus-within:outline focus-within:outline-2 focus-within:outline-offset-4 focus-within:outline-[#183024]">
-      <div className="overflow-hidden bg-[#dddbd3]">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-[2px] bg-[#f0f7f1] transition-transform duration-300 motion-safe:hover:-translate-y-1 focus-within:outline focus-within:outline-2 focus-within:outline-offset-4 focus-within:outline-[#183024]">
+      <div className="overflow-hidden bg-[#e1f0e4]">
         <img
           src={tour.image}
           alt=""
@@ -480,7 +474,7 @@ function ExperienceCard({ tour }: { tour: Tour }) {
         <p className="m-0 text-[15px] font-semibold text-[#4f5b53]">
           {tourCategory(tour)} · {tour.durationLabel}
         </p>
-        <h3 className="m-0 font-display text-[22px] leading-[1.2] tracking-[-0.02em] text-[#183024]">
+        <h3 className="m-0 font-display text-[22px] leading-[1.2] tracking-[-0.02em] text-[#1f7a3a]">
           {/* Stretched link: the whole card is one click target and one tab stop. */}
           <a
             href={`#/tour?${query}`}
@@ -488,7 +482,7 @@ function ExperienceCard({ tour }: { tour: Tour }) {
               event.preventDefault()
               navigateTo("/tour", query)
             }}
-            className="transition-colors after:absolute after:inset-0 after:content-[''] hover:text-[#a24627] focus-visible:outline-none"
+            className="transition-colors after:absolute after:inset-0 after:content-[''] hover:text-[#15602b] focus-visible:outline-none"
           >
             {shortTitle(tour.title)}
           </a>
@@ -508,7 +502,7 @@ function ExperienceCard({ tour }: { tour: Tour }) {
           <a
             href="#contact"
             onClick={goToEnquiry}
-            className="group/link relative z-10 inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-full bg-[#183024] px-5 text-[15px] font-semibold text-white transition-colors hover:bg-[#a24627] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+            className="group/link relative z-10 inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-full bg-[#1f7a3a] px-5 text-[15px] font-semibold text-white transition-colors hover:bg-[#15602b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
           >
             Đặt hành trình
             <ArrowUpRight
@@ -574,11 +568,11 @@ function Experiences() {
   return (
     <section
       id="experiences"
-      className="bg-[#ecebe5] px-6 py-24 lg:px-12 lg:py-32"
+      className="bg-white px-6 py-24 lg:px-12 lg:py-32"
     >
       <div className="mx-auto max-w-[1440px]">
         <Reveal className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end lg:gap-16">
-          <h2 className="m-0 max-w-[20ch] text-balance font-display text-[clamp(2.25rem,5vw,4.25rem)] font-medium leading-[1.02] tracking-[-0.04em] text-[#183024]">
+          <h2 className="m-0 max-w-[20ch] text-balance font-display text-[clamp(2.25rem,5vw,4.25rem)] font-medium leading-[1.02] tracking-[-0.04em] text-[#1f7a3a]">
             Đi theo cách của riêng bạn.
           </h2>
           <p className="m-0 max-w-md text-[18px] leading-8 text-[#2f3d35]">
@@ -600,8 +594,8 @@ function Experiences() {
               aria-pressed={activeFilter === filter}
               className={`min-h-11 whitespace-nowrap rounded-full px-5 text-[15px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] ${
                 activeFilter === filter
-                  ? "bg-[#183024] text-white"
-                  : "bg-white text-[#183024] hover:bg-[#183024] hover:text-white"
+                  ? "bg-[#1f7a3a] text-white"
+                  : "bg-[#f0f7f1] text-[#183024] hover:bg-[#1f7a3a] hover:text-white"
               }`}
             >
               {filter}
@@ -637,7 +631,7 @@ function Experiences() {
               event.preventDefault()
               navigateTo("/explore", exploreQuery)
             }}
-            className="group inline-flex min-h-14 items-center gap-3 rounded-full bg-[#183024] px-8 text-[16px] font-semibold text-white transition-colors hover:bg-[#a24627] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+            className="group inline-flex min-h-14 items-center gap-3 rounded-full bg-[#1f7a3a] px-8 text-[16px] font-semibold text-white transition-colors hover:bg-[#15602b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
           >
             {allToursLabel}
             <ArrowRight
@@ -654,10 +648,10 @@ function Experiences() {
 function Journal() {
   const credited = galleryImages.filter((image) => image.credit)
   return (
-    <section id="journal" className="bg-white px-6 py-24 lg:px-12 lg:py-32">
+    <section id="journal" className="bg-gradient-to-b from-[#f6fbf6] to-[#e4f2e8] px-6 py-24 lg:px-12 lg:py-32">
       <div className="mx-auto max-w-[1440px]">
         <Reveal className="mb-12 flex flex-col justify-between gap-6 lg:flex-row lg:items-end lg:gap-16">
-          <h2 className="m-0 max-w-[20ch] text-balance font-display text-[clamp(2.25rem,5vw,4.25rem)] font-medium leading-[1.02] tracking-[-0.04em] text-[#183024]">
+          <h2 className="m-0 max-w-[20ch] text-balance font-display text-[clamp(2.25rem,5vw,4.25rem)] font-medium leading-[1.02] tracking-[-0.04em] text-[#1f7a3a]">
             Những điều mắt thấy, tim nhớ.
           </h2>
           <p className="m-0 max-w-md text-[18px] leading-8 text-[#2f3d35]">
@@ -669,7 +663,7 @@ function Journal() {
           {galleryImages.map((image) => (
             <figure
               key={image.caption}
-              className={`group relative m-0 overflow-hidden rounded-[2px] bg-[#dddbd3] ${image.className.replace("sm:col-span-2", "sm:col-span-2 lg:col-span-2")}`}
+              className={`group relative m-0 overflow-hidden rounded-[2px] bg-[#e1f0e4] ${image.className.replace("sm:col-span-2", "sm:col-span-2 lg:col-span-2")}`}
             >
               <img
                 src={image.src}
@@ -678,7 +672,7 @@ function Journal() {
                 decoding="async"
                 className="h-full w-full object-cover transition-transform duration-700 motion-safe:group-hover:scale-105"
               />
-              <figcaption className="absolute bottom-3 left-3 rounded-full bg-white px-4 py-1.5 text-[15px] font-semibold text-[#183024]">
+              <figcaption className="absolute bottom-3 left-3 rounded-full bg-[#f0f7f1] px-4 py-1.5 text-[15px] font-semibold text-[#183024]">
                 {image.caption}
               </figcaption>
             </figure>
@@ -696,7 +690,7 @@ function Journal() {
 
 const fieldLabel = "mb-2 block text-[15px] font-semibold text-[#183024]"
 const fieldInput =
-  "min-h-12 w-full rounded-[2px] bg-[#ecebe5] px-4 text-[16px] text-[#183024] outline-none transition-colors placeholder:text-[#4f5b53] hover:bg-[#e4e3dc] focus:bg-white focus:outline focus:outline-2 focus:outline-[#183024]"
+  "min-h-12 w-full rounded-[2px] bg-white px-4 text-[16px] text-[#183024] outline-none transition-colors placeholder:text-[#4f5b53] hover:bg-[#eaf4ec] focus:bg-[#f0f7f1] focus:outline focus:outline-2 focus:outline-[#183024]"
 
 /** Example month shown in the form, always a few months ahead of today. */
 function exampleDeparture(): string {
@@ -759,10 +753,10 @@ function Contact() {
   }
 
   return (
-    <section id="contact" className="bg-[#ecebe5] px-6 py-24 lg:px-12 lg:py-32">
-      <Reveal className="mx-auto grid max-w-[1440px] overflow-hidden rounded-[2px] bg-white lg:grid-cols-[0.82fr_1.18fr]">
-        <div className="bg-[#183024] p-8 text-white sm:p-12 lg:p-14">
-          <div className="flex h-full flex-col">
+    <section id="contact" className="bg-white px-6 py-24 lg:px-12 lg:py-32">
+      <Reveal className="mx-auto grid max-w-[1440px] overflow-hidden rounded-[2px] bg-gradient-to-br from-[#f6fbf6] to-[#e4f2e8] lg:grid-cols-[0.82fr_1.18fr]">
+        <div className="bg-gradient-to-br from-[#2f9150] via-[#25834a] to-[#1b6e3c] p-8 text-white sm:p-12 lg:p-14">
+          <div className="flex h-full flex-col justify-center">
             <h2 className="m-0 max-w-[12ch] font-display text-[clamp(2.25rem,4.4vw,3.75rem)] font-medium leading-[1.05] tracking-[-0.04em]">
               Để rừng gọi đúng tên bạn.
             </h2>
@@ -770,47 +764,16 @@ function Contact() {
               Bạn đã có cung đường trong đầu, hay chỉ biết mình muốn đi? Kể
               chúng tôi nghe. Một người địa phương sẽ trả lời trong vòng 24 giờ.
             </p>
-            {/* TODO(owner): these are placeholder contact details, replace before launch. */}
-            <dl className="m-0 mt-auto grid gap-6 pt-14">
-              <div>
-                <dt className="text-[15px]">Điện thoại</dt>
-                <dd className="m-0 mt-1">
-                  <a
-                    href="tel:+84905123456"
-                    className="text-xl font-semibold underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-                  >
-                    +84 905 123 456
-                  </a>
-                </dd>
-              </div>
-              <div>
-                <dt className="text-[15px]">Email</dt>
-                <dd className="m-0 mt-1">
-                  <a
-                    href="mailto:hello@gialai-eco.vn"
-                    className="text-xl font-semibold underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-                  >
-                    hello@gialai-eco.vn
-                  </a>
-                </dd>
-              </div>
-              <div>
-                <dt className="text-[15px]">Văn phòng</dt>
-                <dd className="m-0 mt-1 text-xl font-semibold">
-                  Pleiku, Gia Lai
-                </dd>
-              </div>
-            </dl>
           </div>
         </div>
 
         <div className="p-8 sm:p-12 lg:p-14">
           {submitted ? (
             <div className="flex h-full min-h-[460px] flex-col justify-center">
-              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#183024] text-white">
+              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#1f7a3a] text-white">
                 <Leaf className="h-7 w-7" aria-hidden="true" />
               </span>
-              <h3 className="m-0 mt-7 font-display text-4xl tracking-[-0.03em] text-[#183024]">
+              <h3 className="m-0 mt-7 font-display text-4xl tracking-[-0.03em] text-[#1f7a3a]">
                 Đã nhận lời nhắn.
               </h3>
               <p className="m-0 mt-4 max-w-sm text-[17px] leading-7 text-[#2f3d35]">
@@ -820,7 +783,7 @@ function Contact() {
               <button
                 type="button"
                 onClick={() => setSubmitted(false)}
-                className="mt-8 min-h-12 self-start rounded-full bg-[#ecebe5] px-6 text-[15px] font-semibold text-[#183024] transition-colors hover:bg-[#dddbd3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+                className="mt-8 min-h-12 self-start rounded-full bg-white px-6 text-[15px] font-semibold text-[#183024] transition-colors hover:bg-[#e1f0e4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
               >
                 Gửi yêu cầu khác
               </button>
@@ -844,7 +807,7 @@ function Contact() {
                 />
               </div>
               <div>
-                <h3 className="m-0 font-display text-3xl tracking-[-0.03em] text-[#183024]">
+                <h3 className="m-0 font-display text-3xl tracking-[-0.03em] text-[#1f7a3a]">
                   Bắt đầu từ đây.
                 </h3>
                 <p className="m-0 mt-2 text-[17px] text-[#2f3d35]">
@@ -947,7 +910,7 @@ function Contact() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="group inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-[#183024] px-8 text-[16px] font-semibold text-white transition-colors hover:bg-[#a24627] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+                className="group inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-[#1f7a3a] px-8 text-[16px] font-semibold text-white transition-colors hover:bg-[#15602b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
               >
                 {submitting ? "Đang gửi..." : "Gửi yêu cầu"}{" "}
                 <ArrowRight

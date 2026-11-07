@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { ArrowUpRight, CaretDown, List, X } from "@phosphor-icons/react"
+import logoColor from "@/imports/logo_color.webp"
 import logoWhite from "@/imports/logo_white.webp"
 import { navigateTo, useHashRoute } from "@/lib/useHashRoute"
 import type { RoutePath } from "@/lib/useHashRoute"
@@ -53,7 +54,6 @@ const specialTours = [
  * Section links carry a route as well, so they still work from `#/explore`.
  */
 export const navLinks: NavLink[] = [
-  { label: "Hành trình", path: "/", section: "experiences" },
   {
     label: "Tour trong nước",
     path: "/explore",
@@ -171,10 +171,10 @@ export default function Navigation() {
       <header
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-700 ${
           solid
-            ? "border-b border-[#07552f]/20 bg-[#07552f]/92 text-white shadow-[0_8px_24px_rgba(8,127,60,0.12)] backdrop-blur-[2px]"
+            ? "border-b border-[#1f9447] bg-[#1f9447]/95 text-white shadow-[0_8px_24px_rgba(31,148,71,0.22)] backdrop-blur-[2px]"
             : atHeroTop
-              ? "bg-transparent text-white"
-              : "bg-transparent text-white backdrop-blur-sm"
+              ? "bg-transparent text-[#183024]"
+              : "bg-transparent text-[#183024] backdrop-blur-sm"
         }`}
       >
         <div className="mx-auto flex h-[78px] max-w-[1440px] items-center justify-between gap-4 px-6 lg:px-12">
@@ -188,21 +188,21 @@ export default function Navigation() {
             }}
           >
             <img
-              src={logoWhite}
+              src={solid ? logoWhite : logoColor}
               alt="Gia Lai Eco-Tourist Co.,Ltd"
               className="h-12 w-12 object-contain"
             />
             <span className="flex flex-col leading-none">
               <span
                 className={`font-display text-[17px] font-semibold tracking-[-0.03em] transition-colors ${
-                  solid || !atHeroTop ? "text-white" : "text-white"
+                  solid ? "text-white" : "text-[#15602b]"
                 }`}
               >
                 Gialai
               </span>
               <span
                 className={`mt-1 text-xs font-semibold uppercase tracking-[0.16em] transition-colors ${
-                  solid || !atHeroTop ? "text-white/80" : "text-white"
+                  solid ? "text-white/80" : "text-[#183024]/75"
                 }`}
               >
                 Eco Tourist
@@ -226,26 +226,26 @@ export default function Navigation() {
                   aria-current={active ? "page" : undefined}
                   onClick={(event) => followNavLink(event, link)}
                   className={`whitespace-nowrap text-[12px] font-semibold uppercase tracking-[0.1em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742] ${
-                    solid || !atHeroTop
+                    solid
                       ? active
-                        ? "text-[#f2b08e] underline decoration-2 underline-offset-[10px]"
-                        : "text-white/85 hover:text-white"
+                        ? "text-[#ffe07a] underline decoration-2 underline-offset-[10px]"
+                        : "text-white/90 hover:text-white"
                       : active
-                        ? "text-white"
-                        : "text-white hover:text-[#f2b08e]"
+                        ? "text-[#15602b] underline decoration-2 underline-offset-[10px]"
+                        : "text-[#183024] hover:text-[#15602b]"
                   }`}
                 >
                   {link.label}
                 </a>
                 {children && (
-                  <div className="invisible absolute left-1/2 top-full z-10 mt-4 w-max -translate-x-1/2 translate-y-1 rounded-2xl border border-[#d9d4c9] bg-[#f6f3ec] p-2 text-[#183024] opacity-0 shadow-[0_18px_40px_rgba(10,25,17,0.16)] transition-all group-hover/nav:visible group-hover/nav:translate-y-0 group-hover/nav:opacity-100 group-focus-within/nav:visible group-focus-within/nav:translate-y-0 group-focus-within/nav:opacity-100">
+                  <div className="invisible absolute left-1/2 top-full z-10 mt-4 w-max -translate-x-1/2 translate-y-1 rounded-2xl border border-[#d3e5d7] bg-[#ffffff] p-2 text-[#183024] opacity-0 shadow-[0_18px_40px_rgba(10,25,17,0.16)] transition-all group-hover/nav:visible group-hover/nav:translate-y-0 group-hover/nav:opacity-100 group-focus-within/nav:visible group-focus-within/nav:translate-y-0 group-focus-within/nav:opacity-100">
                     <div className="grid gap-1">
                       {children.map((child) => (
                         <button
                           key={child.query}
                           type="button"
                           onClick={() => navigateTo("/explore", child.query)}
-                          className="rounded-xl px-4 py-2.5 text-left text-xs font-semibold normal-case tracking-normal text-[#183024] transition-colors hover:bg-[#e9e6dd] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
+                          className="rounded-xl px-4 py-2.5 text-left text-xs font-semibold normal-case tracking-normal text-[#183024] transition-colors hover:bg-[#eaf4ec] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
                         >
                           {child.label}
                         </button>
@@ -261,41 +261,31 @@ export default function Navigation() {
                 type="button"
                 onClick={() => navigateTo("/services")}
                 className={`inline-flex items-center gap-1.5 whitespace-nowrap text-[12px] font-semibold uppercase tracking-[0.1em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742] ${
-                  solid || !atHeroTop
+                  solid
                     ? route.path === "/services"
-                      ? "text-[#f2b08e] underline decoration-2 underline-offset-[10px]"
-                      : "text-white/85 hover:text-white"
+                      ? "text-[#ffe07a] underline decoration-2 underline-offset-[10px]"
+                      : "text-white/90 hover:text-white"
                     : route.path === "/services"
-                      ? "text-white"
-                      : "text-white hover:text-[#f2b08e]"
+                      ? "text-[#15602b] underline decoration-2 underline-offset-[10px]"
+                      : "text-[#183024] hover:text-[#15602b]"
                 }`}
               >
                 Dịch vụ khác
                 <CaretDown className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
-              <div className="invisible absolute right-0 top-full z-10 mt-3 min-w-[190px] rounded-2xl border border-[#d9d4c9] bg-[#f6f3ec] p-2 text-[#183024] opacity-0 shadow-[0_18px_40px_rgba(10,25,17,0.16)] transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+              <div className="invisible absolute right-0 top-full z-10 mt-3 min-w-[190px] rounded-2xl border border-[#d3e5d7] bg-[#ffffff] p-2 text-[#183024] opacity-0 shadow-[0_18px_40px_rgba(10,25,17,0.16)] transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
                 {serviceOptions.map((option) => (
                   <button
                     key={option.slug}
                     type="button"
                     onClick={() => navigateTo("/services", option.query)}
-                    className="block w-full rounded-xl px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.1em] text-[#183024] transition-colors hover:bg-[#e9e6dd] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
+                    className="block w-full rounded-xl px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.1em] text-[#183024] transition-colors hover:bg-[#eaf4ec] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
                   >
                     {option.label}
                   </button>
                 ))}
               </div>
             </div>
-            <button
-              type="button"
-              className={`whitespace-nowrap text-[12px] font-semibold uppercase tracking-[0.1em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742] ${
-                solid || !atHeroTop
-                  ? "text-white/85 hover:text-white"
-                  : "text-white hover:text-[#f2b08e]"
-              }`}
-            >
-              Nhật ký hành trình
-            </button>
             <a
               href="#contact"
               onClick={goToEnquiry}
@@ -314,8 +304,8 @@ export default function Navigation() {
             type="button"
             className={`flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742] lg:hidden ${
               solid
-                ? "bg-[#183024] text-white"
-                : "bg-white/15 text-white backdrop-blur-md"
+                ? "bg-white/15 text-white"
+                : "bg-[#1f7a3a] text-white"
             }`}
             onClick={() => setMenuOpen((current) => !current)}
             aria-label={menuOpen ? "Đóng menu" : "Mở menu"}
@@ -331,7 +321,7 @@ export default function Navigation() {
 
         {menuOpen && (
           <nav
-            className="border-t border-[#d9d4c9] bg-[#f6f3ec] px-6 py-6 text-[#183024] lg:hidden"
+            className="border-t border-[#d3e5d7] bg-[#ffffff] px-6 py-6 text-[#183024] lg:hidden"
             aria-label="Menu di động"
           >
             <div className="flex flex-col gap-5">
@@ -350,7 +340,7 @@ export default function Navigation() {
                       {link.label}
                     </a>
                     {children && (
-                      <div className="mt-2 grid gap-2 border-l border-[#d9d4c9] pl-4">
+                      <div className="mt-2 grid gap-2 border-l border-[#d3e5d7] pl-4">
                         {children.map((child) => (
                           <button
                             key={child.query}
@@ -369,7 +359,7 @@ export default function Navigation() {
                   </div>
                 )
               })}
-              <div className="border-t border-[#d9d4c9] pt-5">
+              <div className="border-t border-[#d3e5d7] pt-5">
                 <button
                   type="button"
                   onClick={() => {
@@ -398,7 +388,7 @@ export default function Navigation() {
               </div>
               <a
                 href="#contact"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#b4502f] px-5 py-3 text-xs font-bold uppercase tracking-[0.12em] text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#15602b] px-5 py-3 text-xs font-bold uppercase tracking-[0.12em] text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
                 onClick={(event) => {
                   setMenuOpen(false)
                   goToEnquiry(event)
