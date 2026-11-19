@@ -1,0 +1,6 @@
+/* Shared type system (.t-*) has moved to src/index.css for cross-page consistency. */
+
+/* Hero copy must stay left of the photo, which covers the right 55% of the viewport from lg up.
+   Width = photo's left edge (45vw) - container's left offset - 32px gap. */
+@media (min-width: 1024px) { .hero-copy { max-width: min(640px, calc(45vw - 64px)); } }
+@media (min-width: 1280px) { .hero-copy { max-width: min(640px, calc(45vw - max(80px, (100vw - 1280px) / 2) - 32px)); } }

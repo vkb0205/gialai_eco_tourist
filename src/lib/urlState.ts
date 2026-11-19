@@ -17,6 +17,8 @@ import type { FilterState } from "./filterTours"
 const REGION_PARAM = "vung"
 const KEYWORD_PARAM = "tim"
 const SORT_PARAM = "sap-xep"
+const PAGE_PARAM = "page"
+const LEGACY_PAGE_PARAM = "trang"
 /** Parse a hash query string into a filter state, discarding anything unknown. */
 export function parseFilterState(query: string): FilterState {
   const state = createEmptyFilterState()
@@ -48,6 +50,12 @@ export function parseFilterState(query: string): FilterState {
   const sort = params.get(SORT_PARAM)
   if (sort && isSortMode(sort)) state.sort = sort
 
+  const pageStr = params.get(PAGE_PARAM) || params.get(LEGACY_PAGE_PARAM)
+  if (pageStr) {
+    const pageNum = parseInt(pageStr, 10)
+    if (!isNaN(pageNum) && pageNum >= 1) state.page = pageNum
+  }
+
   return state
 }
 
@@ -71,6 +79,7 @@ export function serialiseFilterState(state: FilterState): string {
   const keyword = state.keyword.trim()
   if (keyword) params.set(KEYWORD_PARAM, keyword)
   if (state.sort !== "goi-y") params.set(SORT_PARAM, state.sort)
+  if (state.page && state.page >= 1) params.set(PAGE_PARAM, String(state.page))
 
   return params.toString()
 }

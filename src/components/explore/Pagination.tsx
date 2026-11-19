@@ -39,9 +39,6 @@ function buildPageItems(current: number, count: number): PageItem[] {
 type PaginationProps = {
   currentPage: number
   pageCount: number
-  firstVisible: number
-  lastVisible: number
-  total: number
   onPageChange: (page: number) => void
 }
 
@@ -53,29 +50,22 @@ type PaginationProps = {
 export default function Pagination({
   currentPage,
   pageCount,
-  firstVisible,
-  lastVisible,
-  total,
   onPageChange,
 }: PaginationProps) {
   const items = buildPageItems(currentPage, pageCount)
 
   const pageButton = (active: boolean) =>
-    `inline-flex h-11 min-w-11 items-center justify-center rounded-full px-3 text-[15px] font-semibold tabular-nums transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] ${
+    `inline-flex h-12 min-w-12 items-center justify-center rounded-button border px-3 text-[15px] font-bold tabular-nums transition-colors ${
       active
-        ? "bg-[#1f7a3a] text-white"
-        : "bg-[#f0f7f1] text-[#183024] hover:bg-[#e1f0e4]"
+        ? "border-forest bg-forest text-paper"
+        : "border-ink/20 bg-paper text-ink hover:bg-leaf"
     }`
 
   const arrowButton =
-    "inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#f0f7f1] text-[#183024] transition-colors hover:bg-[#e1f0e4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] disabled:cursor-not-allowed disabled:bg-[#e1f0e4] disabled:text-[#4f5b53] disabled:hover:bg-[#e1f0e4]"
+    "inline-flex size-12 items-center justify-center rounded-button border border-ink/20 bg-paper text-ink transition-colors hover:bg-leaf disabled:cursor-not-allowed disabled:border-line disabled:bg-line disabled:text-subtle"
 
   return (
-    <div className="mt-14 flex flex-col items-center gap-4">
-      <p className="m-0 text-[15px] text-[#2f3d35]">
-        Đang xem {firstVisible}–{lastVisible} trên {total} hành trình
-      </p>
-
+    <div className="mt-10 flex justify-center">
       <nav aria-label="Phân trang" className="flex items-center gap-2">
         <button
           type="button"
@@ -92,7 +82,7 @@ export default function Pagination({
             <span
               key={`ellipsis-${index}`}
               aria-hidden="true"
-              className="px-1 text-[15px] text-[#4f5b53]"
+              className="px-1 text-[15px] text-subtle"
             >
               …
             </span>

@@ -1,0 +1,554 @@
+<title>Gia Lai Eco Tourist C4</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column for prose, diagrams break out wider; C4 levels run top to bottom. */
+:root {
+  --bg: #fbfcfb;
+  --surface: #ffffff;
+  --fg: #16261d;
+  --muted: #5b6b61;
+  --line: #d3ddd6;
+  --accent: #1f7a3a;
+  --accent-soft: #e4f1e8;
+  --ext: #eef1ef;
+  --warn: #a4501c;
+  --sans: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1813; --surface: #15211a; --fg: #e2ece5; --muted: #9aab9f; --line: #2b3b32;
+    --accent: #62c983; --accent-soft: #173322; --ext: #1a251f; --warn: #e79a63; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1813; --surface: #15211a; --fg: #e2ece5; --muted: #9aab9f; --line: #2b3b32;
+  --accent: #62c983; --accent-soft: #173322; --ext: #1a251f; --warn: #e79a63; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 16px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 80px;
+}
+.wrap { max-width: 1040px; margin: 0 auto; display: grid; gap: 56px; }
+.prose { max-width: 68ch; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.2; margin: 0; }
+h1 { font-size: clamp(30px, 5vw, 44px); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 18px; font-weight: 600; }
+p { margin: 0; }
+section { display: grid; gap: 18px; }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+.lede { font-size: 18px; color: var(--muted); }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 13px; color: var(--muted); }
+.meta b { color: var(--fg); font-weight: 600; }
+code, .mono { font-family: var(--mono); font-size: 0.86em; }
+code { background: var(--ext); padding: 1px 5px; border-radius: 4px; }
+nav.toc { display: flex; flex-wrap: wrap; gap: 8px; }
+nav.toc a { font-size: 13px; color: var(--fg); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
+nav.toc a:hover, nav.toc a:focus-visible { border-color: var(--accent); color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.scope { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.scope > div { border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; background: var(--surface); min-width: 0; }
+.scope > div.in { border-color: var(--accent); }
+.scope h3 { font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; }
+.scope ul { margin: 0; padding-left: 18px; font-size: 15px; }
+.level { display: inline-flex; align-items: center; gap: 10px; }
+.level .tag { font-family: var(--mono); font-size: 12px; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 1px 6px; }
+figure { margin: 0; display: grid; gap: 10px; }
+.fig { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); padding: 12px; }
+.fig svg { display: block; width: 100%; min-width: 760px; height: auto; }
+figcaption { font-size: 14px; color: var(--muted); max-width: 72ch; }
+/* SVG vocabulary, shared by every diagram */
+svg text { fill: var(--fg); font-family: var(--sans); font-size: 12px; }
+svg .b { font-weight: 600; font-size: 13px; }
+svg .s { fill: var(--muted); font-size: 11px; }
+svg .m { font-family: var(--mono); font-size: 11.5px; }
+svg .lbl { fill: var(--muted); font-size: 11.5px; paint-order: stroke; stroke: var(--surface); stroke-width: 5px; stroke-linejoin: round; }
+svg .note { fill: var(--warn); font-size: 12px; font-weight: 500; }
+svg .person { fill: var(--surface); stroke: var(--fg); stroke-width: 1.4; }
+svg .sys { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.6; }
+svg .ext { fill: var(--ext); stroke: var(--muted); stroke-width: 1.2; }
+svg .plain { fill: var(--surface); stroke: var(--line); stroke-width: 1.2; }
+svg .bound { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 6 5; }
+svg .edge { fill: none; stroke: var(--fg); stroke-width: 1.3; }
+svg .head { fill: var(--fg); }
+svg .accent-t { fill: var(--accent); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+.sw.sys { background: var(--accent-soft); border: 1.5px solid var(--accent); }
+.sw.ext { background: var(--ext); border: 1.5px solid var(--muted); }
+.sw.person { background: var(--surface); border: 1.5px solid var(--fg); }
+.sw.plain { background: var(--surface); border: 1.5px solid var(--line); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+td:first-child { white-space: nowrap; }
+pre.tree { margin: 0; font-family: var(--mono); font-size: 13px; line-height: 1.65; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; overflow-x: auto; }
+pre.tree .c { color: var(--muted); }
+pre.tree .d { color: var(--accent); font-weight: 500; }
+.decisions { display: grid; gap: 14px; }
+.decision { border-left: 3px solid var(--accent); padding: 2px 0 2px 16px; display: grid; gap: 4px; max-width: 76ch; }
+.decision h3 { font-size: 16px; }
+.decision p { font-size: 15px; color: var(--fg); }
+.decision .why { color: var(--muted); }
+ol.steps { margin: 0; padding-left: 0; list-style: none; counter-reset: s; display: grid; gap: 12px; max-width: 80ch; }
+ol.steps li { counter-increment: s; display: grid; grid-template-columns: 34px 1fr; gap: 12px; font-size: 15px; }
+ol.steps li::before { content: counter(s); font-family: var(--mono); font-size: 13px; color: var(--accent); border: 1px solid var(--accent); border-radius: 50%; width: 26px; height: 26px; display: grid; place-items: center; }
+ol.steps li b { font-weight: 600; }
+ol.steps li.later::before { color: var(--muted); border-color: var(--line); }
+ol.steps li.later { color: var(--muted); }
+ul.qs { margin: 0; padding-left: 20px; display: grid; gap: 8px; max-width: 76ch; font-size: 15px; }
+@media (max-width: 520px) { td:first-child { white-space: normal; } }
+</style>
+
+<div class="wrap">
+
+<header style="display:grid;gap:14px">
+  <div class="eyebrow">Architecture proposal · phase 1</div>
+  <h1>Gia Lai Eco Tourist, restructured</h1>
+  <p class="lede prose">A C4 model for refactoring the website around one job: showing off the agency's tours and services, then handing visitors to a person on Zalo, phone or the enquiry form.</p>
+  <div class="meta"><span><b>Repo</b> frontend @ <span class="mono">62116d2</span></span><span><b>Date</b> 19 Nov 2026</span><span><b>Reference</b> Golden Life Travel tour page</span><span><b>Status</b> Draft 2, with decisions from 19 Nov</span></div>
+  <nav class="toc" aria-label="Sections">
+    <a href="#scope">Scope</a><a href="#today">Today</a><a href="#context">L1 Context</a><a href="#containers">L2 Containers</a><a href="#rendering">Rendering</a><a href="#components">L3 Components</a><a href="#code">L4 Code</a><a href="#decisions">Decisions</a><a href="#roadmap">Roadmap</a><a href="#questions">Decided and open</a>
+  </nav>
+</header>
+
+<section id="scope">
+  <h2>Scope</h2>
+  <div class="scope">
+    <div class="in"><h3>Phase 1 · this document</h3><ul><li>New look and a shared UI kit</li><li><b>Home page and tour browsing: the pages that sell</b></li><li>Tour detail pages</li><li>One "Other services" page: car rental joins visa and flights on the existing request form</li><li>Vietnamese and English, with the English translated from the Vietnamese</li><li>Real URLs that search engines and link previews can read</li><li>GitHub Pages as the test site; the VPS as production, released by hand</li></ul></div>
+    <div><h3>Phase 2 · later</h3><ul><li>Guest reviews</li><li>Booking flow, deposits and payment</li><li>Price packages (Core / Signature / Private) and fixed departure dates</li><li>A custom admin instead of Supabase Studio</li><li>Customer accounts</li></ul></div>
+  </div>
+</section>
+
+<section id="today">
+  <h2>What the code looks like today</h2>
+  <p class="prose">The site works, but it grew page by page. Four things make the redesign harder than it should be:</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Where</th><th>What</th><th>Why it matters for phase 1</th></tr></thead>
+    <tbody>
+      <tr><td><code>pages/HomePage.tsx</code></td><td>942 lines. Hero, Story, Experiences, Journal and Contact all live in one file.</td><td>Every visual change touches the same file. Sections can't be reused on other pages.</td></tr>
+      <tr><td><code>data/tours.ts</code><br><code>data/toursRepository.ts</code><br><code>lib/catalogueRepository.ts</code></td><td>Three ways to get a tour: a 728-line static list, a Supabase reader with fallbacks, and a newer, uncommitted Supabase reader with a different row shape.</td><td>Pages don't know which source is the truth. The new tour detail page needs one shape.</td></tr>
+      <tr><td><code>lib/useHashRoute.ts</code></td><td>Hash routes like <code>#/tour?slug=…</code>, built for GitHub Pages, which can't rewrite paths.</td><td>The VPS can rewrite paths. With hash routes, Google and Zalo/Facebook previews see the same empty page for every tour.</td></tr>
+      <tr><td>JSX across pages</td><td>Colours written inline, such as <code>text-[#566259]</code>, next to the tokens in <code>index.css</code>. Service icons are emoji.</td><td>A new look means hunting hex values file by file.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="context">
+  <div class="level"><span class="tag">L1</span><h2>System context</h2></div>
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 960 460" role="img" aria-label="System context: travellers visit the website, which reads content from Supabase and hands visitors to staff over Zalo, phone or Messenger. Staff edit content in Supabase. Search engines and social apps crawl the pages.">
+        <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0 L10 5 L0 10 z"/></marker></defs>
+        <rect class="person" x="40" y="40" width="200" height="96" rx="10"/>
+        <text class="b" x="140" y="78" text-anchor="middle">Traveller</text>
+        <text x="140" y="98" text-anchor="middle">Reads Vietnamese or English</text>
+        <text class="s" x="140" y="120" text-anchor="middle">[Person]</text>
+
+        <rect class="person" x="40" y="324" width="200" height="96" rx="10"/>
+        <text class="b" x="140" y="362" text-anchor="middle">Agency staff</text>
+        <text x="140" y="382" text-anchor="middle">Edit tours, prices, photos</text>
+        <text class="s" x="140" y="404" text-anchor="middle">[Person]</text>
+
+        <rect class="sys" x="370" y="170" width="240" height="120" rx="8"/>
+        <text class="b" x="490" y="208" text-anchor="middle">Gia Lai Eco Tourist website</text>
+        <text x="490" y="230" text-anchor="middle">Shows tours and services,</text>
+        <text x="490" y="248" text-anchor="middle">routes visitors to a person</text>
+        <text class="s" x="490" y="274" text-anchor="middle">[Software system]</text>
+
+        <rect class="ext" x="370" y="352" width="240" height="88" rx="8"/>
+        <text class="b" x="490" y="384" text-anchor="middle">Supabase</text>
+        <text x="490" y="404" text-anchor="middle">Published content, photos, enquiries</text>
+        <text class="s" x="490" y="426" text-anchor="middle">[External system]</text>
+
+        <rect class="ext" x="740" y="40" width="190" height="96" rx="8"/>
+        <text class="b" x="835" y="76" text-anchor="middle">Zalo · Phone · Messenger</text>
+        <text x="835" y="96" text-anchor="middle">Staff answer here</text>
+        <text class="s" x="835" y="120" text-anchor="middle">[External channels]</text>
+
+        <rect class="ext" x="740" y="324" width="190" height="96" rx="8"/>
+        <text class="b" x="835" y="360" text-anchor="middle">Google, Facebook, Zalo</text>
+        <text x="835" y="380" text-anchor="middle">Index pages, build previews</text>
+        <text class="s" x="835" y="404" text-anchor="middle">[External systems]</text>
+
+        <path class="edge" d="M240 88 H300 V210 H368" marker-end="url(#a1)"/>
+        <text class="lbl" x="308" y="150">visits</text>
+        <path class="edge" d="M610 200 H675 V88 H738" marker-end="url(#a1)"/>
+        <text class="lbl" x="683" y="150">opens chat</text>
+        <text class="lbl" x="683" y="165">or call</text>
+        <path class="edge" d="M740 372 H675 V262 H612" marker-end="url(#a1)"/>
+        <text class="lbl" x="683" y="320">crawls pages</text>
+        <path class="edge" d="M490 290 V350" marker-end="url(#a1)"/>
+        <text class="lbl" x="482" y="318" text-anchor="end">reads content,</text>
+        <text class="lbl" x="482" y="333" text-anchor="end">saves enquiries</text>
+        <path class="edge" d="M240 396 H368" marker-end="url(#a1)"/>
+        <text class="lbl" x="304" y="386" text-anchor="middle">edits in Studio</text>
+      </svg>
+    </div>
+    <figcaption>The website's job ends when a person takes over. Nothing is booked or paid on the site in phase 1, so the only data it writes is an enquiry. The crawler arrow is new: it is the reason for the routing change in L2.</figcaption>
+  </figure>
+</section>
+
+<section id="containers">
+  <div class="level"><span class="tag">L2</span><h2>Containers</h2></div>
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 960 580" role="img" aria-label="Containers: the build pipeline reads published rows from Supabase, prerenders one HTML file per page and uploads it to Nginx on the VPS. Nginx serves the website to travellers. The website inserts enquiries. Staff edit content and photos in Supabase Studio.">
+        <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0 L10 5 L0 10 z"/></marker></defs>
+        <rect class="person" x="40" y="20" width="240" height="72" rx="10"/>
+        <text class="b" x="160" y="52" text-anchor="middle">Traveller</text>
+        <text class="s" x="160" y="74" text-anchor="middle">[Person]</text>
+        <rect class="person" x="650" y="20" width="250" height="72" rx="10"/>
+        <text class="b" x="775" y="52" text-anchor="middle">Agency staff</text>
+        <text class="s" x="775" y="74" text-anchor="middle">[Person]</text>
+
+        <rect class="bound" x="20" y="120" width="600" height="300" rx="10"/>
+        <text class="s" x="36" y="140">Gia Lai Eco Tourist · test on GitHub Pages, production on the VPS</text>
+
+        <rect class="sys" x="40" y="160" width="240" height="100" rx="8"/>
+        <text class="b" x="160" y="188" text-anchor="middle">Website</text>
+        <text class="s" x="160" y="206" text-anchor="middle">[React 19 · React Router 7]</text>
+        <text x="160" y="228" text-anchor="middle">One prerendered page per URL,</text>
+        <text x="160" y="245" text-anchor="middle">hydrates in the browser</text>
+
+        <rect class="sys" x="350" y="160" width="250" height="100" rx="8"/>
+        <text class="b" x="475" y="188" text-anchor="middle">Web server</text>
+        <text class="s" x="475" y="206" text-anchor="middle">[Nginx on VPS · production]</text>
+        <text x="475" y="228" text-anchor="middle">Serves files at real URLs,</text>
+        <text x="475" y="245" text-anchor="middle">redirects old #/ links</text>
+
+        <rect class="sys" x="350" y="300" width="250" height="100" rx="8"/>
+        <text class="b" x="475" y="328" text-anchor="middle">Build pipeline</text>
+        <text class="s" x="475" y="346" text-anchor="middle">[GitHub Actions]</text>
+        <text x="475" y="368" text-anchor="middle">Prerenders every page in VI</text>
+        <text x="475" y="385" text-anchor="middle">and EN, deploys test then prod</text>
+
+        <rect class="sys" x="110" y="300" width="210" height="100" rx="8"/>
+        <text class="b" x="215" y="328" text-anchor="middle">Test site</text>
+        <text class="s" x="215" y="346" text-anchor="middle">[GitHub Pages]</text>
+        <text x="215" y="368" text-anchor="middle">Same pages under a subpath,</text>
+        <text x="215" y="385" text-anchor="middle">hidden from Google</text>
+        <path class="edge" d="M350 350 H322" marker-end="url(#a2)"/>
+        <text class="lbl" x="336" y="340" text-anchor="middle">test</text>
+
+        <rect class="ext" x="650" y="160" width="250" height="100" rx="8"/>
+        <text class="b" x="775" y="188" text-anchor="middle">Supabase Studio</text>
+        <text class="s" x="775" y="206" text-anchor="middle">[Existing tool · phase-1 admin]</text>
+        <text x="775" y="228" text-anchor="middle">Edit tours, services, prices;</text>
+        <text x="775" y="245" text-anchor="middle">upload photos</text>
+
+        <rect class="bound" x="20" y="460" width="920" height="110" rx="10"/>
+        <text class="s" x="36" y="480">Supabase · existing project</text>
+        <rect class="ext" x="40" y="492" width="240" height="64" rx="8"/>
+        <text class="b" x="160" y="518" text-anchor="middle">Enquiries table</text>
+        <text class="s" x="160" y="538" text-anchor="middle">Service requests, insert-only</text>
+        <rect class="ext" x="350" y="492" width="250" height="64" rx="8"/>
+        <text class="b" x="475" y="518" text-anchor="middle">Content DB</text>
+        <text class="s" x="475" y="538" text-anchor="middle">Tours, services, VI + EN text</text>
+        <rect class="ext" x="650" y="492" width="250" height="64" rx="8"/>
+        <text class="b" x="775" y="518" text-anchor="middle">Media storage</text>
+        <text class="s" x="775" y="538" text-anchor="middle">Tour and service photos</text>
+
+        <path class="edge" d="M160 92 V158" marker-end="url(#a2)"/>
+        <text class="lbl" x="170" y="130">visits a page</text>
+        <path class="edge" d="M350 210 H282" marker-end="url(#a2)"/>
+        <text class="lbl" x="316" y="202" text-anchor="middle">serves</text>
+        <path class="edge" d="M475 300 V262" marker-end="url(#a2)"/>
+        <text class="lbl" x="483" y="285">production, when you click Run</text>
+        <path class="edge" d="M75 260 V490" marker-end="url(#a2)"/>
+        <text class="lbl" x="85" y="442">sends request form</text>
+        <path class="edge" d="M475 400 V490" marker-end="url(#a2)"/>
+        <text class="lbl" x="483" y="436">reads published rows at build</text>
+        <path class="edge" d="M775 92 V158" marker-end="url(#a2)"/>
+        <text class="lbl" x="785" y="130">signs in</text>
+        <path class="edge" d="M700 260 V524 H602" marker-end="url(#a2)"/>
+        <text class="lbl" x="692" y="452" text-anchor="end">edits rows</text>
+        <path class="edge" d="M820 260 V490" marker-end="url(#a2)"/>
+        <text class="lbl" x="828" y="442">uploads photos</text>
+      </svg>
+    </div>
+    <figcaption>One build, two places. Every push to <code>main</code> goes to the test site on GitHub Pages; production on the VPS updates only when you start the "Deploy to VPS" workflow yourself. Tour content is read at build time, not in each visitor's browser, so publishing in Studio needs a rebuild: run the workflow by hand, or add a Supabase webhook that triggers it.</figcaption>
+  </figure>
+</section>
+
+<section id="rendering">
+  <h2>Why the routing changes</h2>
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 960 290" role="img" aria-label="Today a tour link sends the same empty index.html, so crawlers and link previews see nothing. In the target, each tour URL returns its own prerendered HTML with title, photo and itinerary.">
+        <defs><marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0 L10 5 L0 10 z"/></marker></defs>
+        <text class="b" x="40" y="38">Today</text>
+        <rect class="plain" x="40" y="52" width="200" height="62" rx="8"/>
+        <text class="m" x="140" y="78" text-anchor="middle">/#/tour?slug=…</text>
+        <text class="s" x="140" y="98" text-anchor="middle">server only sees /</text>
+        <rect class="plain" x="270" y="52" width="200" height="62" rx="8"/>
+        <text class="b" x="370" y="78" text-anchor="middle">Nginx sends index.html</text>
+        <text class="s" x="370" y="98" text-anchor="middle">same empty shell every time</text>
+        <rect class="plain" x="500" y="52" width="200" height="62" rx="8"/>
+        <text class="b" x="600" y="78" text-anchor="middle">JS bundle loads</text>
+        <text class="s" x="600" y="98" text-anchor="middle">router reads the hash</text>
+        <rect class="plain" x="730" y="52" width="200" height="62" rx="8"/>
+        <text class="b" x="830" y="78" text-anchor="middle">Fetch from Supabase</text>
+        <text class="s" x="830" y="98" text-anchor="middle">tour appears last</text>
+        <path class="edge" d="M240 83 H268" marker-end="url(#a3)"/>
+        <path class="edge" d="M470 83 H498" marker-end="url(#a3)"/>
+        <path class="edge" d="M700 83 H728" marker-end="url(#a3)"/>
+        <text class="note" x="270" y="140">Crawlers and Zalo/Facebook previews stop here: no tour title, photo or price.</text>
+
+        <text class="b" x="40" y="190">Target</text>
+        <rect class="plain" x="40" y="204" width="200" height="62" rx="8"/>
+        <text class="m" x="140" y="230" text-anchor="middle">/tours/pleiku-kon-tum</text>
+        <text class="s" x="140" y="250" text-anchor="middle">a real path</text>
+        <rect class="sys" x="270" y="204" width="200" height="62" rx="8"/>
+        <text class="b" x="370" y="230" text-anchor="middle">Nginx sends that page</text>
+        <text class="s" x="370" y="250" text-anchor="middle">title, meta, photo, itinerary</text>
+        <rect class="plain" x="500" y="204" width="200" height="62" rx="8"/>
+        <text class="b" x="600" y="230" text-anchor="middle">React hydrates</text>
+        <text class="s" x="600" y="250" text-anchor="middle">gallery, tabs, filters go live</text>
+        <rect class="plain" x="730" y="204" width="200" height="62" rx="8"/>
+        <text class="b" x="830" y="230" text-anchor="middle">Optional refresh</text>
+        <text class="s" x="830" y="250" text-anchor="middle">re-check prices</text>
+        <path class="edge" d="M240 235 H268" marker-end="url(#a3)"/>
+        <path class="edge" d="M470 235 H498" marker-end="url(#a3)"/>
+        <path class="edge" d="M700 235 H728" marker-end="url(#a3)"/>
+      </svg>
+    </div>
+    <figcaption>For a showcase site the second step is the product: whatever the server sends is what Google indexes and what a Zalo chat shows when someone shares a tour. Because every page becomes its own file at a real path, this also works on GitHub Pages, so the test site behaves like production.</figcaption>
+  </figure>
+</section>
+
+<section id="components">
+  <div class="level"><span class="tag">L3</span><h2>Components of the website</h2></div>
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 960 510" role="img" aria-label="Website components: routes render feature modules; features compose the UI kit and load data only through the content layer; the content layer has a Supabase adapter and a fixture adapter.">
+        <defs><marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0 L10 5 L0 10 z"/></marker></defs>
+        <rect class="sys" x="40" y="20" width="880" height="70" rx="8"/>
+        <text class="b" x="60" y="48">Routes · src/app</text>
+        <text class="m" x="60" y="72">/    /tours    /tours/:slug    /services        and the same under /en/ for English</text>
+
+        <path class="edge" d="M480 90 V118" marker-end="url(#a4)"/>
+        <text class="lbl" x="490" y="108">renders</text>
+
+        <rect class="sys" x="40" y="120" width="130" height="80" rx="8"/>
+        <text class="b" x="105" y="152" text-anchor="middle">home</text>
+        <text class="s" x="105" y="172" text-anchor="middle">hero, story,</text>
+        <text class="s" x="105" y="187" text-anchor="middle">highlights</text>
+        <rect class="sys" x="190" y="120" width="130" height="80" rx="8"/>
+        <text class="b" x="255" y="152" text-anchor="middle">tours</text>
+        <text class="s" x="255" y="172" text-anchor="middle">list, filters,</text>
+        <text class="s" x="255" y="187" text-anchor="middle">regions</text>
+        <rect class="sys" x="340" y="120" width="130" height="80" rx="8"/>
+        <text class="b" x="405" y="152" text-anchor="middle">tour-detail</text>
+        <text class="s" x="405" y="172" text-anchor="middle">gallery, itinerary,</text>
+        <text class="s" x="405" y="187" text-anchor="middle">prices, policy</text>
+        <rect class="sys" x="490" y="120" width="130" height="80" rx="8"/>
+        <text class="b" x="555" y="152" text-anchor="middle">other-services</text>
+        <text class="s" x="555" y="172" text-anchor="middle">car, visa, flights,</text>
+        <text class="s" x="555" y="187" text-anchor="middle">existing form</text>
+        <rect class="sys" x="640" y="120" width="130" height="80" rx="8"/>
+        <text class="b" x="705" y="152" text-anchor="middle">layout</text>
+        <text class="s" x="705" y="172" text-anchor="middle">nav, footer,</text>
+        <text class="s" x="705" y="187" text-anchor="middle">language switch</text>
+        <rect class="sys" x="790" y="120" width="130" height="80" rx="8"/>
+        <text class="b" x="855" y="152" text-anchor="middle">contact</text>
+        <text class="s" x="855" y="172" text-anchor="middle">enquiry form,</text>
+        <text class="s" x="855" y="187" text-anchor="middle">contact dock</text>
+
+        <path class="edge" d="M250 200 V248" marker-end="url(#a4)"/>
+        <text class="lbl" x="260" y="230">composes</text>
+        <path class="edge" d="M710 200 V248" marker-end="url(#a4)"/>
+        <text class="lbl" x="720" y="230">loads data only through</text>
+
+        <rect class="plain" x="40" y="250" width="420" height="120" rx="8"/>
+        <text class="b" x="60" y="278">UI kit · src/ui</text>
+        <text x="60" y="302">tokens.css · Button · Section · Card · Badge</text>
+        <text x="60" y="324">Gallery · Lightbox · StickyTabs · Accordion</text>
+        <text x="60" y="346">ContactDock · ItineraryDay · TourCard · LanguageSwitch</text>
+
+        <rect class="plain" x="500" y="250" width="420" height="120" rx="8"/>
+        <text class="b" x="520" y="278">Content layer · src/content</text>
+        <text x="520" y="302">types.ts: Tour, Service, Region</text>
+        <text class="m" x="520" y="324">getTours(lang) getTour(slug, lang) getServices(lang)</text>
+        <text x="520" y="346">supabaseAdapter · fixtureAdapter · mappers</text>
+
+        <path class="edge" d="M600 370 V418" marker-end="url(#a4)"/>
+        <text class="lbl" x="610" y="400">selects public views</text>
+        <path class="edge" d="M840 370 V418" marker-end="url(#a4)"/>
+        <text class="lbl" x="850" y="400">dev, tests</text>
+
+        <rect class="ext" x="500" y="420" width="240" height="70" rx="8"/>
+        <text class="b" x="620" y="450" text-anchor="middle">Supabase</text>
+        <text class="s" x="620" y="470" text-anchor="middle">Content DB, enquiries, media</text>
+        <rect class="ext" x="760" y="420" width="160" height="70" rx="8"/>
+        <text class="b" x="840" y="450" text-anchor="middle">Fixtures</text>
+        <text class="s" x="840" y="470" text-anchor="middle">today's tours.ts</text>
+      </svg>
+    </div>
+    <figcaption>Two rules hold this together. Features never import Supabase directly; they call the content layer. Features never write colours; they use the UI kit. Language follows the same split: buttons and labels come from <code>src/i18n/vi.ts</code> and <code>en.ts</code>, while tour text arrives already translated, because every content read takes <code>lang</code>. The three tour readers that exist today collapse into the content layer, and <code>tours.ts</code> moves from runtime data to test fixtures.</figcaption>
+  </figure>
+</section>
+
+<section id="code">
+  <div class="level"><span class="tag">L4</span><h2>Code: the tour detail page and the folder layout</h2></div>
+  <p class="prose">The tour detail page is where the agency shows off, and it's the page the Golden Life reference does best. This layout keeps the reference's skeleton and fills the gaps it leaves.</p>
+  <figure>
+    <div class="legend"><span><i class="sw plain"></i>Same as the reference</span><span><i class="sw sys"></i>Added or fixed beyond the reference</span></div>
+    <div class="fig">
+      <svg viewBox="0 0 960 600" role="img" aria-label="Tour detail page layout: navigation, photo gallery, sticky section tabs, then a main column with overview, itinerary, price tiers, inclusions, policy accordion, reviews and same-region tours, beside a sticky summary card with contact buttons, plus a floating contact dock.">
+        <rect class="bound" x="40" y="20" width="880" height="562" rx="10"/>
+        <rect class="plain" x="40" y="20" width="880" height="40" rx="10"/>
+        <text class="b" x="60" y="45">Navigation</text>
+        <text class="s" x="900" y="45" text-anchor="end">hotline · VI / EN switch</text>
+
+        <rect class="plain" x="60" y="78" width="840" height="110" rx="8"/>
+        <text class="b" x="480" y="126" text-anchor="middle">Gallery</text>
+        <text class="s" x="480" y="146" text-anchor="middle">hero photo, thumbnail strip, lightbox · each photo once, with credits</text>
+
+        <rect class="plain" x="60" y="202" width="840" height="34" rx="6"/>
+        <text class="m" x="80" y="224">StickyTabs   Overview · Itinerary · Price · Policy · Similar tours</text>
+
+        <rect class="plain" x="60" y="252" width="540" height="44" rx="6"/>
+        <text class="b" x="78" y="279">Overview</text>
+        <text class="s" x="160" y="279">short pitch, read-more for the long story</text>
+
+        <rect class="plain" x="60" y="306" width="540" height="74" rx="6"/>
+        <text class="b" x="78" y="333">Itinerary</text>
+        <text class="s" x="78" y="353">ItineraryDay × N: one photo, morning / noon / afternoon / evening,</text>
+        <text class="s" x="78" y="369">meals and overnight stop as small labels</text>
+
+        <rect class="plain" x="60" y="390" width="540" height="44" rx="6"/>
+        <text class="b" x="78" y="417">Price</text>
+        <text class="s" x="130" y="417">one from-price per guest, or "contact for price"</text>
+
+        <rect class="plain" x="60" y="444" width="540" height="36" rx="6"/>
+        <text class="b" x="78" y="467">Included · Not included · Gifts</text>
+
+        <rect class="sys" x="60" y="490" width="540" height="36" rx="6"/>
+        <text class="b" x="78" y="513">PolicyAccordion</text>
+        <text class="s" x="200" y="513">deposit, cancellation, packing: collapsed</text>
+
+        <rect class="bound" x="60" y="536" width="260" height="32" rx="6"/>
+        <text class="b" x="78" y="557">Reviews</text>
+        <text class="s" x="140" y="557">phase 2, space kept</text>
+        <rect class="sys" x="340" y="536" width="260" height="32" rx="6"/>
+        <text class="b" x="358" y="557">Similar tours</text>
+        <text class="s" x="450" y="557">same region</text>
+
+        <rect class="sys" x="620" y="252" width="280" height="196" rx="8"/>
+        <text class="b" x="640" y="280">Summary card · sticky</text>
+        <text x="640" y="304">Tour code · 3 days 2 nights</text>
+        <text x="640" y="324">Departs from Pleiku</text>
+        <text x="640" y="344">Pleiku · Kon Tum · Măng Đen</text>
+        <text class="b accent-t" x="640" y="372">From 3.990.000 ₫ / guest</text>
+        <rect class="plain" x="640" y="388" width="74" height="34" rx="17"/>
+        <text x="677" y="410" text-anchor="middle">Zalo</text>
+        <rect class="plain" x="723" y="388" width="74" height="34" rx="17"/>
+        <text x="760" y="410" text-anchor="middle">Call</text>
+        <rect class="plain" x="806" y="388" width="78" height="34" rx="17"/>
+        <text x="845" y="410" text-anchor="middle">Enquire</text>
+
+        <rect class="plain" x="760" y="512" width="140" height="56" rx="28"/>
+        <text class="b" x="830" y="537" text-anchor="middle">ContactDock</text>
+        <text class="s" x="830" y="555" text-anchor="middle">floating, mobile first</text>
+      </svg>
+    </div>
+    <figcaption>The reference hides its policy in a wall of text and recommends Egypt next to a Central Highlands tour; the green blocks fix those. Price packages and departure dates are out of scope, so the price block shows only what the content DB holds. The dashed Reviews block arrives in phase 2. On phones the summary card collapses into the contact dock.</figcaption>
+  </figure>
+
+  <h3>Target folder layout</h3>
+<pre class="tree"><span class="d">src/</span>
+  <span class="d">app/</span>            <span class="c">routes, root layout, prerender list, redirects for old #/ links</span>
+  <span class="d">features/</span>
+    <span class="d">home/</span>         <span class="c">Hero, Story, Highlights, Journal, ContactCta: one file each</span>
+    <span class="d">tours/</span>        <span class="c">TourList, FilterRail, RegionStrip     ← components/explore/*</span>
+    <span class="d">tour-detail/</span>  <span class="c">page composition from the L4 figure above</span>
+    <span class="d">other-services/</span> <span class="c">ServiceCards, RequestForm        ← pages/ServicesPage + CarRentalPage</span>
+    <span class="d">contact/</span>      <span class="c">ContactDock, submit request         ← lib/submitServiceSubmission</span>
+  <span class="d">ui/</span>             <span class="c">tokens.css + presentational components; no data, no routing</span>
+  <span class="d">i18n/</span>           <span class="c">vi.ts, en.ts: button and label text; tour text comes from the DB</span>
+  <span class="d">content/</span>        <span class="c">types.ts, repository.ts, supabase/, fixtures/</span>
+  <span class="d">lib/</span>            <span class="c">format (VND, dates), url state, text helpers</span></pre>
+
+  <h3>Where today's files go</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Today</th><th>Target</th></tr></thead>
+    <tbody>
+      <tr><td><code>pages/HomePage.tsx</code></td><td><code>features/home/*</code>, one file per section</td></tr>
+      <tr><td><code>pages/TourDetailsPage.tsx</code></td><td><code>features/tour-detail/*</code>, rebuilt from the layout above</td></tr>
+      <tr><td><code>components/explore/*</code>, <code>lib/filterTours.ts</code>, <code>lib/urlState.ts</code></td><td><code>features/tours/*</code>; filter state moves from the hash to the query string</td></tr>
+      <tr><td><code>data/tours.ts</code>, <code>data/toursRepository.ts</code>, <code>lib/catalogueRepository.ts</code></td><td><code>content/</code>: one repository; <code>tours.ts</code> becomes fixtures</td></tr>
+      <tr><td><code>pages/ServicesPage.tsx</code>, <code>pages/CarRentalPage.tsx</code></td><td><code>features/other-services/*</code>: keep today's form and its questions (car, visa, flight). The separate Car rental page leaves the menu.</td></tr>
+      <tr><td><code>data/services.ts</code> (emoji icons)</td><td>Content DB rows or fixtures; Phosphor icons, which are already a dependency</td></tr>
+      <tr><td>Hard-coded Vietnamese text in JSX</td><td><code>i18n/vi.ts</code> and <code>i18n/en.ts</code></td></tr>
+      <tr><td><code>lib/useHashRoute.ts</code></td><td>React Router routes in <code>app/</code>, plus a small redirect from <code>#/…</code></td></tr>
+      <tr><td><code>components/layout/*</code></td><td><code>app/</code> layout; <code>HeroBackdrop</code> and <code>PageBackdrop</code> move into <code>ui/</code></td></tr>
+      <tr><td>Inline hex colours</td><td>Tokens in <code>ui/tokens.css</code>, exposed to Tailwind 4 through <code>@theme</code></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="decisions">
+  <h2>Decisions</h2>
+  <div class="decisions">
+    <div class="decision"><h3>D1 · Real paths, prerendered at build</h3><p>React Router 7 in framework mode with <code>ssr: false</code> and a <code>prerender</code> list built from the content DB. The output is still static files, so Nginx and the deploy workflow barely change.</p><p class="why">Why: the site exists to be found and shared. Static files at real paths also work on GitHub Pages, so test and production behave the same. Astro would also work, but it would mean rewriting every page instead of moving them.</p></div>
+    <div class="decision"><h3>D6 · Test on GitHub Pages, release to the VPS by hand</h3><p>Every push to <code>main</code> deploys to GitHub Pages automatically, as it already does, with a <code>noindex</code> tag added. The "Deploy to VPS" workflow stops running on push and gets only its "Run workflow" button. You release by opening GitHub → Actions → Deploy to VPS → Run workflow. <code>docs/RELEASING.md</code> explains each step in plain words.</p><p class="why">Why: one button is the simplest safe release, and the workflow file shows every step it runs, so you can learn from it. Tags and approval rules can come later, once this feels routine.</p></div>
+    <div class="decision"><h3>D7 · Vietnamese at <code>/</code>, English at <code>/en/</code></h3><p>Same page structure and slugs in both languages, with <code>hreflang</code> links between them. Interface text lives in <code>src/i18n</code>; tour and service text gets an English version in the content DB. A page without an English version yet falls back to Vietnamese with a note. English text is translated from the Vietnamese by Codex (<code>gpt-6-luna</code>, high effort) into reviewable files, which a person checks before they reach the DB.</p><p class="why">Why: separate URLs let Google show the right language to the right traveller, and sharing a link keeps its language.</p></div>
+    <div class="decision"><h3>D8 · One "Other services" page</h3><p>The Services page already has one form with a picker for car, visa and flight, and it already asks the right questions. Keep it. Car rental's separate fleet page leaves the menu, and requests keep going to the existing insert-only enquiries table.</p><p class="why">Why: the home page and tour browsing are what earn money. Services only need to be easy to request, not browsed like a catalogue.</p></div>
+    <div class="decision"><h3>D2 · One content layer, one tour shape</h3><p>Every page reads through <code>src/content</code>. The Supabase public views are the source of truth; fixtures exist only for development and tests.</p><p class="why">Why: three readers with three row shapes is how the tour page and the catalogue drift apart.</p></div>
+    <div class="decision"><h3>D3 · Design tokens before redesign</h3><p>Move every colour, radius and type size into tokens first, then change the look by changing tokens.</p><p class="why">Why: the new look becomes a small, reviewable diff instead of a rewrite of every page.</p></div>
+    <div class="decision"><h3>D4 · Contact, not checkout</h3><p>Phase 1 ends at Zalo, phone, Messenger or the insert-only enquiry form. No price or seat is shown as confirmed.</p><p class="why">Why: this matches how the agency sells today and the constitution's rule against implying confirmation. It also leaves the booking design open for phase 2.</p></div>
+    <div class="decision"><h3>D5 · Supabase Studio is the admin for now</h3><p>Staff edit content in Studio. Publishing triggers a rebuild, either by hand or through a Supabase webhook that calls the deploy workflow.</p><p class="why">Why: a custom admin is real work that belongs with the booking flow.</p></div>
+  </div>
+</section>
+
+<section id="roadmap">
+  <h2>Refactor order</h2>
+  <h3>This morning: ship the visible UI</h3>
+  <p class="prose">Only changes visitors can see, built on today's routing so nothing risky moves. Each item is tested on GitHub Pages, then you release it to the VPS yourself.</p>
+  <ol class="steps">
+    <li><span><b>Release setup.</b> Switch "Deploy to VPS" to its manual button only, and write <code>docs/RELEASING.md</code>.</span></li>
+    <li><span><b>Tokens and UI kit.</b> Move inline colours into tokens. Extract Button, Section, Card and Accordion so the pages below share them.</span></li>
+    <li><span><b>Tour detail redesign.</b> Build the L4 layout: gallery, sticky tabs, itinerary, price, policy accordion, same-region tours, summary card, contact dock.</span></li>
+    <li><span><b>Other services.</b> Take Car rental out of the menu; car stays a choice on the existing Services form.</span></li>
+    <li><span><b>Check and release.</b> Type-check, build, review on GitHub Pages, then click Run on "Deploy to VPS".</span></li>
+  </ol>
+  <h3>Next: the structure underneath</h3>
+  <ol class="steps">
+    <li><span><b>Content layer.</b> Merge the three tour readers into <code>src/content</code>, with <code>lang</code> on every read. Commit or drop the untracked catalogue migration.</span></li>
+    <li><span><b>Split the home page.</b> Turn the 942-line file into <code>features/home/*</code>, and move its text into <code>i18n/vi.ts</code>.</span></li>
+    <li><span><b>Routing and languages.</b> Move to React Router 7 with real paths and <code>/en/</code>. Redirect old <code>#/</code> links.</span></li>
+    <li><span><b>Translate.</b> Codex with <code>gpt-6-luna</code> at high effort translates the Vietnamese text into English files. A person checks them, then they load into the DB.</span></li>
+    <li><span><b>Prerender.</b> Build one page per tour, per language, with its own title and share image.</span></li>
+    <li class="later"><span><b>Phase 2.</b> Guest reviews, price packages, departure dates, booking with deposit, payment, custom admin.</span></li>
+  </ol>
+</section>
+
+<section id="questions">
+  <h2>Decided on 19 Nov</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Question</th><th>Decision</th><th>Where it shows up</th></tr></thead>
+    <tbody>
+      <tr><td>Hosting</td><td>GitHub Pages is the test site; the VPS is production.</td><td>L2, D6</td></tr>
+      <tr><td>Services</td><td>Car rental joins visa and flights on the existing Services form, with its current questions. Home and tour browsing are the money pages.</td><td>L3, D8, roadmap</td></tr>
+      <tr><td>Language</td><td>Vietnamese and English; English translated from Vietnamese with Codex <code>gpt-6-luna</code> at high effort.</td><td>L3, D7, roadmap</td></tr>
+      <tr><td>Packages and dates</td><td>Out of scope; the reference's tiers and departure dates are not copied.</td><td>L4, phase 2</td></tr>
+      <tr><td>Reviews</td><td>Real reviews exist but come later. The UI ships first.</td><td>L4, phase 2</td></tr>
+      <tr><td>Release</td><td>You release by hand with one button; a plain-words guide explains each step.</td><td>D6, roadmap</td></tr>
+    </tbody>
+  </table></div>
+  <h2>Still open</h2>
+  <ul class="qs">
+    <li><b>New look:</b> the tour detail layout follows the reference. Colours and type stay the current green brand unless you name a direction.</li>
+  </ul>
+</section>
+
+</div>

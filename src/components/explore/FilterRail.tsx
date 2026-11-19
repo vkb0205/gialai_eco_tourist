@@ -23,25 +23,25 @@ export default function FilterRail({
   return (
     <aside
       aria-label="Bộ lọc hành trình"
-      className="hidden lg:block lg:sticky lg:top-[104px] lg:h-fit lg:max-h-[calc(100vh-128px)] lg:overflow-y-auto"
+      className="hidden lg:sticky lg:top-[104px] lg:block lg:h-fit lg:max-h-[calc(100vh-128px)] lg:overflow-y-auto"
     >
-      <div className="rounded-[2px] bg-[#f0f7f1] p-6">
+      <div className="rounded-card border border-line bg-paper p-5 shadow-card">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="m-0 font-display text-2xl tracking-[-0.02em] text-[#1f7a3a]">
+          <h2 className="m-0 text-xs font-bold uppercase tracking-[0.8px] text-subtle">
             Bộ lọc
           </h2>
           {activeCount > 0 && (
             <button
               type="button"
               onClick={onClearAll}
-              className="min-h-11 text-[15px] font-semibold text-[#183024] underline underline-offset-4 transition-colors hover:text-[#15602b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+              className="min-h-11 text-sm font-bold text-forest underline underline-offset-4 hover:text-forest-hover"
             >
               Xóa tất cả
             </button>
           )}
         </div>
 
-        <div className="mt-6">
+        <div className="mt-3">
           <FacetGroups
             state={state}
             counts={counts}

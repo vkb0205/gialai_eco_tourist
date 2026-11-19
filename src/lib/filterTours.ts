@@ -21,7 +21,7 @@ export const SORT_MODES = [
 export type SortMode = typeof SORT_MODES[number]
 
 export const SORT_LABELS: Record<SortMode, string> = {
-  "goi-y": "Gợi ý của chúng tôi",
+  "goi-y": "Được hỏi nhiều nhất",
   "gia-tang": "Giá thấp đến cao",
   "gia-giam": "Giá cao đến thấp",
   "thoi-gian": "Số ngày tăng dần",
@@ -39,6 +39,8 @@ export type FilterState = {
   /** Raw keyword, exactly as typed. */
   keyword: string
   sort: SortMode
+  /** 1-based page index for the Explore result grid. */
+  page?: number
 }
 
 export const EMPTY_FACETS: Record<FacetKey, string[]> = {
@@ -59,6 +61,7 @@ export function createEmptyFilterState(): FilterState {
     facets: { ...EMPTY_FACETS },
     keyword: "",
     sort: "goi-y",
+    page: 1,
   }
 }
 

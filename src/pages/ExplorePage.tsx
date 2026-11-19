@@ -18,23 +18,23 @@ import {
   toggleFacet,
   toggleRegion,
 } from "@/lib/urlState"
+import CustomTourBanner from "@/components/explore/CustomTourBanner"
 import EmptyResults from "@/components/explore/EmptyResults"
 import ExploreHeader from "@/components/explore/ExploreHeader"
 import FilterDrawer from "@/components/explore/FilterDrawer"
-import FilterRail from "@/components/explore/FilterRail"
-import Pagination from "@/components/explore/Pagination"
-import RegionStrip from "@/components/explore/RegionStrip"
-import ResultsToolbar, {
-  buildActiveChips,
-} from "@/components/explore/ResultsToolbar"
+import HorizontalFilterBar from "@/components/explore/HorizontalFilterBar"
+import { buildActiveChips } from "@/components/explore/ResultsToolbar"
 import type { ActiveChip } from "@/components/explore/ResultsToolbar"
-import TourCard from "@/components/explore/TourCard"
+import TourCard from "@/components/ui/TourCard"
+import ContactDock from "@/components/ui/ContactDock"
 import TourCardSkeleton from "@/components/explore/TourCardSkeleton"
+import Pagination from "@/components/explore/Pagination"
+import { X } from "@phosphor-icons/react"
 
-/** Tours shown per page (FR-018). */
+/** Tours displayed on each numbered page. */
 const PAGE_SIZE = 9
-/** Skeleton count for the first paint, matching the initial page (FR-011). */
-const SKELETON_COUNT = 6
+/** Skeleton cards shown while catalogue loads. */
+const SKELETON_COUNT = PAGE_SIZE
 
 export default function ExplorePage({ query }: { query: string }) {
   const state = useMemo(() => parseFilterState(query), [query])
@@ -69,46 +69,47 @@ export default function ExplorePage({ query }: { query: string }) {
   }, [])
 
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [page, setPage] = useState(1)
   const filterTriggerRef = useRef<HTMLButtonElement | null>(null)
-  const paginationRef = useRef<HTMLDivElement | null>(null)
-  const focusNewPageRef = useRef(false)
   const resultsRef = useRef<HTMLDivElement | null>(null)
 
-  // Skeleton pass on first mount so the grid loads at its final shape.
+  // Skeleton pass on first mount
   const [ready, setReady] = useState(false)
   useEffect(() => {
     const frame = requestAnimationFrame(() => setReady(true))
     return () => cancelAnimationFrame(frame)
   }, [])
 
-  // Any filter change returns to the first page.
-  useEffect(() => {
-    setPage(1)
-  }, [query])
-
   const apply = useCallback((next: FilterState) => {
     navigateTo("/explore", serialiseFilterState(next))
   }, [])
 
   const onToggleRegion = useCallback(
-    (slug: string) => apply(toggleRegion(state, slug)),
+    (slug: string) => {
+      const next = toggleRegion(state, slug)
+      apply({ ...next, page: 1 })
+    },
     [apply, state],
   )
 
+  const onSelectAllRegions = useCallback(() => {
+    apply({ ...state, regions: [], page: 1 })
+  }, [apply, state])
+
   const onToggleFacet = useCallback(
-    (groupKey: FacetKey, value: string) =>
-      apply(toggleFacet(state, groupKey, value)),
+    (groupKey: FacetKey, value: string) => {
+      const next = toggleFacet(state, groupKey, value)
+      apply({ ...next, page: 1 })
+    },
     [apply, state],
   )
 
   const onKeywordChange = useCallback(
-    (keyword: string) => apply({ ...state, keyword }),
+    (keyword: string) => apply({ ...state, keyword, page: 1 }),
     [apply, state],
   )
 
   const onSortChange = useCallback(
-    (sort: SortMode) => apply({ ...state, sort }),
+    (sort: SortMode) => apply({ ...state, sort, page: 1 }),
     [apply, state],
   )
 
@@ -116,10 +117,10 @@ export default function ExplorePage({ query }: { query: string }) {
 
   const onRemoveChip = useCallback(
     (chip: ActiveChip) => {
-      if (chip.kind === "region") apply(toggleRegion(state, chip.value))
+      if (chip.kind === "region") apply({ ...toggleRegion(state, chip.value), page: 1 })
       else if (chip.kind === "facet")
-        apply(toggleFacet(state, chip.groupKey, chip.value))
-      else apply({ ...state, keyword: "" })
+        apply({ ...toggleFacet(state, chip.groupKey, chip.value), page: 1 })
+      else apply({ ...state, keyword: "", page: 1 })
     },
     [apply, state],
   )
@@ -127,10 +128,13 @@ export default function ExplorePage({ query }: { query: string }) {
   const onRelax = useCallback(
     (suggestion: RelaxSuggestion) => {
       if (suggestion.kind === "region")
-        apply(toggleRegion(state, suggestion.value ?? ""))
+        apply({ ...toggleRegion(state, suggestion.value ?? ""), page: 1 })
       else if (suggestion.kind === "facet" && suggestion.groupKey) {
-        apply(toggleFacet(state, suggestion.groupKey, suggestion.value ?? ""))
-      } else apply({ ...state, keyword: "" })
+        apply({
+          ...toggleFacet(state, suggestion.groupKey, suggestion.value ?? ""),
+          page: 1,
+        })
+      } else apply({ ...state, keyword: "", page: 1 })
     },
     [apply, state],
   )
@@ -149,139 +153,148 @@ export default function ExplorePage({ query }: { query: string }) {
   )
 
   const pageCount = Math.max(1, Math.ceil(result.total / PAGE_SIZE))
-  const currentPage = Math.min(page, pageCount)
-  const visible = result.tours.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE,
-  )
-  const firstVisible =
-    result.total === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1
-  const lastVisible = Math.min(currentPage * PAGE_SIZE, result.total)
+  const currentPage = Math.min(Math.max(state.page ?? 1, 1), pageCount)
+  const pageStart = (currentPage - 1) * PAGE_SIZE
+  const visibleTours = result.tours.slice(pageStart, pageStart + PAGE_SIZE)
 
-  const goToPage = (nextPage: number) => {
-    const clamped = Math.max(1, Math.min(nextPage, pageCount))
-    if (clamped === currentPage) return
-    focusNewPageRef.current = true
-    setPage(clamped)
+  const onPageChange = (page: number) => {
+    apply({ ...state, page: Math.min(Math.max(page, 1), pageCount) })
   }
 
-  /* After a page change, focus the first card of the new page so a keyboard
-     user does not land back at the top of the list (FR-016). */
-  useEffect(() => {
-    if (!focusNewPageRef.current) return
-    focusNewPageRef.current = false
-    const card = resultsRef.current?.querySelector<HTMLElement>(
-      `[data-card-index="0"]`,
-    )
-    if (card) card.focus()
-    else paginationRef.current?.focus()
-  }, [currentPage])
-
   return (
-    <div className="bg-white pb-24 lg:pb-32">
+    <div className="bg-air pb-24 lg:pb-16">
+      {/* 1. Page Header */}
       <ExploreHeader
         keyword={state.keyword}
         onKeywordChange={onKeywordChange}
         catalogueSize={dataset.length}
       />
 
-      <div className="mx-auto max-w-[1440px] px-6 pt-12 lg:px-12 lg:pt-16">
-        <RegionStrip
-          selected={state.regions}
-          counts={result.regionCounts}
-          onToggle={onToggleRegion}
+      {/* 2. Full-width horizontal filter bar (sticky) */}
+      <div className="sticky top-[72px] lg:top-[88px] z-30 shadow-xs">
+        <HorizontalFilterBar
+          state={state}
+          facetCounts={result.facetCounts}
+          regionCounts={result.regionCounts}
+          onToggleRegion={onToggleRegion}
+          onSelectAllRegions={onSelectAllRegions}
+          onToggleFacet={onToggleFacet}
+          onSortChange={onSortChange}
+          onOpenMobileDrawer={() => setDrawerOpen(true)}
+          mobileTriggerRef={filterTriggerRef}
         />
+      </div>
 
-        <div className="mt-10 grid gap-10 lg:grid-cols-[288px_minmax(0,1fr)] lg:gap-14 xl:grid-cols-[308px_minmax(0,1fr)]">
-          <FilterRail
-            state={state}
-            counts={result.facetCounts}
-            activeCount={activeCount}
-            onToggle={onToggleFacet}
-            onClearAll={onClearAll}
-          />
+      <div className="page-container pt-6 lg:pt-10">
+        <section aria-labelledby="results-heading" className="min-w-0">
+          <h2 id="results-heading" className="sr-only">
+            Kết quả hành trình
+          </h2>
 
-          <section aria-labelledby="results-heading" className="min-w-0">
-            <h2 id="results-heading" className="sr-only">
-              Kết quả hành trình
-            </h2>
+          {/* 3. Result count line and active filter chips */}
+          <div className="flex flex-wrap items-center justify-between gap-3 pb-[18px]">
+            <p
+              aria-live="polite"
+              aria-atomic="true"
+              className="m-0 text-[15px] font-normal leading-[22px] text-body"
+            >
+              Đang hiện{" "}
+              <strong className="font-bold text-ink">
+                {ready && !loading ? visibleTours.length : 0}
+              </strong>{" "}
+              trên{" "}
+              <strong className="font-bold text-ink">
+                {ready && !loading ? result.total : 0}
+              </strong>{" "}
+              tour
+            </p>
 
-            <ResultsToolbar
-              ref={filterTriggerRef}
-              total={result.total}
-              chips={chips}
-              activeCount={activeCount}
-              sort={state.sort}
-              onRemoveChip={onRemoveChip}
-              onClearAll={onClearAll}
-              onSortChange={onSortChange}
-              onOpenFilters={() => setDrawerOpen(true)}
-              filtersOpen={drawerOpen}
-            />
+            {chips.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="sr-only">Bộ lọc đang áp dụng:</span>
+                {chips.map((chip) => (
+                  <button
+                    key={`${chip.kind}-${
+                      "groupKey" in chip ? chip.groupKey : ""
+                    }-${chip.value}`}
+                    type="button"
+                    onClick={() => onRemoveChip(chip)}
+                    className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-forest pl-3.5 pr-2.5 text-xs font-bold text-paper transition-colors hover:bg-forest-hover"
+                  >
+                    <span>{chip.label}</span>
+                    <X size={13} aria-hidden="true" />
+                    <span className="sr-only">, gỡ bộ lọc này</span>
+                  </button>
+                ))}
 
-            <div ref={resultsRef} className="pt-6">
-              {!ready || loading ? (
-                <ul
-                  aria-hidden="true"
-                  className="grid list-none grid-cols-1 gap-6 p-0 md:grid-cols-2 2xl:grid-cols-3"
+                <button
+                  type="button"
+                  onClick={onClearAll}
+                  className="ml-2 text-xs font-bold text-forest underline underline-offset-4 hover:text-forest-hover"
                 >
-                  {Array.from({ length: SKELETON_COUNT }, (_, index) => (
-                    <li key={index}>
-                      <TourCardSkeleton />
-                    </li>
-                  ))}
-                </ul>
-              ) : loadError ? (
-                <div
-                  role="alert"
-                  className="rounded-[2px] bg-[#f0f7f1] px-6 py-12 text-center text-[17px] text-[#2f3d35]"
-                >
-                  {loadError}
-                </div>
-              ) : result.total === 0 ? (
-                <EmptyResults
-                  suggestion={suggestion}
-                  onRelax={onRelax}
-                  onClearAll={onClearAll}
-                />
-              ) : (
-                <>
-                  <ul className="grid list-none grid-cols-1 gap-6 p-0 md:grid-cols-2 2xl:grid-cols-3">
-                    {visible.map((tour, index) => (
-                      <li
-                        key={tour.id}
-                        data-card-index={index}
-                        tabIndex={-1}
-                        className="focus:outline-none"
-                      >
-                        <TourCard tour={tour} />
-                      </li>
-                    ))}
-                  </ul>
+                  Xóa tất cả
+                </button>
+              </div>
+            )}
+          </div>
 
-                  {pageCount > 1 && (
-                    <div
-                      ref={paginationRef}
+          {/* 4. Full-width 3-column card grid */}
+          <div ref={resultsRef}>
+            {!ready || loading ? (
+              <ul
+                aria-hidden="true"
+                className="grid list-none grid-cols-1 gap-x-6 gap-y-8 p-0 md:grid-cols-2 md:gap-x-8 xl:grid-cols-3 xl:gap-x-10"
+              >
+                {Array.from({ length: SKELETON_COUNT }, (_, index) => (
+                  <li key={index}>
+                    <TourCardSkeleton />
+                  </li>
+                ))}
+              </ul>
+            ) : loadError ? (
+              <div
+                role="alert"
+                className="rounded-panel bg-blush px-6 py-12 text-center text-base text-ink"
+              >
+                {loadError}
+              </div>
+            ) : result.total === 0 ? (
+              <EmptyResults
+                suggestion={suggestion}
+                onRelax={onRelax}
+                onClearAll={onClearAll}
+              />
+            ) : (
+              <>
+                <ul className="grid list-none grid-cols-1 gap-x-6 gap-y-8 p-0 md:grid-cols-2 md:gap-x-8 xl:grid-cols-3 xl:gap-x-10">
+                  {visibleTours.map((tour, index) => (
+                    <li
+                      key={tour.id}
+                      data-card-index={pageStart + index}
                       tabIndex={-1}
                       className="focus:outline-none"
                     >
-                      <Pagination
-                        currentPage={currentPage}
-                        pageCount={pageCount}
-                        firstVisible={firstVisible}
-                        lastVisible={lastVisible}
-                        total={result.total}
-                        onPageChange={goToPage}
-                      />
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          </section>
-        </div>
+                      <TourCard tour={tour} index={pageStart + index} />
+                    </li>
+                  ))}
+                </ul>
+                {pageCount > 1 && (
+                  <Pagination
+                    currentPage={currentPage}
+                    pageCount={pageCount}
+                    onPageChange={onPageChange}
+                  />
+                )}
+                <div className="mt-16">
+                  <CustomTourBanner />
+                </div>
+              </>
+            )}
+          </div>
+        </section>
       </div>
 
+      {/* Mobile filter drawer */}
       <FilterDrawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
@@ -293,6 +306,7 @@ export default function ExplorePage({ query }: { query: string }) {
         onClearAll={onClearAll}
         triggerRef={filterTriggerRef}
       />
+      <ContactDock />
     </div>
   )
 }

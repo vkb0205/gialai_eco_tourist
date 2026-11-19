@@ -1,10 +1,10 @@
 name: Deploy to VPS
 
-# Every push to main (and manual runs) builds the site with base "/" and
+# Every push to the release branch (and manual runs) builds the site with base "/" and
 # publishes it to the Nginx document root on the VPS.
 on:
   push:
-    branches: [main]
+    branches: [release]
   workflow_dispatch: {}
 
 permissions:

@@ -1,5 +1,43 @@
 @import 'tailwindcss';
 
+@theme {
+  --font-sans: 'Be Vietnam Pro', Arial, sans-serif;
+  --font-heading: 'Be Vietnam Pro', Arial, sans-serif;
+  --color-forest: #1f7a3a;
+  --color-forest-hover: #15602b;
+  --color-sunflower: #f8c933;
+  --color-lake: #1971c2;
+  --color-coral: #f36f61;
+  --color-ink: #183024;
+  --color-body: #3e4a42;
+  --color-subtle: #5b675f;
+  --color-leaf: #e3f4e8;
+  --color-sky: #eaf4ff;
+  --color-sunlight: #fff4d6;
+  --color-blush: #ffeae6;
+  --color-paper: #ffffff;
+  --color-air: #f5fbf6;
+  --color-hero: #f0f9f3;
+  --color-line: #e2eee5;
+  --color-field-line: #c9d8cc;
+  --color-clay: #c2410c;
+  --color-night: #122419;
+  --color-footer-text: #dce5dd;
+  --color-footer-muted: #afc0b3;
+  --radius-button: 24px;
+  --radius-card: 16px;
+  --radius-panel: 20px;
+  --radius-form: 24px;
+  --radius-service-picker: 28px;
+  --radius-control: 12px;
+  --radius-accent: 2px;
+  --radius-option: 12px;
+  --radius-photo: 12px;
+  --radius-field: 8px;
+  --shadow-card: 0 4px 24px rgb(24 48 36 / 6%);
+  --shadow-search: 0 12px 40px rgb(24 48 36 / 10%);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -18,6 +56,17 @@
 }
 
 :root {
+  font-size: 16px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-6: 48px;
+  --space-8: 64px;
+  --space-12: 96px;
+  --button-height: 48px;
+  --chip-height: 44px;
+  --input-height: 48px;
   --background: #ffffff;
   --foreground: #183024;
   --card: #ffffff;
@@ -27,7 +76,7 @@
   --secondary: #eaf4ec;
   --secondary-foreground: #526257;
   --muted: #eaf4ec;
-  --muted-foreground: #778078;
+  --muted-foreground: #5b675f;
   --accent: #1f7a3a;
   --accent-foreground: #ffffff;
   --border: #d3e5d7;
@@ -56,7 +105,7 @@ body {
   margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Be Vietnam Pro', Arial, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -87,6 +136,7 @@ body {
 
 .form-input {
   width: 100%;
+  min-height: var(--input-height);
   border: 0;
   border-bottom: 1px solid #d3e5d7;
   border-radius: 0;
@@ -94,7 +144,7 @@ body {
   padding: 0.75rem 0.1rem;
   color: #183024;
   font-family: 'Be Vietnam Pro', Arial, sans-serif;
-  font-size: 0.875rem;
+  font-size: 16px;
   outline: none;
   transition: border-color 180ms ease;
 }
@@ -222,4 +272,72 @@ details > summary::-webkit-details-marker {
 @keyframes hero-bird {
   from { transform: translate(-60px, 10px); }
   to { transform: translate(90px, -14px); }
+}
+
+/* Shared type system. Display: Bricolage Grotesque (headings, numbers). Text: Be Vietnam Pro. Both ship a Vietnamese subset. */
+.t-eyebrow, .t-h1, .t-h2, .t-h3, .t-lead, .t-body, .t-small, .t-caption, .t-btn, .t-stat {
+  font-family: "Be Vietnam Pro", system-ui, Arial, sans-serif;
+  margin: 0;
+}
+.t-h1, .t-h2, .t-h3, .t-stat {
+  font-family: "Bricolage Grotesque", "Be Vietnam Pro", system-ui, Arial, sans-serif;
+  text-wrap: balance;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.t-eyebrow { margin-bottom: 12px; font-size: 12px; font-weight: 700; line-height: 18px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-clay); }
+.t-h1 { font-size: 48px; font-weight: 700; line-height: 56px; letter-spacing: -0.02em; }
+.t-h2 { font-size: 32px; font-weight: 700; line-height: 42px; letter-spacing: -0.015em; }
+.t-h3 { font-size: 24px; font-weight: 700; line-height: 32px; letter-spacing: -0.01em; }
+.t-lead { max-width: 62ch; font-size: 16px; font-weight: 400; line-height: 26px; text-wrap: pretty; }
+.t-body { max-width: 68ch; font-size: 16px; font-weight: 400; line-height: 26px; text-wrap: pretty; }
+.t-small { font-size: 14px; font-weight: 400; line-height: 22px; }
+.t-caption { font-size: 12px; font-weight: 500; line-height: 18px; }
+.t-btn { font-size: 15px; font-weight: 700; line-height: 22px; }
+.t-stat { font-size: 24px; font-weight: 700; line-height: 30px; }
+
+/* Shared v2 primitives; legacy theme aliases above remain available. */
+.page-container { width: min(calc(100% - 32px), 1280px); margin-inline: auto; }
+.btn-primary, .btn-outline, .btn-blue {
+  display: inline-flex; min-height: var(--button-height); align-items: center; justify-content: center;
+  gap: 8px; border-radius: var(--radius-button); padding: 12px 24px;
+  font-size: 15px; font-weight: 700; line-height: 22px; text-decoration: none;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+.btn-primary { background: var(--color-forest); color: var(--color-paper); }
+.btn-primary:hover { background: var(--color-forest-hover); }
+.btn-outline { border: 1.5px solid var(--color-ink); color: var(--color-ink); }
+.btn-outline:hover { background: var(--color-leaf); }
+.btn-blue { background: var(--color-lake); color: var(--color-paper); }
+.btn-blue:hover { background: var(--color-ink); }
+.home-hero-actions .btn-primary, .home-hero-actions .btn-outline { min-height: 56px; border-radius: 28px; font-size: 16px; line-height: 24px; }
+.home-search-submit { min-height: 56px; border-radius: 28px; font-size: 16px; line-height: 24px; }
+.btn-primary.min-h-14 { min-height: 56px; }
+.btn-primary.text-base { font-size: 16px; line-height: 24px; }
+.btn-primary.min-h-14, .btn-outline.min-h-14, .btn-blue.min-h-14 { border-radius: 28px; }
+.btn-outline.min-h-14, .btn-blue.min-h-14 { min-height: 56px; }
+.home-tour-card { border-radius: 20px; }
+@media (min-width: 768px) { .home-tour-card { border-radius: 16px; } }
+.home-heading { font-size: 28px; font-weight: 600; line-height: 36px; letter-spacing: -.5px; text-wrap: balance; }
+.home-eyebrow { margin-bottom: 12px; font-size: 12px; font-weight: 700; line-height: 1.5; letter-spacing: .8px; text-transform: uppercase; color: var(--color-clay); }
+.footer-v2-heading { margin-bottom: 16px; color: var(--color-sunflower); font-size: 12px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; }
+.footer-v2-link { display: flex; align-items: center; min-height: 32px; font-size: 15px; line-height: 32px; }
+.footer-v2-link:hover { color: var(--color-sunflower); }
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible { outline-color: var(--color-ink); outline-offset: 4px; }
+footer :where(a, button):focus-visible { outline-color: var(--color-sunflower); }
+@media (min-width: 768px) { .page-container { width: min(calc(100% - 64px), 1280px); } .home-heading { font-size: 32px; font-weight: 700; line-height: 42px; } }
+@media (min-width: 1280px) { .page-container { width: min(calc(100% - 160px), 1280px); } .nav-link[aria-current=page] { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 12px; } }
+@media (max-width: 767px) { .t-h1 { font-size: 32px; line-height: 44px; } .t-h2 { font-size: 28px; line-height: 36px; } .t-h3 { font-size: 20px; line-height: 28px; } }
+
+/* Desktop dimensions from the Tours v2 frame (1440 px). */
+@media (min-width: 1280px) {
+  .explore-title { font-size: 48px; line-height: 56px; }
+  .explore-intro { max-width: 640px; font-size: 16px; line-height: 26px; }
+  .tour-card-title.t-h3 { font-size: 20px; line-height: 30px; }
+  .custom-tour-title.t-h2 { font-size: 28px; line-height: 36px; }
+  .custom-tour-description { font-size: 16px; font-weight: 600; line-height: 24px; }
+  .explore-filter-controls > div:last-child { position: absolute; right: max(80px, calc((100vw - 1280px) / 2)); bottom: 0; z-index: 40; }
+  .explore-filter-controls > div:last-child > span:first-child { display: none; }
+  .custom-tour-banner { height: 160px; min-height: 160px; margin-top: -8px; margin-bottom: 0; padding: 0 40px; }
+  .custom-tour-content { align-self: flex-start; margin-top: 40px; }
+  .custom-tour-banner > a { width: 240px; }
 }

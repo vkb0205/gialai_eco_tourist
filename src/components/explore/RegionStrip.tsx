@@ -1,5 +1,13 @@
 import { regions } from "@/data/regions"
 
+/** Pastel tone per region, matching the v2 design's colourful chips. */
+const TONES: Record<string, string> = {
+  "tay-nguyen": "bg-leaf",
+  "mien-bac": "bg-sky",
+  "mien-trung": "bg-blush",
+  "mien-nam": "bg-sunlight",
+}
+
 /**
  * Region chips, wrapped onto as many lines as they need.
  *
@@ -19,13 +27,13 @@ export default function RegionStrip({
   return (
     <section
       aria-labelledby="region-strip-heading"
-      className="flex min-w-0 flex-col gap-4 md:flex-row md:items-center md:gap-6"
+      className="flex min-w-0 flex-col gap-3 md:flex-row md:items-center md:gap-5"
     >
       <h2
         id="region-strip-heading"
-        className="m-0 shrink-0 font-display text-2xl tracking-[-0.02em] text-[#1f7a3a]"
+        className="m-0 shrink-0 text-xs font-bold uppercase tracking-[0.8px] text-subtle"
       >
-        Chọn vùng miền
+        Vùng
       </h2>
 
       <div
@@ -48,24 +56,16 @@ export default function RegionStrip({
               disabled={disabled}
               aria-pressed={active}
               title={region.characterisation}
-              className={`group flex min-h-11 items-center gap-2 whitespace-nowrap rounded-full px-5 text-[15px] font-semibold transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] ${
+              className={`flex min-h-11 items-center gap-2 whitespace-nowrap rounded-button border px-5 text-[15px] font-bold text-ink transition-colors ${
                 active
-                  ? "bg-[#1f7a3a] text-white"
+                  ? "border-forest bg-forest text-paper"
                   : disabled
-                    ? "cursor-not-allowed bg-[#e1f0e4] text-[#4f5b53]"
-                    : "bg-[#f0f7f1] text-[#183024] enabled:hover:bg-[#1f7a3a] enabled:hover:text-white"
+                    ? "cursor-not-allowed border-line bg-line text-subtle"
+                    : `border-ink/20 ${TONES[region.slug] ?? "bg-leaf"} hover:border-ink`
               }`}
             >
               {region.name}
-              <span
-                className={`text-sm font-medium tabular-nums ${
-                  active
-                    ? "text-white"
-                    : "text-[#4f5b53] group-enabled:group-hover:text-white group-disabled:text-[#4f5b53]"
-                }`}
-              >
-                {count}
-              </span>
+              <span className="text-sm font-medium tabular-nums">{count}</span>
               <span className="sr-only">
                 {count === 1 ? "1 hành trình" : `${count} hành trình`}
                 {disabled ? ", không khả dụng với bộ lọc hiện tại" : ""}

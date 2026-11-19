@@ -2,7 +2,11 @@ import fallbackForest from "@/imports/tours/kon-tum-church.webp"
 import fallbackLake from "@/imports/photos/bien-ho-aerial.webp"
 import fallbackPeople from "@/imports/tours/buon-don.webp"
 import { regionName } from "@/data/regions"
-import { tourImageBySlug, tourImageCreditBySlug } from "@/data/tourImages"
+import {
+  tourImageBySlug,
+  tourImageCreditBySlug,
+  tourPlaceholderBySlug,
+} from "@/data/tourImages"
 import type { RegionSlug } from "@/data/regions"
 import type { Difficulty, Theme, Tour } from "@/data/tours"
 import { isSupabaseConfigured, supabase } from "@/lib/supabase"
@@ -177,6 +181,10 @@ function mapTour(row: PublicTourCardRow): Tour {
   const category =
     row.category_code === "international" ? "Khác" : regionName(regionSlug)
 
+  const placeholder = tourPlaceholderBySlug[row.slug] ?? null
+  const image =
+    tourImageBySlug[row.slug] ?? (placeholder ? "" : fallbackImages[regionSlug])
+
   return {
     id: row.id,
     slug: row.slug,
@@ -191,7 +199,8 @@ function mapTour(row: PublicTourCardRow): Tour {
     difficulty: toDifficulty(row.difficulty),
     groupMax: row.group_max,
     departureMonths: numberArray(row.departure_months),
-    image: tourImageBySlug[row.slug] ?? fallbackImages[regionSlug],
+    image,
+    imagePlaceholder: placeholder,
     imageCredit: tourImageCreditBySlug[row.slug],
     blurb: row.summary,
     highlights: stringArray(row.highlights),

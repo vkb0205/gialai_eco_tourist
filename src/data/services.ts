@@ -26,7 +26,7 @@ const services: Service[] = [
       "Linh hoạt lịch trình theo yêu cầu",
     ],
     cta: "Đặt xe ngay",
-    ctaHref: "#contact",
+    ctaHref: "#/services?service=car",
   },
   {
     id: 2,
@@ -43,7 +43,7 @@ const services: Service[] = [
       "Tích hợp trọn gói với tour du lịch",
     ],
     cta: "Tìm vé tốt nhất",
-    ctaHref: "#contact",
+    ctaHref: "#/services?service=flight",
   },
   {
     id: 3,
@@ -60,7 +60,7 @@ const services: Service[] = [
       "Hỗ trợ đặc biệt cho đoàn lớn",
     ],
     cta: "Chọn nơi nghỉ",
-    ctaHref: "#contact",
+    ctaHref: "#/services?service=general",
   },
   {
     id: 4,
@@ -77,7 +77,7 @@ const services: Service[] = [
       "Tư vấn thủ tục miễn phí",
     ],
     cta: "Tư vấn visa",
-    ctaHref: "#contact",
+    ctaHref: "#/services?service=visa",
   },
   {
     id: 5,
@@ -94,7 +94,7 @@ const services: Service[] = [
       "Tư vấn thiết kế hành trình theo yêu cầu",
     ],
     cta: "Liên hệ tư vấn",
-    ctaHref: "#contact",
+    ctaHref: "#/services?service=general",
   },
 ]
 

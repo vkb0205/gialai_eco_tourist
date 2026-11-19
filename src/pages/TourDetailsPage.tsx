@@ -1,166 +1,74 @@
 import { useEffect, useId, useState } from "react"
-import {
-  ArrowLeft,
-  ArrowUpRight,
-  Clock,
-  MapPin,
-  Users,
-} from "@phosphor-icons/react"
+import { ArrowLeft, ChatCircleDots, Phone } from "@phosphor-icons/react"
 import { regionName } from "@/data/regions"
 import {
   loadPublishedTourDetails,
   type TourDetails,
-  type TourItineraryDay,
-  type TourItineraryItem,
-  type TourPriceOption,
 } from "@/data/toursRepository"
-import { formatVnd } from "@/lib/text"
-import { goToEnquiry } from "@/components/layout/Navigation"
+import church from "@/imports/tours/kon-tum-church.webp"
+import village from "@/imports/homepage/kon-pring-village.jpg"
+import lake from "@/imports/photos/bien-ho-aerial.webp"
+import { imageCredits } from "@/data/tourImages"
+import TourEnquiry from "@/components/tour-detail/TourEnquiry"
+import { FORM_ID } from "@/components/services/ServiceForm"
+import { priceLabel } from "@/components/ui/TourCard"
+import ContactDock from "@/components/ui/ContactDock"
+import Gallery, { type GalleryImage } from "@/components/tour-detail/Gallery"
+import SectionTabs, { type SectionTab } from "@/components/tour-detail/SectionTabs"
+import SummaryCard from "@/components/tour-detail/SummaryCard"
+import Itinerary from "@/components/tour-detail/Itinerary"
+import PriceBlock from "@/components/tour-detail/PriceBlock"
+import PolicyAccordion, { type PolicyItem } from "@/components/tour-detail/PolicyAccordion"
+import SimilarTours from "@/components/tour-detail/SimilarTours"
 import { navigateTo } from "@/lib/useHashRoute"
 
-function PriceOption({ option }: { option: TourPriceOption }) {
-  const guests =
-    option.minGuests && option.maxGuests
-      ? `${option.minGuests}–${option.maxGuests} khách`
-      : option.minGuests
-        ? `Từ ${option.minGuests} khách`
-        : option.maxGuests
-          ? `Tối đa ${option.maxGuests} khách`
-          : null
+const COLLAPSE_AT = 280
 
-  return (
-    <li className="border-t border-[#d3e5d7] py-4 first:border-t-0 first:pt-0 last:pb-0">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="m-0 text-sm font-semibold text-[#183024]">
-            {option.amountVnd === null
-              ? "Liên hệ để biết giá"
-              : formatVnd(option.amountVnd)}
-          </p>
-          <p className="mt-1 text-xs leading-5 text-[#566259]">
-            {guests ?? "Theo điều kiện chương trình"}
-            {option.priceBasis === "per_group" ? " · theo đoàn" : " · / khách"}
-          </p>
-        </div>
-        {option.isCardPrice && (
-          <span className="rounded-full bg-[#eef1e7] px-2.5 py-1 text-xs font-bold uppercase tracking-[0.12em] text-[#4f5d34]">
-            Giá từ
-          </span>
-        )}
-      </div>
-      <p className="mt-2 text-xs leading-5 text-[#566259]">
-        {option.conditionText}
-      </p>
-    </li>
-  )
+function mobileTitle(title: string) {
+  return title
+    .replace(/\s*\(\s*\d+\s*ngày[^)]*\)\s*$/i, "")
+    .replace(/\s+\d+\s*ngày(?:\s*\d+\s*đêm)?\s*$/i, "")
+    .replace(/[–—]/g, "·")
+    .trim()
 }
 
-function BulletList({ items }: { items: string[] }) {
-  if (items.length === 0) return null
-
-  return (
-    <ul className="m-0 grid list-none gap-3 p-0">
-      {items.map((item) => (
-        <li key={item} className="flex gap-3 text-[15px] leading-6 text-[#47524a]">
-          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#15602b]" />
-          <span>{item}</span>
-        </li>
-      ))}
-    </ul>
-  )
-}
-
-type NoteBlockProps = {
-  label: string
-  value: string | null
-}
-
-function NoteBlock({ label, value }: NoteBlockProps) {
-  if (!value) return null
-
-  return (
-    <div className="border-t border-[#d3e5d7] pt-5">
-      <p className="m-0 text-xs font-bold uppercase tracking-[0.15em] text-[#566259]">
-        {label}
-      </p>
-      <p className="mt-2 whitespace-pre-line text-[15px] leading-6 text-[#47524a]">
-        {value}
-      </p>
-    </div>
-  )
-}
-
-function TourSummary({ tour }: { tour: TourDetails }) {
-  return (
-    <div className="mt-7 grid grid-cols-2 gap-3 border-y border-[#d3e5d7] py-5 sm:grid-cols-3">
-      <div className="flex gap-2.5 text-sm text-[#42524a]">
-        <Clock
-          className="mt-0.5 h-4 w-4 shrink-0 text-[#566259]"
-          aria-hidden="true"
-        />
-        <span>{tour.durationLabel}</span>
-      </div>
-      <div className="flex gap-2.5 text-sm text-[#42524a]">
-        <MapPin
-          className="mt-0.5 h-4 w-4 shrink-0 text-[#566259]"
-          aria-hidden="true"
-        />
-        <span>{regionName(tour.regionSlug)}</span>
-      </div>
-      <div className="flex gap-2.5 text-sm text-[#42524a]">
-        <Users
-          className="mt-0.5 h-4 w-4 shrink-0 text-[#566259]"
-          aria-hidden="true"
-        />
-        <span>
-          {tour.groupMax
-            ? `Tối đa ${tour.groupMax} khách`
-            : "Quy mô theo xác nhận"}
-        </span>
-      </div>
-    </div>
-  )
-}
-
-function itineraryTime(item: TourItineraryItem): string {
-  if (item.timeLabel) return item.timeLabel
-  if (item.startTime && item.endTime) {
-    return `${item.startTime}–${item.endTime}`
-  }
-  if (item.startTime) return item.startTime
-  if (item.endTime) return item.endTime
-  return "Theo chương trình"
-}
-
-const COLLAPSE_AT = 320
-
-/**
- * Long itinerary copy stays scannable: past COLLAPSE_AT characters it clamps to
- * four lines behind a real toggle button, so each day reads as a short outline
- * that opens on demand.
- */
-function ExpandableText({ text, className = "" }: { text: string; className?: string }) {
+function ReadMore({
+  text,
+  mobileText,
+}: {
+  text: string
+  mobileText?: string
+}) {
   const [open, setOpen] = useState(false)
-  const long = text.length > COLLAPSE_AT
   const id = useId()
+  const long = text.length > COLLAPSE_AT
 
   return (
-    <div className={className}>
-      <p
-        id={id}
-        className={`m-0 max-w-[68ch] whitespace-pre-line text-base leading-7 text-[#47524a] ${
-          long && !open ? "line-clamp-4" : ""
-        }`}
-      >
-        {text}
-      </p>
+    <div>
+      {mobileText ? (
+        <>
+          <p id={id} className={`m-0 hidden max-w-[68ch] whitespace-pre-line text-base leading-[26px] text-body md:block ${long && !open ? "line-clamp-4" : ""}`}>
+            {text}
+          </p>
+          <p className={`m-0 max-w-[68ch] whitespace-pre-line text-base leading-[26px] text-body md:hidden ${mobileText.length > COLLAPSE_AT && !open ? "line-clamp-4" : ""}`}>
+            {mobileText}
+          </p>
+        </>
+      ) : (
+        <p
+          id={id}
+          className={`m-0 max-w-[68ch] whitespace-pre-line text-base leading-[26px] text-body md:leading-[26px] ${long && !open ? "line-clamp-4" : ""}`}
+        >
+          {text}
+        </p>
+      )}
       {long && (
         <button
           type="button"
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-controls={id}
-          className="mt-1 inline-flex min-h-11 items-center text-xs font-bold uppercase tracking-[0.12em] text-[#15602b] underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#15602b]"
+          className={`mt-2 inline-flex min-h-11 items-center font-bold text-forest underline underline-offset-4 ${mobileText ? "hidden md:inline-flex" : ""}`}
         >
           {open ? "Thu gọn" : "Xem thêm"}
         </button>
@@ -169,263 +77,307 @@ function ExpandableText({ text, className = "" }: { text: string; className?: st
   )
 }
 
-function DayTimeline({ day }: { day: TourItineraryDay }) {
-  if (day.items.length === 0) {
-    return (
-      <ExpandableText
-        className="mt-5"
-        text={day.body || "Lịch trình đang được cập nhật."}
-      />
-    )
-  }
+function Section({
+  id,
+  eyebrow,
+  title,
+  mobileTitle,
+  tone = "forest",
+  mobileTitleOnly = false,
+  children,
+}: {
+  id: string
+  eyebrow: string
+  title: string
+  mobileTitle?: string
+  tone?: "forest" | "lake" | "clay"
+  mobileTitleOnly?: boolean
+  children: React.ReactNode
+}) {
+  const toneClass =
+    tone === "lake" ? "text-lake" : tone === "clay" ? "text-clay" : "text-forest"
 
   return (
-    <ol className="mt-7 m-0 list-none space-y-0 p-0">
-      {day.items.map((item, index) => {
-        const isLegacySummary =
-          !item.timeLabel &&
-          !item.startTime &&
-          !item.endTime &&
-          item.title === day.title
+    <section id={id} aria-labelledby={`${id}-title`} aria-label={mobileTitleOnly ? title : undefined} className={`scroll-mt-40 ${mobileTitleOnly ? "mt-2 md:mt-0" : ""}`}>
+      <p className={`mb-2 hidden text-[13px] font-bold uppercase leading-[19px] tracking-[0.8px] md:block ${toneClass}`}>
+        {eyebrow}
+      </p>
+      <h2
+        id={`${id}-title`}
+        className={`m-0 font-display text-[26px] font-bold leading-9 text-ink md:text-[32px] md:leading-10 ${mobileTitleOnly ? "md:hidden" : ""}`}
+      >
+        {mobileTitle ? (
+          <>
+            <span className="hidden md:inline">{title}</span>
+            <span className="md:hidden">{mobileTitle}</span>
+          </>
+        ) : title}
+      </h2>
+      <div className={id === "gioi-thieu" ? "mt-4 md:mt-3" : id === "bao-gom" || id === "chinh-sach" ? "mt-5 md:mt-6" : "mt-6 md:mt-6"}>
+        {children}
+      </div>
+    </section>
+  )
+}
 
-        return (
-          <li
-            key={`${day.dayNumber}-${item.order}-${item.title}`}
-            className="grid grid-cols-[5.5rem_1rem_minmax(0,1fr)] gap-3 sm:grid-cols-[6.5rem_1rem_minmax(0,1fr)] sm:gap-4"
-          >
-            <div className="pt-0.5 text-right text-xs font-bold uppercase leading-5 tracking-[0.12em] text-[#15602b]">
-              {itineraryTime(item)}
-            </div>
-            <div className="relative flex justify-center">
-              <span className="relative z-10 mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-[#15602b] ring-4 ring-[#ffffff]" />
-              {index < day.items.length - 1 && (
-                <span
-                  aria-hidden="true"
-                  className="absolute left-1/2 top-3 h-full w-px -translate-x-1/2 bg-[#c8cfc3]"
-                />
-              )}
-            </div>
-            <div className="pb-8 last:pb-0">
-              {!isLegacySummary && item.title && (
-                <h4 className="m-0 mb-1 font-display text-xl leading-snug tracking-[-0.02em] text-[#1f7a3a]">
-                  {item.title}
-                </h4>
-              )}
-              {item.description && (
-                <ExpandableText className="mt-1" text={item.description} />
-              )}
-              {item.destination && (
-                <p className="mt-2 text-xs text-[#566259]">
-                  Địa điểm: {item.destination}
-                </p>
-              )}
-            </div>
-          </li>
-        )
-      })}
-    </ol>
+function Highlights({ items }: { items: string[] }) {
+  if (items.length === 0) return null
+
+  return (
+    <ul className="m-0 hidden list-none grid-cols-2 gap-x-6 gap-y-4 p-0 md:grid">
+      {items.slice(0, 4).map((item) => (
+        <li key={item} className="flex min-h-14 items-center gap-3 rounded-photo bg-paper px-4 py-3 text-[15px] font-semibold leading-[22px] text-ink">
+          <span aria-hidden="true" className="size-4 shrink-0 rounded-full bg-forest" />
+          {item}
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+function MobilePrice({ tour }: { tour: TourDetails }) {
+  return (
+    <section aria-label="Giá tour" className="rounded-card bg-sunlight px-4 pb-3 pt-4 xl:hidden">
+      <p className="m-0 font-display text-[24px] font-bold leading-9 text-ink">
+        {priceLabel(tour)}
+      </p>
+      <p className="m-0 mt-1 text-[13px] leading-[22px] text-body">
+        Giá chốt theo ngày đi và số người.
+        <br />
+        Nhắn Zalo để nhận lịch trình và báo giá.
+      </p>
+    </section>
+  )
+}
+
+function ContactActions({ slug }: { slug: string }) {
+  const enquiryQuery = `service=general&tour=${encodeURIComponent(slug)}`
+
+  return (
+    <section aria-labelledby="tour-contact-title" className="rounded-card bg-leaf p-6">
+      <h2 id="tour-contact-title" className="m-0 text-[18px] font-bold leading-7 text-ink">
+        Liên hệ đặt tour
+      </h2>
+      <div className="mt-4 grid gap-3">
+        <a
+          href="https://zalo.me/02693760898"
+          target="_blank"
+          rel="noreferrer noopener"
+          className="flex min-h-12 items-center justify-center gap-2 rounded-button bg-forest px-4 text-sm font-bold text-paper hover:bg-forest-hover"
+        >
+          <ChatCircleDots size={19} aria-hidden="true" />
+          Nhắn Zalo xin lịch
+        </a>
+        <a
+          href="tel:02693760898"
+          className="flex min-h-12 items-center justify-center gap-2 rounded-button bg-sunflower px-4 text-sm font-bold text-ink hover:brightness-95"
+        >
+          <Phone size={19} aria-hidden="true" />
+          Gọi 0269 376 0898
+        </a>
+        <a
+          href={`#/services?${enquiryQuery}`}
+          onClick={(event) => {
+            event.preventDefault()
+            navigateTo("/services", enquiryQuery, { scrollTo: FORM_ID })
+          }}
+          className="flex min-h-12 items-center justify-center rounded-button bg-paper px-4 text-sm font-bold text-ink hover:bg-air"
+        >
+          Gửi yêu cầu tư vấn
+        </a>
+      </div>
+    </section>
+  )
+}
+
+function TourFAQ() {
+  return (
+    <section id="faq" aria-labelledby="faq-title" className="scroll-mt-40 rounded-card bg-sunlight p-5 md:p-6">
+      <h2 id="faq-title" className="m-0 font-display text-[20px] font-bold leading-7 text-ink">
+        <span className="hidden md:inline">Câu hỏi thường gặp</span>
+        <span className="md:hidden">Cần biết trước khi đi</span>
+      </h2>
+      <div className="mt-4">
+        <h3 className="m-0 text-sm font-bold leading-5 text-ink">
+          <span className="hidden md:inline">Có phải thanh toán online?</span>
+          <span className="md:hidden">Có cần thanh toán trực tuyến?</span>
+        </h3>
+        <p className="m-0 mt-2 text-[13px] leading-[20px] text-body">
+          <span className="hidden md:inline">Bạn trao đổi lịch trình và nhận báo giá qua Zalo, điện thoại hoặc biểu mẫu.</span>
+          <span className="md:hidden">Không. Tư vấn viên gửi báo giá và hướng dẫn xác nhận trực tiếp qua Zalo hoặc điện thoại.</span>
+        </p>
+      </div>
+      <div className="mt-4 hidden md:block">
+        <h3 className="m-0 text-sm font-bold leading-5 text-ink">Có thể đi nhóm riêng?</h3>
+        <p className="m-0 mt-2 text-[13px] leading-[20px] text-body">Có. Gửi số người, ngày dự kiến và nhu cầu; chúng tôi tư vấn hành trình phù hợp.</p>
+      </div>
+      <div className="mt-4 hidden md:block">
+        <h3 className="m-0 text-sm font-bold leading-5 text-ink">Lịch giao lưu cồng chiêng?</h3>
+        <p className="m-0 mt-2 text-[13px] leading-[20px] text-body">Xác nhận theo lịch đón khách của làng.</p>
+      </div>
+    </section>
+  )
+}
+
+function DesktopContactDock() {
+  return (
+    <aside aria-label="Liên hệ nhanh" className="fixed right-5 top-1/2 z-30 hidden -translate-y-1/2 flex-col gap-3 xl:flex">
+      <a href="https://zalo.me/02693760898" target="_blank" rel="noreferrer noopener" className="flex min-h-11 min-w-16 items-center justify-center rounded-button bg-forest px-4 text-sm font-bold text-paper shadow-card hover:bg-forest-hover">
+        Zalo
+      </a>
+      <a href="tel:02693760898" className="flex min-h-11 min-w-16 items-center justify-center rounded-button bg-sunflower px-4 text-sm font-bold text-ink shadow-card hover:brightness-95">
+        Gọi
+      </a>
+    </aside>
   )
 }
 
 function TourDetailsContent({ tour }: { tour: TourDetails }) {
+  const region = regionName(tour.regionSlug)
+  const title = mobileTitle(tour.title)
+  const images: GalleryImage[] = tour.image
+    ? [{ src: tour.image, alt: `Cảnh ${title}, ${region}`, credit: tour.imageCredit }]
+    : []
+
+  if (tour.slug === "pleiku-kon-tum-mang-den-3n2d-ghep-doan" && images.length > 0) {
+    images[0] = {
+      ...images[0],
+      alt: "Suối đầu nguồn ở Măng Đen, Kon Tum",
+    }
+    images.push(
+      { src: church, alt: "Nhà thờ gỗ Kon Tum", credit: imageCredits.konTumChurch },
+      { src: village, alt: "Làng Kon Pring", credit: imageCredits.konPring },
+      { src: lake, alt: "Biển Hồ Pleiku" },
+    )
+  }
+
+  const policies: PolicyItem[] = [
+    { title: "Huỷ và đổi ngày", body: tour.cancellationPolicy ?? "" },
+    { title: "Trẻ em và người lớn tuổi", body: tour.childPolicy ?? "" },
+    { title: "Phụ thu", body: tour.surchargePolicy ?? "" },
+    { title: "Lưu trú", body: tour.accommodationNotes ?? "" },
+    { title: "Di chuyển", body: tour.transportNotes ?? "" },
+  ].filter((policy) => policy.body.trim())
+
+  const hasItinerary = tour.itinerary.length > 0
+  const hasOverview = Boolean(tour.blurb.trim() || tour.highlights.length > 0)
+  const desktopTabs: SectionTab[] = [
+    ...(hasOverview ? [{ id: "gioi-thieu", label: "Tổng quan" }] : []),
+    ...(hasItinerary ? [{ id: "lich-trinh", label: "Lịch trình" }] : []),
+    ...(tour.inclusions.length > 0 || tour.exclusions.length > 0
+      ? [{ id: "bao-gom", label: "Bao gồm & không" }]
+      : []),
+    ...(policies.length > 0 ? [{ id: "chinh-sach", label: "Lưu ý & chính sách" }] : []),
+    { id: "faq", label: "Câu hỏi thường gặp" },
+  ]
+  const mobileTabs = desktopTabs
+    .filter((tab) => ["gioi-thieu", "lich-trinh", "chinh-sach"].includes(tab.id))
+    .map((tab) => tab.id === "chinh-sach" ? { ...tab, label: "Chính sách" } : tab)
+  const groupMeta = tour.groupLabel
+    ? tour.groupMax
+      ? `${tour.groupLabel} tối đa ${tour.groupMax} khách`
+      : tour.groupLabel
+    : tour.groupMax
+      ? `Tối đa ${tour.groupMax} khách`
+      : null
+  const mobilePrimaryMeta = [
+    tour.durationLabel.replace(" · ", " "),
+    tour.departureText ? `Khởi hành ${tour.departureText}` : null,
+  ].filter(Boolean)
+  const desktopMeta = [groupMeta, tour.departureText ? `Khởi hành ${tour.departureText}` : null]
+    .filter(Boolean)
+  if (desktopMeta.length === 0) desktopMeta.push(tour.durationLabel)
+  const mobileSecondaryMeta = [groupMeta].filter(Boolean)
+
   return (
     <>
-      <div className="mb-12 overflow-hidden rounded-[2px] bg-[#e4e0d6]">
-        <img
-          src={tour.image}
-          alt={`${tour.title}, ${regionName(tour.regionSlug)}`}
-          fetchPriority="high"
-          decoding="async"
-          className="h-[min(56vw,520px)] w-full object-cover"
-        />
-        {tour.imageCredit && (
-          <p className="m-0 px-3 py-2 text-xs leading-4 text-[#566259]">
-            Ảnh minh họa: {" "}
-            <a
-              href={tour.imageCredit.href}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex min-h-6 items-center underline underline-offset-2"
-            >
-              {tour.imageCredit.label}
-            </a>
-          </p>
-        )}
-      </div>
-      <section className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-16">
-        <div>
-          <div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-bold uppercase tracking-[0.16em] text-[#566259]">
-            <span>{regionName(tour.regionSlug)}</span>
-            <span aria-hidden="true" className="text-[#c8c4b8]">
-              /
-            </span>
-            <span>{tour.durationLabel}</span>
-          </div>
-          <h1 className="max-w-4xl text-balance font-display text-[clamp(2.1rem,4.6vw,4rem)] leading-[1.04] tracking-[-0.04em] text-[#1f7a3a]">
-            {tour.title}
+      <article className="mx-auto max-w-[1280px] px-4 pb-20 pt-24 md:px-8 md:pb-24 md:pt-[120px] xl:px-0">
+        <header>
+          <nav aria-label="Breadcrumb" className="text-xs font-medium leading-[18px] text-subtle md:text-sm md:leading-[21px]">
+            <ol className="m-0 flex list-none flex-wrap items-center gap-x-2 p-0">
+              <li className="hidden md:block">
+                <a href="#/" className="inline-flex min-h-6 items-center hover:underline">Trang chủ</a>
+              </li>
+              <li aria-hidden="true" className="hidden md:block">/</li>
+              <li><a href="#/explore" className="inline-flex min-h-6 items-center hover:underline">Khám phá tour</a></li>
+              <li aria-hidden="true" className="md:hidden">/</li>
+              <li aria-current="page">{region}</li>
+            </ol>
+          </nav>
+          <h1 className="m-0 mt-3.5 font-display text-[30px] font-bold leading-[40px] text-ink md:mt-3 md:text-[48px] md:leading-[56px]">
+            <span className="hidden md:inline">{tour.title}</span>
+            <span className="md:hidden">{title}</span>
           </h1>
-          <p className="mt-6 max-w-3xl text-base leading-7 text-[#566259]">
-            {tour.blurb}
+          <p className="m-0 mt-4 text-sm leading-6 text-body md:mt-4 md:text-base">
+            <span className="hidden md:inline">{desktopMeta.join("  ·  ")}</span>
+            <span className="md:hidden">{mobilePrimaryMeta.join("  ·  ")}</span>
+            {mobileSecondaryMeta.length > 0 && <><br className="md:hidden" /><span className="md:hidden">{mobileSecondaryMeta.join("  ·  ")}</span></>}
           </p>
-          <TourSummary tour={tour} />
+        </header>
 
-          <div className="mt-7 flex flex-wrap gap-3">
-            {tour.destinations.map((destination) => (
-              <span
-                key={destination}
-                className="rounded-full border border-[#c8cfc3] px-4 py-2 text-xs text-[#42524a]"
-              >
-                {destination}
-              </span>
-            ))}
+        {images.length > 0 && (
+          <div className="mt-6 md:mt-8">
+            <Gallery images={images} destinations={tour.destinations} />
           </div>
+        )}
+
+        <div className="mt-7 xl:hidden">
+          <MobilePrice tour={tour} />
         </div>
 
-        <aside className="h-fit rounded-[2px] border border-[#d3e5d7] bg-[#f0f7f1] p-6 lg:p-7">
-          <p className="m-0 text-xs font-bold uppercase tracking-[0.16em] text-[#566259]">
-            Giá tham khảo
-          </p>
-          <p className="mt-2 font-display text-4xl tracking-[-0.04em] text-[#15602b]">
-            {tour.priceVnd === null ? "Liên hệ" : formatVnd(tour.priceVnd)}
-          </p>
-          {tour.departureText && (
-            <p className="mt-3 border-t border-[#d3e5d7] pt-4 text-[15px] leading-6 text-[#47524a]">
-              <strong className="font-semibold text-[#183024]">
-                Khởi hành:
-              </strong>{" "}
-              {tour.departureText}
-            </p>
-          )}
-          {tour.groupLabel && (
-            <p className="mt-2 text-[15px] leading-6 text-[#47524a]">
-              {tour.groupLabel}
-            </p>
-          )}
-          <a
-            href="#contact"
-            onClick={goToEnquiry}
-            className="group mt-6 inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#1f7a3a] px-5 py-3.5 text-xs font-bold uppercase tracking-[0.14em] text-white transition-colors hover:bg-[#15602b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
-          >
-            Đặt hành trình
-            <ArrowUpRight
-              className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-              aria-hidden="true"
-            />
-          </a>
-          <p className="mt-4 text-center text-xs leading-5 text-[#566259]">
-            Giá và lịch khởi hành được xác nhận lại trước khi đặt.
-          </p>
-        </aside>
-      </section>
+        <div className="mt-8 grid gap-10 xl:mt-10 xl:grid-cols-[minmax(0,1.905fr)_minmax(0,1fr)] xl:gap-12">
+          <div className="min-w-0">
+            {desktopTabs.length > 0 && <SectionTabs tabs={desktopTabs} mobileTabs={mobileTabs} />}
 
-      <section className="mt-20 grid gap-12 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-16">
-        <div>
-          <div className="mb-8 flex items-end justify-between gap-5 border-b border-[#d3e5d7] pb-5">
-            <div>
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-[#15602b]">
-                Lịch trình
-              </p>
-              <h2 className="font-display text-4xl tracking-[-0.05em] text-[#1f7a3a]">
-                Từng ngày trên đường đi
-              </h2>
+            <div className={`${desktopTabs.length > 0 ? "mt-10 md:mt-12" : ""} grid gap-10 md:gap-16`}>
+              {hasOverview && (
+              <Section
+                id="gioi-thieu"
+                eyebrow="Tổng quan"
+                title={tour.slug === "pleiku-kon-tum-mang-den-3n2d-ghep-doan" ? "Ba ngày đi từ phố núi Pleiku lên rừng thông Măng Đen" : title}
+                mobileTitle={tour.slug === "pleiku-kon-tum-mang-den-3n2d-ghep-doan" ? "Ba ngày giữa phố núi và rừng thông" : undefined}
+              >
+                <ReadMore
+                  text={tour.blurb}
+                  mobileText={tour.slug === "pleiku-kon-tum-mang-den-3n2d-ghep-doan" ? "Sáng ngắm Biển Hồ, trưa ăn cơm lam ở Kon Tum, tối nghỉ giữa rừng thông Măng Đen. Đi chậm để có thời gian trò chuyện cùng người làng." : undefined}
+                />
+                <div className="mt-11">
+                  <Highlights items={tour.highlights} />
+                </div>
+              </Section>
+              )}
+
+              {hasItinerary && (
+                <Section id="lich-trinh" eyebrow="Lịch trình" title="Từng ngày, từng chặng" mobileTitle="Lịch trình từng ngày" tone="lake">
+                  <Itinerary days={tour.itinerary} />
+                </Section>
+              )}
+
+              {(tour.inclusions.length > 0 || tour.exclusions.length > 0) && (
+                <Section id="bao-gom" eyebrow="Bao gồm & không bao gồm" title="Bao gồm trong giá" tone="clay" mobileTitleOnly>
+                  <PriceBlock tour={tour} />
+                </Section>
+              )}
+
+              {policies.length > 0 && (
+                <Section id="chinh-sach" eyebrow="Lưu ý & chính sách" title="Lưu ý & chính sách" tone="clay" mobileTitleOnly>
+                  <PolicyAccordion items={policies} />
+                </Section>
+              )}
             </div>
           </div>
 
-          {tour.itinerary.length > 0 ? (
-            <ol className="m-0 list-none space-y-12 p-0">
-              {tour.itinerary.map((day, index) => (
-                <li key={day.dayNumber} className="relative pl-16">
-                  {index < tour.itinerary.length - 1 && (
-                    <span
-                      aria-hidden="true"
-                      className="absolute bottom-[-3rem] left-[19px] top-10 w-px bg-[#c8cfc3]"
-                    />
-                  )}
-                  <span className="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full bg-[#1f7a3a] font-display text-lg text-white">
-                    {String(day.dayNumber).padStart(2, "0")}
-                  </span>
-                  <h3 className="m-0 font-display text-2xl tracking-[-0.03em] text-[#1f7a3a]">
-                    {day.title}
-                  </h3>
-                  <DayTimeline day={day} />
-                  {day.meals.length > 0 && (
-                    <p className="mt-3 text-xs uppercase tracking-[0.1em] text-[#566259]">
-                      Bữa ăn: {day.meals.join(" · ")}
-                    </p>
-                  )}
-                  {day.overnightLocation && (
-                    <p className="mt-2 text-xs text-[#566259]">
-                      Nghỉ đêm: {day.overnightLocation}
-                      {day.accommodationNotes
-                        ? ` — ${day.accommodationNotes}`
-                        : ""}
-                    </p>
-                  )}
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <p className="text-sm leading-6 text-[#566259]">
-              Lịch trình đang được cập nhật.
-            </p>
-          )}
+          <aside aria-label="Thông tin và hỗ trợ tour" className="grid content-start gap-5">
+            <SummaryCard tour={tour} />
+            <div className="hidden xl:block"><ContactActions slug={tour.slug} /></div>
+            <div className="order-2 xl:order-3"><TourFAQ /></div>
+            <div className="order-3 xl:order-2"><TourEnquiry slug={tour.slug} /></div>
+          </aside>
         </div>
 
-        <aside className="space-y-7">
-          <div className="rounded-[2px] border border-[#d3e5d7] bg-[#f0f7f1] p-6 lg:p-7">
-            <p className="mb-5 text-xs font-bold uppercase tracking-[0.16em] text-[#566259]">
-              Bảng giá
-            </p>
-            {tour.priceOptions.length > 0 ? (
-              <ul className="m-0 list-none p-0">
-                {tour.priceOptions.map((option, index) => (
-                  <PriceOption
-                    key={`${option.amountVnd}-${index}`}
-                    option={option}
-                  />
-                ))}
-              </ul>
-            ) : (
-              <p className="m-0 text-sm leading-6 text-[#566259]">
-                Liên hệ để nhận báo giá phù hợp với đoàn.
-              </p>
-            )}
-          </div>
-
-          <div className="rounded-[2px] bg-[#eaf4ec] p-6 lg:p-7">
-            <p className="mb-5 text-xs font-bold uppercase tracking-[0.16em] text-[#566259]">
-              Điểm nổi bật
-            </p>
-            <BulletList items={tour.highlights} />
-          </div>
-        </aside>
-      </section>
-
-      <section className="mt-20 grid gap-12 border-t border-[#d3e5d7] pt-10 md:grid-cols-2 lg:grid-cols-3">
-        <div>
-          <h2 className="font-display text-2xl tracking-[-0.03em] text-[#1f7a3a]">
-            Bao gồm
-          </h2>
-          <div className="mt-5">
-            <BulletList items={tour.inclusions} />
-          </div>
-        </div>
-        <div>
-          <h2 className="font-display text-2xl tracking-[-0.03em] text-[#1f7a3a]">
-            Không bao gồm
-          </h2>
-          <div className="mt-5">
-            <BulletList items={tour.exclusions} />
-          </div>
-        </div>
-        <div className="space-y-5">
-          <h2 className="font-display text-2xl tracking-[-0.03em] text-[#1f7a3a]">
-            Thông tin cần biết
-          </h2>
-          <NoteBlock label="Lưu trú" value={tour.accommodationNotes} />
-          <NoteBlock label="Di chuyển" value={tour.transportNotes} />
-        </div>
-      </section>
+        <SimilarTours tour={tour} region={region} />
+      </article>
+      <DesktopContactDock />
     </>
   )
 }
@@ -464,17 +416,11 @@ export default function TourDetailsPage({ query }: { query: string }) {
 
   if (!slug || (!loading && !tour && !error)) {
     return (
-      <section className="bg-[#ffffff] px-6 py-32 lg:px-12">
+      <section className="bg-air px-4 py-32">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm text-[#566259]">
-            Không tìm thấy hành trình này.
-          </p>
-          <button
-            type="button"
-            onClick={() => navigateTo("/explore")}
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#1f7a3a] px-5 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          <p className="text-base text-subtle">Không tìm thấy hành trình này.</p>
+          <button type="button" onClick={() => navigateTo("/explore")} className="btn-primary mt-6">
+            <ArrowLeft size={18} aria-hidden="true" />
             Về danh mục
           </button>
         </div>
@@ -483,42 +429,25 @@ export default function TourDetailsPage({ query }: { query: string }) {
   }
 
   return (
-    <div className="bg-[#ffffff] px-6 pb-24 pt-28 lg:px-12 lg:pb-32 lg:pt-36">
-      <div className="mx-auto max-w-[1240px]">
-        <button
-          type="button"
-          onClick={() => navigateTo("/explore")}
-          className="mb-10 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.15em] text-[#566259] transition-colors hover:text-[#8f3d21]"
-        >
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          Tất cả hành trình
-        </button>
-
-        {loading ? (
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px]">
-            <div className="h-96 animate-pulse rounded-[2px] bg-[#eaf4ec]" />
-            <div className="h-80 animate-pulse rounded-[2px] bg-[#eaf4ec]" />
-          </div>
-        ) : error || !tour ? (
-          <div
-            role="alert"
-            className="rounded-[2px] border border-[#d3e5d7] bg-[#f0f7f1] px-6 py-14 text-center"
-          >
-            <p className="text-sm text-[#566259]">
-              Không thể tải nội dung hành trình lúc này.
-            </p>
-            <button
-              type="button"
-              onClick={() => navigateTo("/explore")}
-              className="mt-6 rounded-full bg-[#1f7a3a] px-5 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white"
-            >
+    <div className="tour-detail bg-air">
+      {loading ? (
+        <div className="mx-auto min-h-[70vh] max-w-[1280px] px-4 pt-24 md:px-8 md:pt-[120px] xl:px-0" role="status" aria-label="Đang tải hành trình">
+          <div className="h-12 w-2/3 animate-pulse rounded-field bg-leaf" />
+          <div className="mt-6 aspect-[16/8] animate-pulse rounded-panel bg-leaf" />
+        </div>
+      ) : error || !tour ? (
+        <div className="min-h-[70vh] bg-air px-4 pt-24 md:pt-[120px]">
+          <div role="alert" className="mx-auto max-w-2xl rounded-panel bg-paper px-6 py-14 text-center shadow-card">
+            <p className="text-base text-subtle">Không thể tải nội dung hành trình lúc này.</p>
+            <button type="button" onClick={() => navigateTo("/explore")} className="btn-primary mt-6">
               Về danh mục
             </button>
           </div>
-        ) : (
-          <TourDetailsContent tour={tour} />
-        )}
-      </div>
+        </div>
+      ) : (
+        <TourDetailsContent key={tour.slug} tour={tour} />
+      )}
+      {tour && !loading && !error && <ContactDock variant="tour" tourSlug={tour.slug} />}
     </div>
   )
 }

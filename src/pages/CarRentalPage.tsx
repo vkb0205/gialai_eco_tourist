@@ -18,8 +18,13 @@ import { filterVehicles, CAR_SORT_LABELS, CAR_SORT_MODES, countActiveCarFilters,
 import type { CarFilterState, CarRelaxSuggestion, CarSortMode } from "@/lib/filterVehicles"
 import { clearAllCarFilters, parseCarFilterState, serialiseCarFilterState, toggleCarFacet, toggleCarRegion } from "@/lib/vehicleUrlState"
 import { navigateTo } from "@/lib/useHashRoute"
-import { goToEnquiry } from "@/components/layout/Navigation"
+import { FORM_ID } from "@/components/services/ServiceForm"
 import { formatVnd } from "@/lib/text"
+
+function goToEnquiry(event: { preventDefault(): void }) {
+  event.preventDefault()
+  navigateTo("/services", "service=car", { scrollTo: FORM_ID })
+}
 
 function RentalHeader({ keyword, onKeywordChange }: { keyword: string; onKeywordChange: (value: string) => void }) {
   const [draft, setDraft] = useState(keyword)
@@ -139,7 +144,7 @@ function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
             <span className="block text-sm text-[#4f5b53]">Giá từ / ngày</span>
             <strong className="mt-0.5 block text-xl font-semibold text-[#183024]">{formatVnd(vehicle.pricePerDayVnd)}</strong>
           </p>
-          <a href="#contact" onClick={goToEnquiry} className="inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-full bg-[#1f7a3a] px-5 text-[15px] font-semibold text-white transition-colors hover:bg-[#15602b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]">
+          <a href="#/services?service=car" onClick={goToEnquiry} className="inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-full bg-[#1f7a3a] px-5 text-[15px] font-semibold text-white transition-colors hover:bg-[#15602b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]">
             Đặt xe <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
           </a>
         </div>
@@ -267,7 +272,7 @@ export default function CarRentalPage({ query }: { query: string }) {
               <h2 className="m-0 font-display text-[clamp(1.75rem,3vw,2.5rem)] font-medium leading-[1.1] tracking-[-0.03em]">Đoàn 20 đến 200 khách?</h2>
               <p className="m-0 mt-4 max-w-2xl text-[17px] leading-7">Chúng tôi kết nối đội xe địa phương, tài xế và phụ xe để điều phối tour, sự kiện, team building hoặc nhu cầu trung chuyển lớn.</p>
             </div>
-            <a href="#contact" onClick={goToEnquiry} className="inline-flex min-h-14 shrink-0 items-center justify-center gap-2 rounded-full bg-[#f0f7f1] px-8 text-[16px] font-semibold text-[#183024] transition-colors hover:bg-[#e1f0e4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+            <a href="#/services?service=car" onClick={goToEnquiry} className="inline-flex min-h-14 shrink-0 items-center justify-center gap-2 rounded-full bg-[#f0f7f1] px-8 text-[16px] font-semibold text-[#183024] transition-colors hover:bg-[#e1f0e4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
               Nhận báo giá đoàn <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
             </a>
           </div>

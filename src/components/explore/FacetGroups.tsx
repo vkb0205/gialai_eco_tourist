@@ -35,7 +35,7 @@ export default function FacetGroups({
             className="group/details"
             open={group.key === "theme" || group.key === "duration" || selected.length > 0}
           >
-            <summary className="flex min-h-11 cursor-pointer select-none items-center justify-between gap-3 rounded-[2px] bg-white px-4 py-2 text-[16px] font-semibold text-[#183024] outline-none transition-colors hover:bg-[#e2e1d9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]">
+            <summary className="flex min-h-11 cursor-pointer select-none items-center justify-between gap-3 rounded-field bg-air px-4 py-2 text-[15px] font-bold text-ink transition-colors hover:bg-leaf">
               <span>{group.label}</span>
               <CaretDown
                 aria-hidden="true"
@@ -63,7 +63,7 @@ export default function FacetGroups({
                           checked={checked}
                           disabled={disabled}
                           onChange={() => onToggle(group.key, option.value)}
-                          className="peer h-[18px] w-[18px] shrink-0 cursor-pointer accent-[#183024] disabled:cursor-not-allowed"
+                          className="peer size-[18px] shrink-0 cursor-pointer accent-forest disabled:cursor-not-allowed"
                         />
                       ) : (
                         <input
@@ -72,23 +72,21 @@ export default function FacetGroups({
                           checked={checked}
                           disabled={disabled}
                           onChange={() => onToggle(group.key, option.value)}
-                          className="peer h-[18px] w-[18px] shrink-0 cursor-pointer accent-[#183024] disabled:cursor-not-allowed"
+                          className="peer size-[18px] shrink-0 cursor-pointer accent-forest disabled:cursor-not-allowed"
                         />
                       )}
                       <label
                         htmlFor={inputId}
-                        className={`flex flex-1 cursor-pointer items-baseline justify-between gap-3 min-h-9 rounded-[2px] py-1.5 pl-3 text-[16px] leading-6 transition-colors peer-disabled:cursor-not-allowed peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#183024] ${
+                        className={`flex flex-1 cursor-pointer items-baseline justify-between gap-3 min-h-9 rounded-[2px] py-1.5 pl-3 text-[16px] leading-6 transition-colors peer-disabled:cursor-not-allowed peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ink ${
                           disabled
-                            ? "text-[#4f5b53]"
+                            ? "text-subtle"
                             : checked
-                              ? "font-semibold text-[#183024]"
-                              : "text-[#2f3d35] hover:text-[#183024]"
+                              ? "font-bold text-ink"
+                              : "text-body hover:text-ink"
                         }`}
                       >
                         <span>{option.label}</span>
-                        <span
-                          className="text-sm tabular-nums text-[#4f5b53]"
-                        >
+                        <span className="text-sm tabular-nums text-subtle">
                           {count}
                         </span>
                       </label>

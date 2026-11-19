@@ -83,6 +83,8 @@ export type Tour = {
   /** Months (1-12) the journey runs in. */
   departureMonths: number[]
   image: string
+  /** Text shown inside the soft placeholder when an authentic image is pending. */
+  imagePlaceholder?: string | null
   /** Credit link for temporary licensed destination photography. */
   imageCredit?: {
     label: string

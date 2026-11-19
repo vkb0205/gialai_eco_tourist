@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react"
-import PageBackdrop from "@/components/layout/PageBackdrop"
 import { MagnifyingGlass, X } from "@phosphor-icons/react"
+import { navigateTo } from "@/lib/useHashRoute"
 
 /**
- * Explore page masthead: a photographic band with the title and a plain
- * sentence on the left and the keyword search on the right, on one flat scrim.
+ * Explore page header: breadcrumb, title, intro and the keyword search.
  * The input keeps a local draft and reports it on a short debounce, so typing
  * does not write a history entry per keystroke while the URL still remains the
  * source of truth (FR-007).
@@ -16,8 +15,8 @@ export default function ExploreHeader({
   keyword,
   onKeywordChange,
   catalogueSize,
-  /** Committed keyword, as held in the URL. */
 }: {
+  /** Committed keyword, as held in the URL. */
   keyword: string
   onKeywordChange: (value: string) => void
   catalogueSize: number
@@ -55,18 +54,34 @@ export default function ExploreHeader({
   }
 
   return (
-    <header className="relative isolate overflow-hidden bg-[#e1f2f8]">
-      {/* Photograph with one flat scrim, kept light enough to stay a picture. */}
-      <PageBackdrop />
-      <div className="mx-auto grid max-w-[1440px] items-end gap-10 px-6 pb-10 pt-28 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)] lg:gap-16 lg:px-12 lg:pb-12 lg:pt-36">
-        <div className="motion-safe:animate-[rise-in_700ms_cubic-bezier(0.32,0.72,0,1)_both]">
-          <h1 className="m-0 font-display text-[clamp(2.2rem,5vw,4rem)] font-medium leading-[1] tracking-[-0.04em] text-[#15602b]">
-            Khám phá hành trình
+    <header className="bg-air pb-8 pt-24 lg:pb-5 lg:pt-[116px]">
+      <div className="page-container grid items-end gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-12">
+        <div>
+          <nav aria-label="Đường dẫn" className="text-sm font-medium text-subtle">
+            <a
+              href="#/"
+              onClick={(event) => {
+                event.preventDefault()
+                navigateTo("/")
+              }}
+              className="inline-flex min-h-11 items-center hover:text-forest"
+            >
+              Trang chủ
+            </a>
+            <span aria-hidden="true" className="mx-2">
+              /
+            </span>
+            <span aria-current="page" className="text-ink">
+              Khám phá tour
+            </span>
+          </nav>
+          <h1 className="t-h1 explore-title m-0 mt-2 text-ink">
+            Khám phá tour
           </h1>
-          <p className="m-0 mt-6 max-w-[34rem] text-lg leading-7 text-[#183024]">
-            {catalogueSize > 0 ? `${catalogueSize} chuyến đi` : "Các chuyến đi"}{" "}
-            qua Gia Lai và Tây Nguyên. Lọc theo vùng, số ngày hoặc mức giá để
-            tìm chuyến hợp với bạn.
+          <p className="t-lead explore-intro m-0 mt-4 max-w-[40rem] text-body">
+            {catalogueSize > 0 ? `${catalogueSize} hành trình` : "Các hành trình"}{" "}
+            nhóm nhỏ, phần lớn ở Tây Nguyên. Giá hiển thị là giá từ mỗi khách;
+            lịch và giá chốt được tư vấn viên xác nhận qua Zalo hoặc điện thoại.
           </p>
         </div>
 
@@ -76,14 +91,15 @@ export default function ExploreHeader({
             event.preventDefault()
             commitNow()
           }}
-          className="w-full motion-safe:animate-[rise-in_700ms_cubic-bezier(0.32,0.72,0,1)_220ms_both]"
+          className="w-full"
         >
           <label htmlFor="explore-search" className="sr-only">
             Tìm hành trình
           </label>
-          <div className="flex items-center rounded-full bg-[#f0f7f1] pl-5 pr-2 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-white">
+          <div className="flex items-center rounded-button bg-paper pl-5 pr-2 shadow-card focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ink">
             <MagnifyingGlass
-              className="pointer-events-none h-5 w-5 shrink-0 text-[#183024]"
+              size={20}
+              className="pointer-events-none shrink-0 text-ink"
               aria-hidden="true"
             />
             <input
@@ -94,16 +110,16 @@ export default function ExploreHeader({
               placeholder="Thác nước, chèo thuyền…"
               autoComplete="off"
               maxLength={120}
-              className="min-h-14 w-full border-0 bg-transparent px-3 text-[17px] text-[#183024] outline-none placeholder:text-[#4f5b53]"
+              className="min-h-14 w-full border-0 bg-transparent px-3 text-base text-ink outline-none placeholder:text-subtle"
             />
             {draft && (
               <button
                 type="button"
                 onClick={clear}
                 aria-label="Xóa từ khóa"
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[#183024] transition-colors hover:bg-[#eaf4ec] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+                className="flex size-11 shrink-0 items-center justify-center rounded-full text-ink hover:bg-leaf"
               >
-                <X className="h-4 w-4" aria-hidden="true" />
+                <X size={16} aria-hidden="true" />
               </button>
             )}
           </div>

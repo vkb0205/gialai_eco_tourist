@@ -94,10 +94,9 @@ const ResultsToolbar = forwardRef<HTMLButtonElement, {
         <p
           aria-live="polite"
           aria-atomic="true"
-          className="m-0 text-lg text-[#2f3d35]"
+          className="m-0 text-[15px] text-body"
         >
-          <strong className="font-semibold text-[#183024]">{total}</strong> hành
-          trình
+          Đang hiện <strong className="font-bold text-ink">{total}</strong> tour
         </p>
 
         <div className="flex w-full items-center gap-2 sm:w-auto">
@@ -107,12 +106,12 @@ const ResultsToolbar = forwardRef<HTMLButtonElement, {
             onClick={onOpenFilters}
             aria-expanded={filtersOpen}
             aria-haspopup="dialog"
-            className="inline-flex items-center gap-2 whitespace-nowrap min-h-11 rounded-full bg-[#f0f7f1] px-5 text-[15px] font-semibold text-[#183024] transition-colors duration-200 hover:bg-[#e1f0e4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] lg:hidden"
+            className="inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-button border border-ink/20 bg-paper px-5 text-[15px] font-bold text-ink transition-colors hover:bg-leaf lg:hidden"
           >
-            <FunnelSimple className="h-4 w-4" aria-hidden="true" />
+            <FunnelSimple size={16} aria-hidden="true" />
             Bộ lọc
             {activeCount > 0 && (
-              <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-[#1f7a3a] px-1.5 text-sm font-semibold tabular-nums text-white">
+              <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-forest px-1.5 text-sm font-bold tabular-nums text-paper">
                 {activeCount}
               </span>
             )}
@@ -121,7 +120,7 @@ const ResultsToolbar = forwardRef<HTMLButtonElement, {
           <div className="flex min-w-0 flex-1 items-center gap-2 sm:flex-none">
             <label
               htmlFor="sort-select"
-              className="sr-only text-[15px] font-semibold text-[#2f3d35] sm:not-sr-only"
+              className="sr-only text-xs font-bold uppercase tracking-[0.8px] text-subtle sm:not-sr-only"
             >
               Sắp xếp
             </label>
@@ -132,7 +131,7 @@ const ResultsToolbar = forwardRef<HTMLButtonElement, {
                 onChange={(event) =>
                   onSortChange(event.target.value as SortMode)
                 }
-                className="min-h-11 w-full cursor-pointer appearance-none rounded-full bg-[#f0f7f1] py-2.5 pl-5 pr-10 text-[15px] font-semibold text-[#183024] transition-colors hover:bg-[#e1f0e4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+                className="min-h-11 w-full cursor-pointer appearance-none rounded-button border border-ink/20 bg-paper py-2.5 pl-5 pr-10 text-[15px] font-bold text-ink transition-colors hover:bg-leaf"
               >
                 {SORT_MODES.map((mode) => (
                   <option key={mode} value={mode}>
@@ -142,7 +141,7 @@ const ResultsToolbar = forwardRef<HTMLButtonElement, {
               </select>
               <CaretDown
                 aria-hidden="true"
-                className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#183024]"
+                className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-ink"
               />
             </div>
           </div>
@@ -159,10 +158,10 @@ const ResultsToolbar = forwardRef<HTMLButtonElement, {
               }-${chip.value}`}
               type="button"
               onClick={() => onRemoveChip(chip)}
-              className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1f7a3a] pl-5 pr-4 text-[15px] font-semibold text-white transition-colors hover:bg-[#15602b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] motion-safe:animate-[fade-in_160ms_ease-out]"
+              className="inline-flex min-h-11 items-center gap-2 rounded-button bg-forest pl-5 pr-4 text-[15px] font-bold text-paper transition-colors hover:bg-forest-hover motion-safe:animate-[fade-in_160ms_ease-out]"
             >
               {chip.label}
-              <X className="h-3.5 w-3.5" aria-hidden="true" />
+              <X size={14} aria-hidden="true" />
               <span className="sr-only">, bỏ bộ lọc này</span>
             </button>
           ))}
@@ -170,7 +169,7 @@ const ResultsToolbar = forwardRef<HTMLButtonElement, {
           <button
             type="button"
             onClick={onClearAll}
-            className="ml-1 min-h-11 text-[15px] font-semibold text-[#183024] underline underline-offset-4 transition-colors hover:text-[#15602b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+            className="ml-1 min-h-11 text-[15px] font-bold text-forest underline underline-offset-4 hover:text-forest-hover"
           >
             Xóa tất cả
           </button>

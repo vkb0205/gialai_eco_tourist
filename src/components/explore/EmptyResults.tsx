@@ -13,26 +13,26 @@ export default function EmptyResults({
   suggestion,
   onRelax,
   onClearAll,
-  /** Best single filter to drop, or null when nothing would help. */
 }: {
+  /** Best single filter to drop, or null when nothing would help. */
   suggestion: RelaxSuggestion | null
   onRelax: (suggestion: RelaxSuggestion) => void
   onClearAll: () => void
 }) {
   return (
-    <div className="flex flex-col items-start rounded-[2px] bg-[#f0f7f1] px-6 py-14 text-left lg:items-center lg:px-12 lg:text-center">
+    <div className="flex flex-col items-start rounded-panel bg-sky px-6 py-12 text-left lg:items-center lg:px-12 lg:text-center">
       <span
         aria-hidden="true"
-        className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-[#183024]"
+        className="flex size-16 items-center justify-center rounded-full bg-paper text-ink"
       >
-        <Binoculars className="h-7 w-7" />
+        <Binoculars size={28} />
       </span>
 
-      <h2 className="mt-7 font-display text-[30px] leading-[1.1] tracking-[-0.03em] text-[#1f7a3a]">
+      <h2 className="m-0 mt-6 text-[28px] font-bold leading-[1.25] text-ink">
         Chưa có hành trình nào khớp
       </h2>
 
-      <p className="mt-3 max-w-[34rem] text-[17px] leading-7 text-[#2f3d35]">
+      <p className="m-0 mt-3 max-w-[34rem] text-base leading-7 text-body">
         {suggestion
           ? "Bộ lọc hiện tại hơi hẹp. Bỏ bớt một điều kiện là danh sách mở lại ngay."
           : "Bộ lọc hiện tại không còn hành trình nào. Hãy đặt lại và bắt đầu từ một vùng miền."}
@@ -43,7 +43,7 @@ export default function EmptyResults({
           <button
             type="button"
             onClick={() => onRelax(suggestion)}
-            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1f7a3a] px-6 text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-[#15602b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+            className="btn-primary !min-h-12 !px-6 !text-[15px]"
           >
             Bỏ “{suggestion.label}”
             <span className="font-medium tabular-nums">
@@ -55,9 +55,9 @@ export default function EmptyResults({
         <button
           type="button"
           onClick={onClearAll}
-          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-[15px] font-semibold text-[#183024] transition-colors duration-200 hover:bg-[#e1f0e4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
+          className="btn-outline !min-h-12 !gap-2 !bg-paper !px-6 !text-[15px] hover:!bg-leaf"
         >
-          <ArrowCounterClockwise className="h-4 w-4" aria-hidden="true" />
+          <ArrowCounterClockwise size={16} aria-hidden="true" />
           Xóa tất cả bộ lọc
         </button>
       </div>

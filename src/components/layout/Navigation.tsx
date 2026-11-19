@@ -1,406 +1,60 @@
-import { useEffect, useState } from "react"
-import { ArrowUpRight, CaretDown, List, X } from "@phosphor-icons/react"
-import logoColor from "@/imports/logo_color.webp"
-import logoWhite from "@/imports/logo_white.webp"
+﻿import { useEffect, useRef, useState } from "react"
+import { List, Phone, X } from "@phosphor-icons/react"
+import logo from "@/imports/logo_color.webp"
 import { navigateTo, useHashRoute } from "@/lib/useHashRoute"
 import type { RoutePath } from "@/lib/useHashRoute"
+import { FORM_ID } from "@/components/services/ServiceForm"
 
-export type NavLink = {
-  label: string
-  /** Route the link resolves to. */
-  path: RoutePath
-  /** Hash query string, used for explore-filter presets. */
-  query?: string
-  /** Landing-page section id, when the link targets a section of `/`. */
-  section?: string
-}
-
-const domesticExploreQuery = "tourGroup=domestic"
-const internationalExploreQuery = "tourGroup=international"
-const specialExploreQuery = "tourGroup=special"
-
-const domesticRegions = [
-  { label: "Tây Nguyên", query: "tourGroup=domestic&vung=tay-nguyen" },
-  { label: "Miền Bắc", query: "tourGroup=domestic&vung=mien-bac" },
-  { label: "Miền Nam", query: "tourGroup=domestic&vung=mien-nam" },
-  { label: "Miền Trung", query: "tourGroup=domestic&vung=mien-trung" },
-]
-
-const internationalDestinations = [
-  "Thái Lan",
-  "Campuchia",
-  "Singapore",
-  "Hàn Quốc",
-  "Nhật Bản",
-  "Trung Quốc",
-  "Mỹ",
-  "Khác",
-].map((label) => ({
-  label,
-  query: `tourGroup=international&destination=${encodeURIComponent(label)}`,
-}))
-
-const specialTours = [
-  "Tour du thuyền",
-  "Tour trải nghiệm học sinh-sinh viên",
-  "Tour Cựu Chiến Binh",
-].map((label) => ({
-  label,
-  query: `tourGroup=special&special=${encodeURIComponent(label)}`,
-}))
-
-/**
- * Primary navigation model, shared with the footer so both stay in step.
- * Section links carry a route as well, so they still work from `#/explore`.
- */
+export type NavLink = { label: string; path: RoutePath; query?: string; section?: string }
 export const navLinks: NavLink[] = [
-  {
-    label: "Tour trong nước",
-    path: "/explore",
-    query: domesticExploreQuery,
-  },
-  {
-    label: "Tour ngoài nước",
-    path: "/explore",
-    query: internationalExploreQuery,
-  },
-  {
-    label: "Tour đặc biệt",
-    path: "/explore",
-    query: specialExploreQuery,
-  },
+  { label: "Trang chủ", path: "/" },
+  { label: "Khám phá tour", path: "/explore" },
+  { label: "Dịch vụ khác", path: "/services" },
+  { label: "Về chúng tôi", path: "/", section: "about" },
 ]
-
-const secondaryLinks: Record<string, { label: string; query: string }[]> = {
-  "Tour trong nước": domesticRegions,
-  "Tour ngoài nước": internationalDestinations,
-  "Tour đặc biệt": specialTours,
+export function hrefFor(link: NavLink) {
+  return link.section ? `#${link.section}` : `#${link.path}${link.query ? `?${link.query}` : ""}`
 }
-
-const serviceOptions: { label: string; slug: string; query: string }[] = [
-  { label: "Thuê xe", slug: "thue-xe", query: "dichvu=thue-xe" },
-  { label: "Visa", slug: "visa", query: "dichvu=visa" },
-  { label: "Vé máy bay", slug: "ve-may-bay", query: "dichvu=ve-may-bay" },
-]
-
-/** Href for a nav link, so links stay real anchors and remain openable in a new tab. */
-export function hrefFor(link: NavLink): string {
-  if (link.path === "/explore") {
-    return link.query ? `#/explore?${link.query}` : "#/explore"
-  }
-  return link.section ? `#${link.section}` : "#/"
-}
-
-/**
- * Follow a nav link through the router rather than the browser's default hash
- * jump, so a section link pressed on `#/explore` returns home and then scrolls.
- */
-export function followNavLink(
-  event: { preventDefault(): void },
-  link: NavLink,
-): void {
+export function followNavLink(event: { preventDefault(): void }, link: NavLink) {
   event.preventDefault()
-  navigateTo(
-    link.path,
-    link.query ?? "",
-    link.section ? { scrollTo: link.section } : undefined,
-  )
+  navigateTo(link.path, link.query ?? "", link.section ? { scrollTo: link.section } : undefined)
 }
-
-/** Send the traveller to the enquiry form, from whichever route they are on. */
-export function goToEnquiry(event: { preventDefault(): void }): void {
+export function goToEnquiry(event: { preventDefault(): void }) {
   event.preventDefault()
-  navigateTo("/", "", { scrollTo: "contact" })
+  navigateTo("/services", "service=general", { scrollTo: FORM_ID })
 }
-
-/**
- * Watch a zero-height sentinel at the top of the document instead of listening
- * to every scroll event. The observer fires twice per page rather than on each
- * frame, which keeps the main thread free while the catalogue is filtering.
- */
-function useScrolledPastTop(): [boolean, (
-  node: HTMLDivElement | null,
-) => void] {
-  const [scrolled, setScrolled] = useState(false)
-  // State rather than a ref, so the effect re-runs exactly when the node changes.
-  const [sentinel, setSentinel] = useState<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    if (!sentinel) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => setScrolled(!entry.isIntersecting),
-      { threshold: 0 },
-    )
-    observer.observe(sentinel)
-    return () => observer.disconnect()
-  }, [sentinel])
-
-  return [scrolled, setSentinel]
+function LanguageSwitch({ tourDetail }: { tourDetail: boolean }) {
+  return <div aria-label="Ngôn ngữ" className={`flex shrink-0 items-center justify-center rounded-button border border-ink/25 text-[14px] font-bold ${tourDetail ? "h-12 w-[72px] xl:h-11 xl:w-[88px]" : "h-11 w-[56px] xl:w-[88px]"}`}><span lang="vi" aria-current="true" className="px-2">VI</span>{tourDetail ? <><span aria-hidden="true">/</span><button type="button" disabled aria-disabled="true" title="English sắp ra mắt" className="min-h-11 px-1 cursor-not-allowed text-subtle">EN</button></> : <><span aria-hidden="true" className="hidden xl:inline">/</span><button type="button" disabled aria-disabled="true" title="English sắp ra mắt" className="hidden min-h-11 min-w-11 cursor-not-allowed text-subtle xl:inline-flex">EN</button></>}</div>
 }
-
 export default function Navigation() {
   const route = useHashRoute()
-  const [scrolledPastTop, setSentinel] = useScrolledPastTop()
-  const [scrollY, setScrollY] = useState(0)
-  const [menuOpen, setMenuOpen] = useState(false)
-
+  const [open, setOpen] = useState(false)
+  const tourDetail = route.path === "/tour"
+  const toggle = useRef<HTMLButtonElement>(null)
+  const header = useRef<HTMLElement>(null)
+  useEffect(() => setOpen(false), [route.path, route.query, route.anchor])
   useEffect(() => {
-    const updateScrollY = () => setScrollY(window.scrollY)
-    updateScrollY()
-    window.addEventListener("scroll", updateScrollY, { passive: true })
-    return () => window.removeEventListener("scroll", updateScrollY)
-  }, [])
-
-  // The landing hero is a dark photograph, so the bar starts transparent there.
-  // While scrolling inside the hero it stays transparent and only blurs; once
-  // outside the hero, or on non-home routes, it becomes the solid green bar.
-  const insideHero = route.path === "/" && scrollY < window.innerHeight - 78
-  const atHeroTop = route.path === "/" && !scrolledPastTop
-  const solid = route.path !== "/" || !insideHero
-
-  useEffect(() => {
-    setMenuOpen(false)
-  }, [route.path])
-
-  return (
-    <>
-      {/* Zero net height: 40px tall, pulled back by an equal negative margin. */}
-      <div ref={setSentinel} aria-hidden="true" className="h-10 -mb-10" />
-
-      <header
-        className={`fixed inset-x-0 top-0 z-50 transition-all duration-700 ${
-          solid
-            ? "border-b border-[#1f9447] bg-[#1f9447]/95 text-white shadow-[0_8px_24px_rgba(31,148,71,0.22)] backdrop-blur-[2px]"
-            : atHeroTop
-              ? "bg-transparent text-[#183024]"
-              : "bg-transparent text-[#183024] backdrop-blur-sm"
-        }`}
-      >
-        <div className="mx-auto flex h-[78px] max-w-[1440px] items-center justify-between gap-4 px-6 lg:px-12">
-          <a
-            href="#/"
-            className="group flex shrink-0 items-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
-            onClick={(event) => {
-              event.preventDefault()
-              setMenuOpen(false)
-              navigateTo("/", "", { scrollTo: "home" })
-            }}
-          >
-            <img
-              src={solid ? logoWhite : logoColor}
-              alt="Gia Lai Eco-Tourist Co.,Ltd"
-              className="h-12 w-12 object-contain"
-            />
-            <span className="flex flex-col leading-none">
-              <span
-                className={`font-display text-[17px] font-semibold tracking-[-0.03em] transition-colors ${
-                  solid ? "text-white" : "text-[#15602b]"
-                }`}
-              >
-                Gialai
-              </span>
-              <span
-                className={`mt-1 text-xs font-semibold uppercase tracking-[0.16em] transition-colors ${
-                  solid ? "text-white/80" : "text-[#183024]/75"
-                }`}
-              >
-                Eco Tourist
-              </span>
-            </span>
-          </a>
-
-          <nav
-            className="hidden items-center gap-5 lg:flex xl:gap-7"
-            aria-label="Điều hướng chính"
-          >
-            {navLinks.map((link) => {
-              const active =
-                link.path === "/explore" && route.path === "/explore" && route.query === (link.query ?? "")
-              const children = secondaryLinks[link.label]
-              return (
-                <div key={link.label} className="group/nav relative">
-                <a
-                  key={link.label}
-                  href={hrefFor(link)}
-                  aria-current={active ? "page" : undefined}
-                  onClick={(event) => followNavLink(event, link)}
-                  className={`whitespace-nowrap text-[12px] font-semibold uppercase tracking-[0.1em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742] ${
-                    solid
-                      ? active
-                        ? "text-[#ffe07a] underline decoration-2 underline-offset-[10px]"
-                        : "text-white/90 hover:text-white"
-                      : active
-                        ? "text-[#15602b] underline decoration-2 underline-offset-[10px]"
-                        : "text-[#183024] hover:text-[#15602b]"
-                  }`}
-                >
-                  {link.label}
-                </a>
-                {children && (
-                  <div className="invisible absolute left-1/2 top-full z-10 mt-4 w-max -translate-x-1/2 translate-y-1 rounded-2xl border border-[#d3e5d7] bg-[#ffffff] p-2 text-[#183024] opacity-0 shadow-[0_18px_40px_rgba(10,25,17,0.16)] transition-all group-hover/nav:visible group-hover/nav:translate-y-0 group-hover/nav:opacity-100 group-focus-within/nav:visible group-focus-within/nav:translate-y-0 group-focus-within/nav:opacity-100">
-                    <div className="grid gap-1">
-                      {children.map((child) => (
-                        <button
-                          key={child.query}
-                          type="button"
-                          onClick={() => navigateTo("/explore", child.query)}
-                          className="rounded-xl px-4 py-2.5 text-left text-xs font-semibold normal-case tracking-normal text-[#183024] transition-colors hover:bg-[#eaf4ec] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
-                        >
-                          {child.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                </div>
-              )
-            })}
-            <div className="group relative">
-              <button
-                type="button"
-                onClick={() => navigateTo("/services")}
-                className={`inline-flex items-center gap-1.5 whitespace-nowrap text-[12px] font-semibold uppercase tracking-[0.1em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742] ${
-                  solid
-                    ? route.path === "/services"
-                      ? "text-[#ffe07a] underline decoration-2 underline-offset-[10px]"
-                      : "text-white/90 hover:text-white"
-                    : route.path === "/services"
-                      ? "text-[#15602b] underline decoration-2 underline-offset-[10px]"
-                      : "text-[#183024] hover:text-[#15602b]"
-                }`}
-              >
-                Dịch vụ khác
-                <CaretDown className="h-3.5 w-3.5" aria-hidden="true" />
-              </button>
-              <div className="invisible absolute right-0 top-full z-10 mt-3 min-w-[190px] rounded-2xl border border-[#d3e5d7] bg-[#ffffff] p-2 text-[#183024] opacity-0 shadow-[0_18px_40px_rgba(10,25,17,0.16)] transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
-                {serviceOptions.map((option) => (
-                  <button
-                    key={option.slug}
-                    type="button"
-                    onClick={() => navigateTo("/services", option.query)}
-                    className="block w-full rounded-xl px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.1em] text-[#183024] transition-colors hover:bg-[#eaf4ec] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <a
-              href="#contact"
-              onClick={goToEnquiry}
-              className={`ml-1 inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-5 py-3 text-xs font-bold uppercase tracking-[0.1em] transition-all hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024] ${
-                solid
-                  ? "bg-[#fed24f] text-[#4a3220] hover:bg-[#ffe07a]"
-                  : "bg-[#fed24f] text-[#4a3220] hover:bg-[#ffe07a]"
-              }`}
-            >
-              Đặt hành trình{" "}
-              <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-            </a>
-          </nav>
-
-          <button
-            type="button"
-            className={`flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742] lg:hidden ${
-              solid
-                ? "bg-white/15 text-white"
-                : "bg-[#1f7a3a] text-white"
-            }`}
-            onClick={() => setMenuOpen((current) => !current)}
-            aria-label={menuOpen ? "Đóng menu" : "Mở menu"}
-            aria-expanded={menuOpen}
-          >
-            {menuOpen ? (
-              <X className="h-5 w-5" aria-hidden="true" />
-            ) : (
-              <List className="h-5 w-5" aria-hidden="true" />
-            )}
-          </button>
-        </div>
-
-        {menuOpen && (
-          <nav
-            className="border-t border-[#d3e5d7] bg-[#ffffff] px-6 py-6 text-[#183024] lg:hidden"
-            aria-label="Menu di động"
-          >
-            <div className="flex flex-col gap-5">
-              {navLinks.map((link) => {
-                const children = secondaryLinks[link.label]
-                return (
-                  <div key={link.label}>
-                    <a
-                      href={hrefFor(link)}
-                      className="text-sm font-semibold uppercase tracking-[0.12em] text-[#183024] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
-                      onClick={(event) => {
-                        setMenuOpen(false)
-                        followNavLink(event, link)
-                      }}
-                    >
-                      {link.label}
-                    </a>
-                    {children && (
-                      <div className="mt-2 grid gap-2 border-l border-[#d3e5d7] pl-4">
-                        {children.map((child) => (
-                          <button
-                            key={child.query}
-                            type="button"
-                            onClick={() => {
-                              setMenuOpen(false)
-                              navigateTo("/explore", child.query)
-                            }}
-                            className="text-left text-xs font-medium text-[#5b665d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d56742]"
-                          >
-                            {child.label}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
-              <div className="border-t border-[#d3e5d7] pt-5">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMenuOpen(false)
-                    navigateTo("/services")
-                  }}
-                  className="text-sm font-semibold uppercase tracking-[0.12em] text-[#183024] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
-                >
-                  Dịch vụ khác
-                </button>
-                <div className="mt-3 grid gap-2">
-                  {serviceOptions.map((option) => (
-                    <button
-                      key={option.slug}
-                      type="button"
-                      onClick={() => {
-                        setMenuOpen(false)
-                        navigateTo("/services", option.query)
-                      }}
-                      className="text-left text-sm font-medium uppercase tracking-[0.1em] text-[#5b665d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d56742]"
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <a
-                href="#contact"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#15602b] px-5 py-3 text-xs font-bold uppercase tracking-[0.12em] text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#183024]"
-                onClick={(event) => {
-                  setMenuOpen(false)
-                  goToEnquiry(event)
-                }}
-              >
-                Đặt hành trình{" "}
-                <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-              </a>
-            </div>
-          </nav>
-        )}
-      </header>
-    </>
-  )
+    if (!open) return
+    const close = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { setOpen(false); toggle.current?.focus() }
+    }
+    const outside = (event: PointerEvent) => {
+      if (!header.current?.contains(event.target as Node)) setOpen(false)
+    }
+    document.addEventListener("keydown", close)
+    document.addEventListener("pointerdown", outside)
+    return () => { document.removeEventListener("keydown", close); document.removeEventListener("pointerdown", outside) }
+  }, [open])
+  const links = navLinks.map(link => <a key={link.label} href={hrefFor(link)} onClick={event => { setOpen(false); followNavLink(event, link) }} aria-current={route.path === link.path && !link.section && !route.anchor ? "page" : undefined} className="nav-link flex min-h-11 items-center text-[15px] leading-[22px] font-medium hover:text-forest aria-[current=page]:font-bold aria-[current=page]:text-forest">{link.label}</a>)
+  return <header ref={header} className="fixed inset-x-0 top-0 z-50 border-b border-line bg-paper text-ink">
+    <div className="page-container flex h-[72px] items-center justify-between gap-2 xl:h-[88px] xl:gap-6">
+      <a href="#/" onClick={event => { event.preventDefault(); setOpen(false); navigateTo("/", "", { scrollTo: "home" }) }} className="flex min-h-11 min-w-0 items-center gap-2 xl:gap-3">
+        <img src={logo} alt="" width={48} height={48} className={`shrink-0 object-contain xl:h-12 xl:w-12 ${tourDetail ? "h-8 w-8" : "h-9 w-9"}`} />
+        <span className="min-w-0"><span className={`block font-bold ${tourDetail ? "text-[13px] leading-5 xl:text-lg xl:leading-[27px]" : "text-lg leading-[27px]"}`}>Gia Lai Eco Tourist</span><span className="mt-1 hidden text-[11px] font-bold tracking-wider text-subtle xl:block">DU LỊCH SINH THÁI TÂY NGUYÊN</span></span>
+      </a>
+      <nav aria-label="Điều hướng chính" className="hidden items-center gap-6 xl:flex">{links}</nav>
+      <div className="flex items-center gap-2 xl:gap-4"><LanguageSwitch tourDetail={tourDetail} /><a href="tel:02693760898" className="hidden min-h-12 items-center gap-3 rounded-button bg-forest px-6 text-white xl:flex"><Phone size={20} aria-hidden="true" /><span><span className="block text-[11px] text-leaf">Hotline 7:30 - 21:00</span><strong className="block text-base">0269 376 0898</strong></span></a><button ref={toggle} type="button" aria-label={open ? "Đóng menu" : "Mở menu"} aria-expanded={open} aria-controls="mobile-navigation" onClick={() => setOpen(!open)} className={`flex shrink-0 items-center justify-center rounded-button hover:bg-leaf xl:hidden ${tourDetail ? "h-12 w-12" : "h-11 w-11"}`}>{open ? <X size={24} /> : <List size={24} />}</button></div>
+    </div>
+    {open && <nav id="mobile-navigation" aria-label="Điều hướng di động" className="page-container grid gap-2 border-t border-line bg-paper py-4 shadow-card xl:hidden">{links}<a href="tel:02693760898" className="btn-primary mt-2">Gọi 0269 376 0898</a></nav>}
+  </header>
 }
