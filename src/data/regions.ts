@@ -6,6 +6,8 @@
  * alphabet or package count.
  */
 
+import { mediaUrl } from "@/data/siteMedia"
+
 export type RegionSlug = "tay-nguyen" | "mien-bac" | "mien-trung" | "mien-nam"
 
 export type Region = {
@@ -15,7 +17,7 @@ export type Region = {
   /** One line characterising the region, shown as supporting text. */
   characterisation: string
   /** Representative image for the region. */
-  image: string
+  image: string | null
 }
 
 export const regions: Region[] = [
@@ -23,29 +25,25 @@ export const regions: Region[] = [
     slug: "tay-nguyen",
     name: "Tây Nguyên",
     characterisation: "Rừng già, thác nước và nhịp cồng chiêng bản địa.",
-    image:
-      "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=900&q=80",
+    image: mediaUrl("regions/tay-nguyen.webp"),
   },
   {
     slug: "mien-bac",
     name: "Miền Bắc",
     characterisation: "Núi cao, làng nghề, vịnh đảo và những phiên chợ vùng cao.",
-    image:
-      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=900&q=80",
+    image: mediaUrl("regions/mien-bac.webp"),
   },
   {
     slug: "mien-trung",
     name: "Miền Trung",
     characterisation: "Di sản, hang động, phố cổ và dải biển nhiều nắng.",
-    image:
-      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=900&q=80",
+    image: mediaUrl("regions/mien-trung.webp"),
   },
   {
     slug: "mien-nam",
     name: "Miền Nam",
     characterisation: "Rừng ngập mặn, đảo xa và miền sông nước trù phú.",
-    image:
-      "https://images.unsplash.com/photo-1509923936917-1e2b6b3e6a8a?auto=format&fit=crop&w=900&q=80",
+    image: mediaUrl("regions/mien-nam.webp"),
   },
 ]
 

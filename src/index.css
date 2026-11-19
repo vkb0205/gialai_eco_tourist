@@ -334,6 +334,27 @@ footer :where(a, button):focus-visible { outline-color: var(--color-sunflower); 
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 18.75rem), 1fr));
 }
 
+.media-error-frame {
+  display: flex;
+  min-width: 0;
+  min-height: 6rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  overflow: hidden;
+  border: 1px dashed #a66a3f;
+  background: #fff7e7;
+  padding: 1rem;
+  color: #704b32;
+  text-align: center;
+}
+
+.media-error-frame code {
+  overflow-wrap: anywhere;
+  font-size: 0.7rem;
+}
+
 @media (min-width: 1280px) {
   .explore-title { font-size: 48px; line-height: 56px; }
   .explore-intro { max-width: 640px; font-size: 16px; line-height: 26px; }

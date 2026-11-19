@@ -8,7 +8,7 @@ import { useHashRoute } from "@/lib/useHashRoute"
 const ExplorePage = lazy(() => import("@/pages/ExplorePage"))
 const ServicesPage = lazy(() => import("@/pages/ServicesPage"))
 const CarRentalPage = lazy(() => import("@/pages/CarRentalPage"))
-const TourDetailsPage = lazy(() => import("@/pages/TourDetailsPage"))
+const TourDetailsPage = lazy(() => import("@/pages/TourDetailsPageStorage"))
 
 /** Reserves the page's height while a route chunk loads, so the footer never jumps up. */
 function PageLoading() {

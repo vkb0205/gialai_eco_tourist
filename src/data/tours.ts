@@ -1,6 +1,3 @@
-import img0 from "@/imports/photos/bien-ho-aerial.webp"
-import img1 from "@/imports/tours/kon-tum-church.webp"
-import img2 from "@/imports/tours/buon-don.webp"
 import type { RegionSlug } from "./regions"
 
 /**
@@ -15,9 +12,7 @@ import type { RegionSlug } from "./regions"
  *
  * Before this catalogue is presented as bookable inventory:
  *   1. Replace every record with agency-supplied, verified content.
- *   2. Replace the placeholder photography with licensed images of the actual
- *      destinations. The pool below intentionally repeats a small set of
- *      images rather than guessing at stock URLs that may not resolve.
+ *   2. Add approved images through Supabase Storage before publishing records.
  *   3. Delete this banner.
  *
  * Deliberately absent, per Constitution principle II: review scores, star
@@ -83,9 +78,7 @@ export type Tour = {
   /** Months (1-12) the journey runs in. */
   departureMonths: number[]
   image: string
-  /** Text shown inside the soft placeholder when an authentic image is pending. */
   imagePlaceholder?: string | null
-  /** Credit link for temporary licensed destination photography. */
   imageCredit?: {
     label: string
     href: string
@@ -101,20 +94,6 @@ export type Tour = {
   /** Curated database ordering; legacy samples use their numeric id. */
   sortOrder?: number
 }
-
-const IMG_LAKE = img0
-const IMG_TRAIL = img1
-const IMG_PEOPLE = img2
-const IMG_VILLAGE =
-  "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=900&q=80"
-const IMG_RIVER =
-  "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=900&q=80"
-const IMG_FOREST =
-  "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=900&q=80"
-const IMG_FALLS =
-  "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=80"
-const IMG_TABLE =
-  "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=80"
 
 export const tours: Tour[] = [
   // ---------------------------------------------------------------- Tây Bắc
@@ -132,7 +111,7 @@ export const tours: Tour[] = [
     difficulty: "kho",
     groupMax: 10,
     departureMonths: [9, 10],
-    image: IMG_TRAIL,
+    image: "",
     blurb:
       "Đi bộ giữa ruộng bậc thang La Pán Tẩn khi lúa vào độ chín, ngủ tại nhà người H'Mông và dậy sớm đón sương trên đèo Khau Phạ.",
     highlights: [
@@ -157,7 +136,7 @@ export const tours: Tour[] = [
     difficulty: "vua",
     groupMax: 12,
     departureMonths: [1, 2, 3, 4, 9, 10, 11, 12],
-    image: IMG_VILLAGE,
+    image: "",
     blurb:
       "Sáng chủ nhật ở chợ phiên Bắc Hà, chiều xuống thung lũng Mường Hoa và dừng lại trong một nếp nhà gỗ ở Tả Van.",
     highlights: [
@@ -182,7 +161,7 @@ export const tours: Tour[] = [
     difficulty: "kho",
     groupMax: 8,
     departureMonths: [3, 4, 5, 9, 10, 11],
-    image: IMG_FOREST,
+    image: "",
     blurb:
       "Bốn ngày leo đỉnh cao nhất Đông Dương từ cửa rừng Trạm Tôn, qua rừng đỗ quyên và hai đêm dựng lều giữa độ cao 2.800 mét.",
     highlights: [
@@ -209,7 +188,7 @@ export const tours: Tour[] = [
     difficulty: "vua",
     groupMax: 10,
     departureMonths: [3, 4, 9, 10, 11, 12],
-    image: IMG_FOREST,
+    image: "",
     blurb:
       "Vòng cung cao nguyên đá qua Yên Minh, Lũng Cú và đèo Mã Pí Lèng, dừng lại đủ lâu ở mỗi bản để không chỉ đi lướt qua.",
     highlights: [
@@ -235,7 +214,7 @@ export const tours: Tour[] = [
     difficulty: "de",
     groupMax: 12,
     departureMonths: [2, 3, 4, 5, 6, 9, 10, 11],
-    image: IMG_LAKE,
+    image: "",
     blurb:
       "Chèo thuyền độc mộc qua hồ nước ngọt tự nhiên lớn nhất Việt Nam, ghé ao Tiên và ngủ trong nhà sàn người Tày ở Pác Ngòi.",
     highlights: ["Hồ Ba Bể", "Động Puông", "Nhà sàn người Tày Pác Ngòi"],
@@ -256,7 +235,7 @@ export const tours: Tour[] = [
     difficulty: "vua",
     groupMax: 14,
     departureMonths: [6, 7, 8, 9, 10],
-    image: IMG_FALLS,
+    image: "",
     blurb:
       "Mùa nước đổ ở thác biên giới lớn nhất Đông Nam Á, kết hợp hang Ngườm Ngao và làng làm hương Phia Thắp.",
     highlights: [
@@ -283,7 +262,7 @@ export const tours: Tour[] = [
     difficulty: "de",
     groupMax: 16,
     departureMonths: [3, 4, 5, 6, 7, 8, 9, 10],
-    image: IMG_LAKE,
+    image: "",
     blurb:
       "Chèo kayak giữa những khối đá vôi của Lan Hạ, rồi đạp xe vào Việt Hải, ngôi làng nằm lọt giữa vườn quốc gia Cát Bà.",
     highlights: ["Kayak vịnh Lan Hạ", "Làng Việt Hải", "Vườn quốc gia Cát Bà"],
@@ -304,7 +283,7 @@ export const tours: Tour[] = [
     difficulty: "vua",
     groupMax: 14,
     departureMonths: [1, 2, 3, 4, 5, 10, 11, 12],
-    image: IMG_RIVER,
+    image: "",
     blurb:
       "Thuyền nan xuyên hang nước ở Tràng An, đạp xe qua đồng lúa Tam Cốc và một đêm trong rừng nguyên sinh Cúc Phương.",
     highlights: [
@@ -329,7 +308,7 @@ export const tours: Tour[] = [
     difficulty: "de",
     groupMax: 16,
     departureMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    image: IMG_PEOPLE,
+    image: "",
     blurb:
       "Một ngày ở hai làng nghề ven Hà Nội: tự tay chuốt một chiếc bát ở Bát Tràng, chiều xem khung cửi dệt lụa Vạn Phúc.",
     highlights: ["Lò gốm Bát Tràng", "Xưởng dệt lụa Vạn Phúc", "Chợ gốm cổ"],
@@ -352,7 +331,7 @@ export const tours: Tour[] = [
     difficulty: "kho",
     groupMax: 8,
     departureMonths: [1, 2, 3, 4, 5, 8, 9, 10, 11, 12],
-    image: IMG_FOREST,
+    image: "",
     blurb:
       "Mười bảy cây số đường rừng và mười lần lội suối để đến hang lớn thứ ba thế giới, ngủ một đêm trên bãi cát trong lòng hang.",
     highlights: [
@@ -377,7 +356,7 @@ export const tours: Tour[] = [
     difficulty: "de",
     groupMax: 14,
     departureMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 12],
-    image: IMG_PEOPLE,
+    image: "",
     blurb:
       "Đại Nội lúc sáng sớm, lăng Minh Mạng và lăng Khải Định giữa trưa, rồi thuyền rồng trên sông Hương khi trời tắt nắng.",
     highlights: [
@@ -403,7 +382,7 @@ export const tours: Tour[] = [
     difficulty: "vua",
     groupMax: 12,
     departureMonths: [4, 5, 6, 9, 10, 11],
-    image: IMG_TRAIL,
+    image: "",
     blurb:
       "Đi bộ nối bản Đôn, bản Hiêu và bản Kho Mường qua rừng nhiệt đới, ngủ nhà sàn người Thái và tắm suối dưới guồng nước tre.",
     highlights: [
@@ -431,7 +410,7 @@ export const tours: Tour[] = [
     difficulty: "de",
     groupMax: 12,
     departureMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 12],
-    image: IMG_TABLE,
+    image: "",
     blurb:
       "Sáng ra vườn Trà Quế cuốc đất và hái rau, trưa học nấu ba món Quảng, tối đi bộ phố cổ khi đèn lồng vừa lên.",
     highlights: [
@@ -457,7 +436,7 @@ export const tours: Tour[] = [
     difficulty: "de",
     groupMax: 16,
     departureMonths: [3, 4, 5, 6, 7, 8],
-    image: IMG_LAKE,
+    image: "",
     blurb:
       "Ca nô ra khu dự trữ sinh quyển Cù Lao Chàm, lặn ống thở xem rạn san hô và ăn trưa ở bãi Hương cùng nhà dân.",
     highlights: [
@@ -482,7 +461,7 @@ export const tours: Tour[] = [
     difficulty: "vua",
     groupMax: 12,
     departureMonths: [1, 2, 3, 4, 11, 12],
-    image: IMG_FALLS,
+    image: "",
     blurb:
       "Bình minh trên đồi cát bay, trưa nghỉ bên hồ sen Bàu Trắng, chiều lội suối Tiên và ăn tối ở làng chài Mũi Né.",
     highlights: [
@@ -510,7 +489,7 @@ export const tours: Tour[] = [
     difficulty: "vua",
     groupMax: 12,
     departureMonths: [1, 2, 3, 11, 12],
-    image: IMG_TRAIL,
+    image: "",
     blurb:
       "Băng qua rừng nguyên sinh, nghe tiếng suối và ngủ giữa một trong những hệ sinh thái giàu nhất Tây Nguyên.",
     highlights: [
@@ -535,7 +514,7 @@ export const tours: Tour[] = [
     difficulty: "de",
     groupMax: 12,
     departureMonths: [1, 2, 3, 4, 10, 11, 12],
-    image: IMG_PEOPLE,
+    image: "",
     blurb:
       "Bữa cơm bên bếp lửa, tiếng cồng chiêng và một nhịp sống không cần vội vàng.",
     highlights: [
@@ -561,7 +540,7 @@ export const tours: Tour[] = [
     difficulty: "kho",
     groupMax: 8,
     departureMonths: [11, 12, 1, 2, 3],
-    image: IMG_RIVER,
+    image: "",
     blurb:
       "Cung đường dành cho người thích thử thách: vượt suối, đi sâu vào rừng và chạm đến chân thác K50 cao hơn 50 mét.",
     highlights: [
@@ -588,7 +567,7 @@ export const tours: Tour[] = [
     difficulty: "de",
     groupMax: 16,
     departureMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    image: IMG_RIVER,
+    image: "",
     blurb:
       "Ca nô luồn kênh rạch trong khu dự trữ sinh quyển sát Sài Gòn, ghé đầm dơi và ăn trưa ở Thạnh An trước khi quay về.",
     highlights: ["Khu dự trữ sinh quyển Cần Giờ", "Đầm dơi", "Xã đảo Thạnh An"],
@@ -609,7 +588,7 @@ export const tours: Tour[] = [
     difficulty: "vua",
     groupMax: 10,
     departureMonths: [6, 7, 8, 9],
-    image: IMG_LAKE,
+    image: "",
     blurb:
       "Một đêm thức cùng kiểm lâm ở hòn Bảy Cạnh xem rùa xanh lên đẻ trứng, ngày còn lại dành cho nhà tù Côn Đảo và nghĩa trang Hàng Dương.",
     highlights: [
@@ -635,7 +614,7 @@ export const tours: Tour[] = [
     difficulty: "vua",
     groupMax: 14,
     departureMonths: [10, 11, 12, 1, 2, 3, 4],
-    image: IMG_TRAIL,
+    image: "",
     blurb:
       "Leo đường cột điện lên nóc nhà Nam Bộ trước khi trời sáng, chiều hôm sau cắm trại bên hồ Dầu Tiếng đón hoàng hôn.",
     highlights: [
@@ -662,7 +641,7 @@ export const tours: Tour[] = [
     difficulty: "de",
     groupMax: 14,
     departureMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    image: IMG_TABLE,
+    image: "",
     blurb:
       "Năm giờ sáng ăn hủ tiếu trên ghe giữa chợ nổi, sau đó về cù lao Tân Lộc hái trái cây và học làm bánh xèo miền Tây.",
     highlights: [
@@ -687,7 +666,7 @@ export const tours: Tour[] = [
     difficulty: "de",
     groupMax: 16,
     departureMonths: [9, 10, 11],
-    image: IMG_FOREST,
+    image: "",
     blurb:
       "Xuồng ba lá rẽ qua thảm bèo xanh kín mặt nước, ngắm sân chim từ tháp quan sát rồi ăn trưa với món mùa nước nổi.",
     highlights: [
@@ -712,7 +691,7 @@ export const tours: Tour[] = [
     difficulty: "vua",
     groupMax: 12,
     departureMonths: [12, 1, 2, 3, 4, 5],
-    image: IMG_VILLAGE,
+    image: "",
     blurb:
       "Vỏ lãi chạy suốt buổi sáng ra mốc tọa độ quốc gia ở Đất Mũi, hôm sau vào U Minh Hạ ăn ong và giăng lưới bắt cá đồng.",
     highlights: [

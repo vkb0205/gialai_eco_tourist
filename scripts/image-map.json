@@ -1,0 +1,97 @@
+{
+  "clientToursFile": "image_client/tours-content.json",
+  "tours": [
+    {
+      "slug": "pleiku-kon-tum-mang-den-3n2d-ghep-doan",
+      "images": [
+        { "source": "frontend/src/imports/tours/mang-den.webp", "alt": "Rừng thông và hồ ở Măng Đen", "cover": true },
+        { "source": "frontend/src/imports/tours/kon-tum-church.webp", "alt": "Nhà thờ gỗ Kon Tum" },
+        { "source": "frontend/src/imports/homepage/kon-pring-village.jpg", "alt": "Làng Kon Pring ở Măng Đen" },
+        { "source": "frontend/src/imports/photos/bien-ho-aerial.webp", "alt": "Biển Hồ nhìn từ trên cao" }
+      ]
+    },
+    {
+      "slug": "hanoi-pleiku-mang-den-cot-moc-3n2d",
+      "images": [
+        { "source": "frontend/src/imports/homepage/bien-ho.jpeg", "alt": "Biển Hồ Pleiku", "cover": true }
+      ]
+    },
+    {
+      "slug": "hanoi-pleiku-mang-den-cot-moc-buon-ma-thuot-3n2d",
+      "images": [
+        { "source": "frontend/src/imports/photos/festival-cong-chieng-2026.webp", "alt": "Không gian văn hóa cồng chiêng Tây Nguyên", "cover": true }
+      ]
+    },
+    {
+      "slug": "ha-noi-pleiku-mang-den-buon-ma-thuot-3n2d",
+      "images": [
+        { "source": "frontend/src/imports/tours/coffee-buon-ma-thuot.webp", "alt": "Vườn cà phê Buôn Ma Thuột", "cover": true }
+      ]
+    },
+    {
+      "slug": "buon-ma-thuot-buon-don-nui-da-voi-ho-lak-3n2d",
+      "images": [
+        { "source": "frontend/src/imports/tours/ho-lak.webp", "alt": "Hồ Lắk và núi rừng Đắk Lắk", "cover": true }
+      ]
+    },
+    {
+      "slug": "pleiku-kon-tum-mang-den-buon-ma-thuot-4n3d-ghep-doan",
+      "images": [
+        { "source": "frontend/src/imports/tours/kon-tum-church.webp", "alt": "Nhà thờ gỗ Kon Tum", "cover": true }
+      ]
+    },
+    {
+      "slug": "hanoi-buon-ma-thuot-pleiku-4n3d",
+      "images": [
+        { "source": "frontend/src/imports/tours/buon-don.webp", "alt": "Buôn Đôn bên dòng sông Sêrêpốk", "cover": true }
+      ]
+    },
+    {
+      "slug": "hanoi-pleiku-buon-ma-thuot-hai-phong-4n3d",
+      "images": [
+        { "source": "frontend/src/imports/tours/dray-nur.webp", "alt": "Thác Dray Nur ở Đắk Lắk", "cover": true }
+      ]
+    },
+    {
+      "slug": "hanoi-pleiku-mang-den-cot-moc-kon-ka-kinh-4n3d",
+      "images": [
+        { "source": "frontend/src/imports/homepage/k50-waterfall.png", "alt": "Thác K50 trong khu bảo tồn Kon Chư Răng", "cover": true }
+      ]
+    },
+    {
+      "slug": "pleiku-mang-den-kon-tum-buon-ma-thuot-5n4d-4sao",
+      "images": [
+        { "source": "frontend/src/imports/homepage/kon-pring-village.jpg", "alt": "Làng du lịch cộng đồng Kon Pring", "cover": true }
+      ]
+    }
+  ],
+  "regions": [
+    {
+      "slug": "tay-nguyen",
+      "source": "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=900&q=80",
+      "alt": "Rừng xanh Tây Nguyên"
+    },
+    {
+      "slug": "mien-bac",
+      "source": "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=900&q=80",
+      "alt": "Phong cảnh miền Bắc Việt Nam"
+    },
+    {
+      "slug": "mien-trung",
+      "source": "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=900&q=80",
+      "alt": "Phong cảnh miền Trung Việt Nam"
+    },
+    {
+      "slug": "mien-nam",
+      "source": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=900&q=80",
+      "alt": "Phong cảnh miền Nam Việt Nam"
+    }
+  ],
+  "home": [
+    { "name": "hero", "source": "frontend/src/imports/photos/bien-ho-aerial.webp", "alt": "Biển Hồ nhìn từ trên cao" },
+    { "name": "festival", "source": "frontend/src/imports/photos/festival-cong-chieng-2026.webp", "alt": "Lễ hội văn hóa cồng chiêng Tây Nguyên" },
+    { "name": "bien-ho", "source": "frontend/src/imports/homepage/bien-ho.jpeg", "alt": "Biển Hồ Pleiku" },
+    { "name": "k50-waterfall", "source": "frontend/src/imports/homepage/k50-waterfall.png", "alt": "Thác K50" },
+    { "name": "kon-pring-village", "source": "frontend/src/imports/homepage/kon-pring-village.jpg", "alt": "Làng Kon Pring ở Măng Đen" }
+  ]
+}

@@ -1,15 +1,8 @@
-import fallbackForest from "@/imports/tours/kon-tum-church.webp"
-import fallbackLake from "@/imports/photos/bien-ho-aerial.webp"
-import fallbackPeople from "@/imports/tours/buon-don.webp"
 import { regionName } from "@/data/regions"
-import {
-  tourImageBySlug,
-  tourImageCreditBySlug,
-  tourPlaceholderBySlug,
-} from "@/data/tourImages"
 import type { RegionSlug } from "@/data/regions"
 import type { Difficulty, Theme, Tour } from "@/data/tours"
 import { isSupabaseConfigured, supabase } from "@/lib/supabase"
+import { mediaUrl } from "@/data/siteMedia"
 
 type JsonObject = Record<string, unknown>
 
@@ -35,6 +28,7 @@ type PublicTourCardRow = {
   highlights: unknown
   price_mode: "amount" | "contact"
   card_price_vnd: number | null
+  image_url: string | null
 }
 
 type PublicTourDetailRow = PublicTourCardRow & {
@@ -94,6 +88,22 @@ export type TourDetails = Tour & {
   cancellationPolicy: string | null
   itinerary: TourItineraryDay[]
   priceOptions: TourPriceOption[]
+  galleryImages: TourGalleryImage[]
+}
+
+export type TourGalleryImage = {
+  src: string | null
+  slug: string
+  path?: string
+  alt: string
+}
+
+type PublicTourImageRow = {
+  tour_id: string
+  path: string
+  sort: number
+  alt: string | null
+  is_cover: boolean
 }
 
 const regionSlugMap: Record<string, RegionSlug> = {
@@ -105,13 +115,6 @@ const regionSlugMap: Record<string, RegionSlug> = {
   "nam-trung-bo": "mien-trung",
   "dong-nam-bo": "mien-nam",
   "dong-bang-song-cuu-long": "mien-nam",
-}
-
-const fallbackImages: Record<RegionSlug, string> = {
-  "tay-nguyen": fallbackForest,
-  "mien-bac": fallbackLake,
-  "mien-trung": fallbackPeople,
-  "mien-nam": fallbackLake,
 }
 
 function asObject(value: unknown): JsonObject | null {
@@ -176,14 +179,12 @@ function durationLabel(days: number, nights: number): string {
   return nights === 0 ? `${days} ngày` : `${days} ngày · ${nights} đêm`
 }
 
-function mapTour(row: PublicTourCardRow): Tour {
+function mapTour(row: PublicTourCardRow, coverPath?: string): Tour {
   const regionSlug = toRegionSlug(row.region_slug)
   const category =
     row.category_code === "international" ? "Khác" : regionName(regionSlug)
 
-  const placeholder = tourPlaceholderBySlug[row.slug] ?? null
-  const image =
-    tourImageBySlug[row.slug] ?? (placeholder ? "" : fallbackImages[regionSlug])
+  const image = mediaUrl(coverPath ?? row.image_url) ?? ""
 
   return {
     id: row.id,
@@ -200,8 +201,6 @@ function mapTour(row: PublicTourCardRow): Tour {
     groupMax: row.group_max,
     departureMonths: numberArray(row.departure_months),
     image,
-    imagePlaceholder: placeholder,
-    imageCredit: tourImageCreditBySlug[row.slug],
     blurb: row.summary,
     highlights: stringArray(row.highlights),
     impact: row.impact,
@@ -339,9 +338,12 @@ function mapPriceOptions(value: unknown): TourPriceOption[] {
   })
 }
 
-function mapTourDetails(row: PublicTourDetailRow): TourDetails {
+function mapTourDetails(
+  row: PublicTourDetailRow,
+  galleryImages: TourGalleryImage[],
+): TourDetails {
   return {
-    ...mapTour(row),
+    ...mapTour(row, galleryImages.find((image) => image.path?.endsWith("/cover.webp"))?.path),
     destinations: routeNames(row.route),
     departureText: row.departure_text,
     groupLabel: row.group_label,
@@ -354,6 +356,7 @@ function mapTourDetails(row: PublicTourDetailRow): TourDetails {
     cancellationPolicy: row.cancellation_policy,
     itinerary: mapItinerary(row.itinerary),
     priceOptions: mapPriceOptions(row.prices),
+    galleryImages,
   }
 }
 
@@ -371,7 +374,23 @@ export async function loadPublishedTours(): Promise<Tour[]> {
     .order("sort_order", { ascending: true })
 
   if (error) throw error
-  return ((data ?? []) as unknown as PublicTourCardRow[]).map(mapTour)
+  const rows = (data ?? []) as unknown as PublicTourCardRow[]
+  if (rows.length === 0) return []
+
+  const { data: imageRows, error: imageError } = await supabase
+    .from("tour_images")
+    .select("tour_id,path,sort,alt,is_cover")
+    .in("tour_id", rows.map((row) => row.id))
+    .eq("is_cover", true)
+
+  if (imageError) throw imageError
+  const coverByTourId = new Map(
+    ((imageRows ?? []) as PublicTourImageRow[]).map((image) => [
+      image.tour_id,
+      image.path,
+    ]),
+  )
+  return rows.map((row) => mapTour(row, coverByTourId.get(row.id)))
 }
 
 /** Load one public tour from the normalized detail projection. */
@@ -393,5 +412,32 @@ export async function loadPublishedTourDetails(
   if (error) throw error
   if (!data) return null
 
-  return mapTourDetails(data as unknown as PublicTourDetailRow)
+  const row = data as unknown as PublicTourDetailRow
+  const { data: imageRows, error: imageError } = await supabase
+    .from("tour_images")
+    .select("tour_id,path,sort,alt,is_cover")
+    .eq("tour_id", row.id)
+    .order("sort", { ascending: true })
+
+  if (imageError) throw imageError
+  const records = (imageRows ?? []) as PublicTourImageRow[]
+  const galleryImages: TourGalleryImage[] = records.map((image) => ({
+    src: mediaUrl(image.path),
+    slug: row.slug,
+    path: image.path,
+    alt: image.alt ?? row.title,
+  }))
+  if (galleryImages.length === 0) {
+    galleryImages.push({
+      src: mediaUrl(row.image_url),
+      slug: row.slug,
+      path: row.image_url ?? undefined,
+      alt: row.title,
+    })
+  }
+
+  const tour = mapTourDetails(row, galleryImages)
+  const cover = records.find((image) => image.is_cover)
+  if (cover) tour.image = mediaUrl(cover.path) ?? ""
+  return tour
 }
