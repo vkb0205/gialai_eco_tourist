@@ -91,7 +91,7 @@ export default function Navigation() {
   return <header ref={header} className="fixed inset-x-0 top-0 z-50 border-b border-line bg-paper text-ink">
     <div className="page-container flex h-[72px] items-center justify-between gap-2 xl:h-[88px] xl:gap-6">
       <a href="#/" onClick={event => { event.preventDefault(); setOpen(false); navigateTo("/", "", { scrollTo: "home" }) }} className="flex min-h-11 min-w-0 items-center gap-2 xl:gap-3">
-        <img src={logo} alt="" width={48} height={48} className={`shrink-0 object-contain xl:h-12 xl:w-12 ${tourDetail ? "h-8 w-8" : "h-9 w-9"}`} />
+        <img src={logo} alt="" width={72} height={72} className={`shrink-0 object-contain xl:h-[72px] xl:w-[72px] ${tourDetail ? "h-11 w-11" : "h-[52px] w-[52px]"}`} />
         <span className="min-w-0"><span className={`block font-bold ${tourDetail ? "text-[13px] leading-5 xl:text-lg xl:leading-[27px]" : "text-lg leading-[27px]"}`}>Gia Lai Eco Tourist</span><span className="mt-1 hidden text-[11px] font-bold tracking-wider text-subtle xl:block">TOUR KHẮP VIỆT NAM</span></span>
       </a>
       <nav aria-label="Điều hướng chính" className="hidden items-center gap-6 xl:flex">{links}</nav>
