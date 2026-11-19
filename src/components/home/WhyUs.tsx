@@ -39,9 +39,8 @@ export default function WhyUs() {
             Người địa phương dẫn, nên đường đi khác
           </h2>
           <p className="mt-5 text-base leading-[26px] text-body">
-            Chúng tôi sống ở Pleiku, biết mùa nào thác đẹp, buôn nào đón khách,
-            và nhà ai nấu cơm lam ngon. Bạn không mua một gói tour, bạn có một
-            người quen trên cao nguyên.
+            Từ Pleiku, chúng tôi kết nối bạn với những người địa phương am hiểu
+            điểm đến và cùng bạn chọn hành trình phù hợp trên khắp Việt Nam.
           </p>
         </div>
 

@@ -35,7 +35,7 @@ export default function EmptyResults({
       <p className="m-0 mt-3 max-w-[34rem] text-base leading-7 text-body">
         {suggestion
           ? "Bộ lọc hiện tại hơi hẹp. Bỏ bớt một điều kiện là danh sách mở lại ngay."
-          : "Bộ lọc hiện tại không còn hành trình nào. Hãy đặt lại và bắt đầu từ một vùng miền."}
+          : "Bộ lọc hiện tại không còn hành trình nào. Hãy bỏ bớt điều kiện hoặc xóa tất cả bộ lọc để xem thêm hành trình."}
       </p>
 
       <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">

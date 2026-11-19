@@ -98,14 +98,14 @@ export default function HomeHero() {
 
       <div className="page-container relative py-12 lg:pb-44 lg:pt-24">
         <div className="hero-copy max-w-[760px]">
-          <p className="t-eyebrow !text-clay">GIA LAI · KON TUM · ĐẮK LẮK</p>
+          <p className="t-eyebrow !text-clay">HÀNH TRÌNH KHẮP VIỆT NAM</p>
           <h1 className="t-h1 text-ink">
-            Đi chậm giữa đại ngàn, sống cùng bản làng
+            Khám phá Việt Nam qua những hành trình đáng nhớ
           </h1>
           <p className="t-lead mt-5 max-w-[560px] text-body">
-            Tour nhóm nhỏ do người Gia Lai dẫn đường: rừng già, hồ núi lửa, nhà
-            rông và tiếng cồng chiêng. Bạn chọn hành trình, chúng tôi lo phần
-            còn lại.
+            Từ núi rừng phía Bắc, di sản miền Trung đến miền sông nước, biển đảo
+            phương Nam và Tây Nguyên, mỗi chuyến đi mở ra một sắc màu Việt Nam.
+            Chúng tôi giúp bạn chọn hành trình phù hợp và chuẩn bị mọi điều cần thiết.
           </p>
           <div className="home-hero-actions mt-8 flex flex-wrap gap-3">
             <a

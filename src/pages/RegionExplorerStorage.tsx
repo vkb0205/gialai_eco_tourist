@@ -66,7 +66,7 @@ export default function RegionExplorer() {
     >
       <p className="t-eyebrow !text-lake">KHÁM PHÁ THEO VÙNG</p>
       <h2 id="region-title" className="t-h2 text-ink">
-        Từ Tây Nguyên, đi khắp ba miền
+        Khám phá Việt Nam qua từng vùng miền
       </h2>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-[616fr_632fr] lg:gap-8">

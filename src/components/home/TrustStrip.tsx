@@ -1,5 +1,5 @@
 const items = [
-  { value: "12+ năm", label: "đưa khách lên cao nguyên", tone: "text-forest" },
+  { value: "12+ năm", label: "đồng hành trên hành trình khắp Việt Nam", tone: "text-forest" },
   {
     value: "Tối đa 12 khách",
     label: "mỗi đoàn, để không làm ồn bản làng",

@@ -80,7 +80,7 @@ export default function ExploreHeader({
           </h1>
           <p className="t-lead explore-intro m-0 mt-4 max-w-[40rem] text-body">
             {catalogueSize > 0 ? `${catalogueSize} hành trình` : "Các hành trình"}{" "}
-            nhóm nhỏ, phần lớn ở Tây Nguyên. Giá hiển thị là giá từ mỗi khách;
+            nhóm nhỏ khám phá nhiều vùng miền Việt Nam. Giá hiển thị là giá từ mỗi khách;
             lịch và giá chốt được tư vấn viên xác nhận qua Zalo hoặc điện thoại.
           </p>
         </div>
