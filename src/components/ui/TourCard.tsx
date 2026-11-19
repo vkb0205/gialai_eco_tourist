@@ -246,8 +246,8 @@ export default function TourCard({
             {metaText}
           </p>
         )}
-        <div className="mt-auto flex items-baseline justify-between gap-2 border-t border-line pt-[15px] md:pt-[19px]">
-          <strong className="min-w-0 shrink truncate whitespace-nowrap text-[17px] font-bold text-ink md:text-base">
+        <div className="mt-auto flex items-center justify-between gap-2 border-t border-line pt-[15px] md:pt-[19px]">
+          <strong className="min-w-0 flex-1 break-words text-[17px] font-bold leading-snug text-ink md:text-base">
             {priceLabel(tour)}
           </strong>
           <span className="hidden w-24 shrink-0 items-center justify-end gap-1 whitespace-nowrap text-sm font-bold text-forest md:flex">

@@ -1,6 +1,6 @@
 import type { FacetKey } from "@/data/filters"
-import type { FilterState } from "@/lib/filterTours"
-import FacetGroups from "./FacetGroups"
+import type { FilterState, SortMode } from "@/lib/filterTours"
+import ExploreFilters from "./ExploreFilters"
 
 /**
  * Sticky desktop filter panel, shown at `lg` and above. Below that breakpoint
@@ -9,46 +9,41 @@ import FacetGroups from "./FacetGroups"
  */
 export default function FilterRail({
   state,
-  counts,
-  activeCount,
+  facetCounts,
+  regionCounts,
   onToggle,
+  onToggleRegion,
+  onSelectAllRegions,
+  onSortChange,
   onClearAll,
 }: {
   state: FilterState
-  counts: Record<FacetKey, Record<string, number>>
-  activeCount: number
+  facetCounts: Record<FacetKey, Record<string, number>>
+  regionCounts: Record<string, number>
   onToggle: (groupKey: FacetKey, value: string) => void
+  onToggleRegion: (slug: string) => void
+  onSelectAllRegions: () => void
+  onSortChange: (sort: SortMode) => void
   onClearAll: () => void
 }) {
   return (
     <aside
       aria-label="Bộ lọc hành trình"
-      className="hidden lg:sticky lg:top-[104px] lg:block lg:h-fit lg:max-h-[calc(100vh-128px)] lg:overflow-y-auto"
+      className="hidden self-start lg:sticky lg:top-[88px] lg:block lg:max-h-[calc(100vh-104px)] lg:overflow-y-auto xl:top-[104px] xl:max-h-[calc(100vh-120px)]"
     >
       <div className="rounded-card border border-line bg-paper p-5 shadow-card">
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="m-0 text-xs font-bold uppercase tracking-[0.8px] text-subtle">
-            Bộ lọc
-          </h2>
-          {activeCount > 0 && (
-            <button
-              type="button"
-              onClick={onClearAll}
-              className="min-h-11 text-sm font-bold text-forest underline underline-offset-4 hover:text-forest-hover"
-            >
-              Xóa tất cả
-            </button>
-          )}
-        </div>
-
-        <div className="mt-3">
-          <FacetGroups
-            state={state}
-            counts={counts}
-            onToggle={onToggle}
-            idPrefix="rail"
-          />
-        </div>
+        <ExploreFilters
+          state={state}
+          facetCounts={facetCounts}
+          regionCounts={regionCounts}
+          idPrefix="rail"
+          onToggleFacet={onToggle}
+          onToggleRegion={onToggleRegion}
+          onSelectAllRegions={onSelectAllRegions}
+          onSortChange={onSortChange}
+          onClearAll={onClearAll}
+          showRegions={false}
+        />
       </div>
     </aside>
   )

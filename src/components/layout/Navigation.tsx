@@ -24,7 +24,49 @@ export function goToEnquiry(event: { preventDefault(): void }) {
   navigateTo("/services", "service=general", { scrollTo: FORM_ID })
 }
 function LanguageSwitch({ tourDetail }: { tourDetail: boolean }) {
-  return <div aria-label="Ngôn ngữ" className={`flex shrink-0 items-center justify-center rounded-button border border-ink/25 text-[14px] font-bold ${tourDetail ? "h-12 w-[72px] xl:h-11 xl:w-[88px]" : "h-11 w-[56px] xl:w-[88px]"}`}><span lang="vi" aria-current="true" className="px-2">VI</span>{tourDetail ? <><span aria-hidden="true">/</span><button type="button" disabled aria-disabled="true" title="English sắp ra mắt" className="min-h-11 px-1 cursor-not-allowed text-subtle">EN</button></> : <><span aria-hidden="true" className="hidden xl:inline">/</span><button type="button" disabled aria-disabled="true" title="English sắp ra mắt" className="hidden min-h-11 min-w-11 cursor-not-allowed text-subtle xl:inline-flex">EN</button></>}</div>
+  const itemClass = "inline-flex h-5 items-center leading-5"
+
+  return (
+    <div
+      aria-label="Ngôn ngữ"
+      className={`flex shrink-0 items-center justify-center rounded-button border border-ink/25 text-[14px] font-bold ${tourDetail ? "h-12 w-[72px] xl:h-11 xl:w-[88px]" : "h-11 w-[56px] xl:w-[88px]"}`}
+    >
+      <span lang="vi" aria-current="true" className={`${itemClass} px-2`}>
+        VI
+      </span>
+      {tourDetail ? (
+        <>
+          <span aria-hidden="true" className={itemClass}>
+            /
+          </span>
+          <button
+            type="button"
+            disabled
+            aria-disabled="true"
+            title="English sắp ra mắt"
+            className={`${itemClass} cursor-not-allowed px-1 text-subtle`}
+          >
+            EN
+          </button>
+        </>
+      ) : (
+        <>
+          <span aria-hidden="true" className={`${itemClass} hidden xl:inline-flex`}>
+            /
+          </span>
+          <button
+            type="button"
+            disabled
+            aria-disabled="true"
+            title="English sắp ra mắt"
+            className={`${itemClass} hidden min-w-11 cursor-not-allowed px-1 text-subtle xl:inline-flex`}
+          >
+            EN
+          </button>
+        </>
+      )}
+    </div>
+  )
 }
 export default function Navigation() {
   const route = useHashRoute()

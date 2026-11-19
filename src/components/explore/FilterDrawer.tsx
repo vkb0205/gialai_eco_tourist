@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react"
 import { X } from "@phosphor-icons/react"
 import type { FacetKey } from "@/data/filters"
-import type { FilterState } from "@/lib/filterTours"
-import FacetGroups from "./FacetGroups"
+import type { FilterState, SortMode } from "@/lib/filterTours"
+import ExploreFilters from "./ExploreFilters"
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
@@ -19,10 +19,13 @@ export default function FilterDrawer({
   open,
   onClose,
   state,
-  counts,
-  activeCount,
+  facetCounts,
+  regionCounts,
   resultCount,
+  onToggleRegion,
+  onSelectAllRegions,
   onToggle,
+  onSortChange,
   onClearAll,
   triggerRef,
   /** Control that opened the sheet; focus returns here on close. */
@@ -30,10 +33,13 @@ export default function FilterDrawer({
   open: boolean
   onClose: () => void
   state: FilterState
-  counts: Record<FacetKey, Record<string, number>>
-  activeCount: number
+  facetCounts: Record<FacetKey, Record<string, number>>
+  regionCounts: Record<string, number>
   resultCount: number
+  onToggleRegion: (slug: string) => void
+  onSelectAllRegions: () => void
   onToggle: (groupKey: FacetKey, value: string) => void
+  onSortChange: (sort: SortMode) => void
   onClearAll: () => void
   triggerRef: React.RefObject<HTMLButtonElement | null>
 }) {
@@ -108,7 +114,7 @@ export default function FilterDrawer({
         role="dialog"
         aria-modal="true"
         aria-labelledby="filter-drawer-title"
-        className="absolute inset-y-0 right-0 flex w-full max-w-[26rem] flex-col bg-paper shadow-search motion-safe:animate-[slide-in-right_220ms_ease-out]"
+        className="absolute inset-x-0 bottom-0 flex max-h-[min(90dvh,48rem)] w-full flex-col rounded-t-card bg-paper shadow-search motion-safe:animate-[rise-in_220ms_ease-out]"
       >
         <div className="flex items-center justify-between gap-4 bg-hero px-6 py-4">
           <div>
@@ -118,11 +124,7 @@ export default function FilterDrawer({
             >
               Bộ lọc hành trình
             </h2>
-            <p className="m-0 mt-1 text-[15px] text-body">
-              {activeCount > 0
-                ? `Đang chọn ${activeCount} điều kiện`
-                : "Chọn điều kiện"}
-            </p>
+            <p className="m-0 mt-1 text-[15px] text-body">Chọn điều kiện</p>
           </div>
           <button
             ref={closeButtonRef}
@@ -135,28 +137,25 @@ export default function FilterDrawer({
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-6 py-6">
-          <FacetGroups
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
+          <ExploreFilters
             state={state}
-            counts={counts}
-            onToggle={onToggle}
+            facetCounts={facetCounts}
+            regionCounts={regionCounts}
             idPrefix="drawer"
+            onToggleFacet={onToggle}
+            onToggleRegion={onToggleRegion}
+            onSelectAllRegions={onSelectAllRegions}
+            onSortChange={onSortChange}
+            onClearAll={onClearAll}
           />
         </div>
 
-        <div className="flex items-center gap-3 border-t border-line bg-hero px-6 py-4">
-          <button
-            type="button"
-            onClick={onClearAll}
-            disabled={activeCount === 0}
-            className="min-h-12 rounded-button border border-ink/20 bg-paper px-5 text-[15px] font-bold text-ink transition-colors hover:bg-leaf disabled:cursor-not-allowed disabled:text-subtle"
-          >
-            Xóa tất cả
-          </button>
+        <div className="border-t border-line bg-hero px-5 pb-[max(16px,env(safe-area-inset-bottom))] pt-4">
           <button
             type="button"
             onClick={onClose}
-            className="min-h-12 flex-1 rounded-button bg-forest px-5 text-[15px] font-bold text-paper transition-colors hover:bg-forest-hover"
+            className="min-h-12 w-full rounded-button bg-forest px-5 text-[15px] font-bold text-paper transition-colors hover:bg-forest-hover"
           >
             Xem {resultCount} hành trình
           </button>

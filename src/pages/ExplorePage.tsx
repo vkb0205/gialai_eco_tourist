@@ -22,14 +22,15 @@ import CustomTourBanner from "@/components/explore/CustomTourBanner"
 import EmptyResults from "@/components/explore/EmptyResults"
 import ExploreHeader from "@/components/explore/ExploreHeader"
 import FilterDrawer from "@/components/explore/FilterDrawer"
-import HorizontalFilterBar from "@/components/explore/HorizontalFilterBar"
+import FilterRail from "@/components/explore/FilterRail"
+import RegionStrip from "@/components/explore/RegionStrip"
 import { buildActiveChips } from "@/components/explore/ResultsToolbar"
 import type { ActiveChip } from "@/components/explore/ResultsToolbar"
 import TourCard from "@/components/ui/TourCard"
 import ContactDock from "@/components/ui/ContactDock"
 import TourCardSkeleton from "@/components/explore/TourCardSkeleton"
 import Pagination from "@/components/explore/Pagination"
-import { X } from "@phosphor-icons/react"
+import { FunnelSimple, X } from "@phosphor-icons/react"
 
 /** Tours displayed on each numbered page. */
 const PAGE_SIZE = 9
@@ -157,8 +158,27 @@ export default function ExplorePage({ query }: { query: string }) {
   const pageStart = (currentPage - 1) * PAGE_SIZE
   const visibleTours = result.tours.slice(pageStart, pageStart + PAGE_SIZE)
 
+  // Keep a deep link or restored history entry inside the current result range.
+  // Wait until the catalogue has loaded so the initial empty dataset does not
+  // incorrectly clamp a valid saved page to page one.
+  useEffect(() => {
+    if (loading || loadError || state.page === currentPage) return
+    navigateTo(
+      "/explore",
+      serialiseFilterState({ ...state, page: currentPage }),
+      { replace: true },
+    )
+  }, [currentPage, loadError, loading, state])
+
   const onPageChange = (page: number) => {
-    apply({ ...state, page: Math.min(Math.max(page, 1), pageCount) })
+    navigateTo(
+      "/explore",
+      serialiseFilterState({
+        ...state,
+        page: Math.min(Math.max(page, 1), pageCount),
+      }),
+      { scrollTo: "explore-results" },
+    )
   }
 
   return (
@@ -170,26 +190,31 @@ export default function ExplorePage({ query }: { query: string }) {
         catalogueSize={dataset.length}
       />
 
-      {/* 2. Full-width horizontal filter bar (sticky) */}
-      <div className="sticky top-[72px] lg:top-[88px] z-30 shadow-xs">
-        <HorizontalFilterBar
-          state={state}
-          facetCounts={result.facetCounts}
-          regionCounts={result.regionCounts}
-          onToggleRegion={onToggleRegion}
-          onSelectAllRegions={onSelectAllRegions}
-          onToggleFacet={onToggleFacet}
-          onSortChange={onSortChange}
-          onOpenMobileDrawer={() => setDrawerOpen(true)}
-          mobileTriggerRef={filterTriggerRef}
-        />
-      </div>
-
       <div className="page-container pt-6 lg:pt-10">
-        <section aria-labelledby="results-heading" className="min-w-0">
-          <h2 id="results-heading" className="sr-only">
-            Kết quả hành trình
-          </h2>
+        <div className="mb-6">
+          <RegionStrip
+            selected={state.regions}
+            counts={result.regionCounts}
+            onToggle={onToggleRegion}
+            onSelectAll={onSelectAllRegions}
+          />
+        </div>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-8">
+          <FilterRail
+            state={state}
+            facetCounts={result.facetCounts}
+            regionCounts={result.regionCounts}
+            onToggle={onToggleFacet}
+            onToggleRegion={onToggleRegion}
+            onSelectAllRegions={onSelectAllRegions}
+            onSortChange={onSortChange}
+            onClearAll={onClearAll}
+          />
+
+          <section aria-labelledby="results-heading" className="min-w-0">
+            <h2 id="results-heading" className="sr-only">
+              Kết quả hành trình
+            </h2>
 
           {/* 3. Result count line and active filter chips */}
           <div className="flex flex-wrap items-center justify-between gap-3 pb-[18px]">
@@ -209,8 +234,26 @@ export default function ExplorePage({ query }: { query: string }) {
               tour
             </p>
 
-            {chips.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2">
+            <button
+              ref={filterTriggerRef}
+              type="button"
+              onClick={() => setDrawerOpen(true)}
+              aria-expanded={drawerOpen}
+              aria-haspopup="dialog"
+              className="inline-flex min-h-11 items-center gap-2 rounded-button border border-ink/20 bg-paper px-4 text-sm font-bold text-ink hover:bg-leaf lg:hidden"
+            >
+              <FunnelSimple size={16} aria-hidden="true" />
+              Bộ lọc
+              {activeCount > 0 && (
+                <span className="flex size-6 items-center justify-center rounded-full bg-forest text-xs font-bold tabular-nums text-paper">
+                  {activeCount}
+                </span>
+              )}
+            </button>
+          </div>
+
+          {chips.length > 0 && (
+              <div className="mb-[18px] flex flex-wrap items-center gap-2">
                 <span className="sr-only">Bộ lọc đang áp dụng:</span>
                 {chips.map((chip) => (
                   <button
@@ -232,18 +275,17 @@ export default function ExplorePage({ query }: { query: string }) {
                   onClick={onClearAll}
                   className="ml-2 text-xs font-bold text-forest underline underline-offset-4 hover:text-forest-hover"
                 >
-                  Xóa tất cả
+                  Xóa bộ lọc
                 </button>
               </div>
             )}
-          </div>
 
-          {/* 4. Full-width 3-column card grid */}
-          <div ref={resultsRef}>
+          {/* Card columns expand while keeping each tour card at least 300px wide. */}
+          <div id="explore-results" ref={resultsRef}>
             {!ready || loading ? (
               <ul
                 aria-hidden="true"
-                className="grid list-none grid-cols-1 gap-x-6 gap-y-8 p-0 md:grid-cols-2 md:gap-x-8 xl:grid-cols-3 xl:gap-x-10"
+                className="explore-tour-grid list-none gap-x-6 gap-y-8 p-0"
               >
                 {Array.from({ length: SKELETON_COUNT }, (_, index) => (
                   <li key={index}>
@@ -266,7 +308,7 @@ export default function ExplorePage({ query }: { query: string }) {
               />
             ) : (
               <>
-                <ul className="grid list-none grid-cols-1 gap-x-6 gap-y-8 p-0 md:grid-cols-2 md:gap-x-8 xl:grid-cols-3 xl:gap-x-10">
+                <ul className="explore-tour-grid list-none gap-x-6 gap-y-8 p-0">
                   {visibleTours.map((tour, index) => (
                     <li
                       key={tour.id}
@@ -291,7 +333,8 @@ export default function ExplorePage({ query }: { query: string }) {
               </>
             )}
           </div>
-        </section>
+          </section>
+        </div>
       </div>
 
       {/* Mobile filter drawer */}
@@ -299,10 +342,13 @@ export default function ExplorePage({ query }: { query: string }) {
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         state={state}
-        counts={result.facetCounts}
-        activeCount={activeCount}
+        facetCounts={result.facetCounts}
+        regionCounts={result.regionCounts}
         resultCount={result.total}
+        onToggleRegion={onToggleRegion}
+        onSelectAllRegions={onSelectAllRegions}
         onToggle={onToggleFacet}
+        onSortChange={onSortChange}
         onClearAll={onClearAll}
         triggerRef={filterTriggerRef}
       />

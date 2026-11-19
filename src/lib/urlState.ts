@@ -32,7 +32,9 @@ export function parseFilterState(query: string): FilterState {
   }
 
   const regionValues = readList(params, REGION_PARAM)
-  state.regions = regionValues.filter((slug) => findRegion(slug) !== undefined)
+  state.regions = dedupe(
+    regionValues.filter((slug) => findRegion(slug) !== undefined),
+  )
 
   for (const group of facetGroups) {
     const values = readList(params, group.key)
@@ -51,9 +53,9 @@ export function parseFilterState(query: string): FilterState {
   if (sort && isSortMode(sort)) state.sort = sort
 
   const pageStr = params.get(PAGE_PARAM) || params.get(LEGACY_PAGE_PARAM)
-  if (pageStr) {
-    const pageNum = parseInt(pageStr, 10)
-    if (!isNaN(pageNum) && pageNum >= 1) state.page = pageNum
+  if (pageStr && /^\d+$/.test(pageStr)) {
+    const pageNum = Number(pageStr)
+    if (Number.isSafeInteger(pageNum) && pageNum >= 1) state.page = pageNum
   }
 
   return state
@@ -79,7 +81,7 @@ export function serialiseFilterState(state: FilterState): string {
   const keyword = state.keyword.trim()
   if (keyword) params.set(KEYWORD_PARAM, keyword)
   if (state.sort !== "goi-y") params.set(SORT_PARAM, state.sort)
-  if (state.page && state.page >= 1) params.set(PAGE_PARAM, String(state.page))
+  if (state.page && state.page > 1) params.set(PAGE_PARAM, String(state.page))
 
   return params.toString()
 }

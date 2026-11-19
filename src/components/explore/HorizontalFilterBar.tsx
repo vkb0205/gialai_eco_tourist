@@ -52,14 +52,9 @@ const REGION_STYLES: Record<
   },
 }
 
-const EXTRA_FACET_KEYS: FacetKey[] = [
-  "price",
-  "difficulty",
-  "season",
-  "group",
-  "tourGroup",
-  "special",
-]
+const EXTRA_FACET_KEYS: FacetKey[] = facetGroups
+  .filter((group) => group.key !== "theme" && group.key !== "duration")
+  .map((group) => group.key)
 
 const REGION_WIDTHS: Record<string, string> = {
   "tay-nguyen": "w-[124px]",
@@ -87,7 +82,10 @@ export default function HorizontalFilterBar({
   // Close dropdown on outside click or escape
   useEffect(() => {
     function handleClickOutside(event: MouseEvent | TouchEvent) {
-      if (barRef.current && !barRef.current.contains(event.target as Node)) {
+      const activeDropdown = barRef.current?.querySelector(
+        `[data-filter-dropdown="${openDropdown}"]`,
+      )
+      if (!activeDropdown?.contains(event.target as Node)) {
         setOpenDropdown(null)
       }
     }
@@ -242,13 +240,13 @@ export default function HorizontalFilterBar({
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="relative top-0 hidden h-14 w-px bg-line xl:relative xl:top-4 xl:block" aria-hidden="true" />
-
           {/* Facets & Sort dropdowns */}
           <div className="explore-filter-controls flex items-center gap-3 xl:gap-4">
             {/* CHỦ ĐỀ dropdown */}
-            <div className="relative flex flex-col gap-1.5">
+            <div
+              data-filter-dropdown="theme"
+              className="relative flex flex-col gap-1.5"
+            >
               <span className="text-[12px] font-bold uppercase tracking-[0.8px] text-subtle">
                 CHỦ ĐỀ
               </span>
@@ -321,7 +319,10 @@ export default function HorizontalFilterBar({
             </div>
 
             {/* THỜI LƯỢNG dropdown */}
-            <div className="relative flex flex-col gap-1.5">
+            <div
+              data-filter-dropdown="duration"
+              className="relative flex flex-col gap-1.5"
+            >
               <span className="text-[12px] font-bold uppercase tracking-[0.8px] text-subtle">
                 THỜI LƯỢNG
               </span>
@@ -398,7 +399,10 @@ export default function HorizontalFilterBar({
             </div>
 
             {/* SẮP XẾP dropdown */}
-            <div className="relative flex flex-col gap-1.5">
+            <div
+              data-filter-dropdown="sort"
+              className="relative flex flex-col gap-1.5"
+            >
               <span className="text-[12px] font-bold uppercase tracking-[0.8px] text-subtle">
                 SẮP XẾP
               </span>
@@ -456,7 +460,10 @@ export default function HorizontalFilterBar({
             </div>
 
             {/* BỘ LỌC KHÁC dropdown */}
-            <div className="relative flex flex-col gap-1.5">
+            <div
+              data-filter-dropdown="extra"
+              className="relative flex flex-col gap-1.5"
+            >
               <span className="text-[12px] font-bold uppercase tracking-[0.8px] text-subtle">
                 BỘ LỌC
               </span>
@@ -529,6 +536,8 @@ export default function HorizontalFilterBar({
                                 <button
                                   key={option.value}
                                   type="button"
+                                  role="menuitemcheckbox"
+                                  aria-checked={selected}
                                   onClick={() =>
                                     onToggleFacet(key, option.value)
                                   }

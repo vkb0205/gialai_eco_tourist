@@ -147,10 +147,6 @@ function matchesAll(
   return matchesKeyword(tour, foldedKeyword)
 }
 
-function priceForSort(tour: Tour): number {
-  return tour.priceVnd ?? Number.POSITIVE_INFINITY
-}
-
 function orderForSort(tour: Tour): number {
   return tour.sortOrder ?? (typeof tour.id === "number" ? tour.id : Number.MAX_SAFE_INTEGER)
 }
@@ -161,23 +157,26 @@ function compareTourOrder(a: Tour, b: Tour): number {
   return String(a.id).localeCompare(String(b.id))
 }
 
+/** Keep tours without a published price after priced tours in either direction. */
+function comparePrice(a: Tour, b: Tour, direction: 1 | -1): number {
+  if (a.priceVnd === null && b.priceVnd === null) return compareTourOrder(a, b)
+  if (a.priceVnd === null) return 1
+  if (b.priceVnd === null) return -1
+  return (a.priceVnd - b.priceVnd) * direction || compareTourOrder(a, b)
+}
+
 function sortTours(list: Tour[], sort: SortMode): Tour[] {
   const sorted = [...list]
   switch (sort) {
     case "gia-tang":
-      return sorted.sort(
-        (a, b) => priceForSort(a) - priceForSort(b) || compareTourOrder(a, b),
-      )
+      return sorted.sort((a, b) => comparePrice(a, b, 1))
     case "gia-giam":
-      return sorted.sort(
-        (a, b) => priceForSort(b) - priceForSort(a) || compareTourOrder(a, b),
-      )
+      return sorted.sort((a, b) => comparePrice(a, b, -1))
     case "thoi-gian":
       return sorted.sort(
         (a, b) =>
           a.durationDays - b.durationDays ||
-          priceForSort(a) - priceForSort(b) ||
-          compareTourOrder(a, b),
+          comparePrice(a, b, 1),
       )
     case "goi-y":
     default:

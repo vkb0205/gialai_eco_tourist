@@ -329,14 +329,17 @@ footer :where(a, button):focus-visible { outline-color: var(--color-sunflower); 
 @media (max-width: 767px) { .t-h1 { font-size: 32px; line-height: 44px; } .t-h2 { font-size: 28px; line-height: 36px; } .t-h3 { font-size: 20px; line-height: 28px; } }
 
 /* Desktop dimensions from the Tours v2 frame (1440 px). */
+.explore-tour-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18.75rem), 1fr));
+}
+
 @media (min-width: 1280px) {
   .explore-title { font-size: 48px; line-height: 56px; }
   .explore-intro { max-width: 640px; font-size: 16px; line-height: 26px; }
   .tour-card-title.t-h3 { font-size: 20px; line-height: 30px; }
   .custom-tour-title.t-h2 { font-size: 28px; line-height: 36px; }
   .custom-tour-description { font-size: 16px; font-weight: 600; line-height: 24px; }
-  .explore-filter-controls > div:last-child { position: absolute; right: max(80px, calc((100vw - 1280px) / 2)); bottom: 0; z-index: 40; }
-  .explore-filter-controls > div:last-child > span:first-child { display: none; }
   .custom-tour-banner { height: 160px; min-height: 160px; margin-top: -8px; margin-bottom: 0; padding: 0 40px; }
   .custom-tour-content { align-self: flex-start; margin-top: 40px; }
   .custom-tour-banner > a { width: 240px; }
