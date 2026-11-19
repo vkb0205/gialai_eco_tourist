@@ -4,9 +4,11 @@ import type { FormService } from "@/components/services/ServiceForm"
 import { loadPublishedTourDetails } from "@/data/toursRepository"
 
 type PickerKey = "car" | "visa" | "flight"
+type ServiceFilterKey = "all" | "transport" | "documents" | "air"
 
 type ServiceCard = {
   key: PickerKey
+  filterKey: Exclude<ServiceFilterKey, "all">
   label: string
   eyebrow: string
   title: string
@@ -19,6 +21,7 @@ type ServiceCard = {
 const serviceCards: ServiceCard[] = [
   {
     key: "car",
+    filterKey: "transport",
     label: "Thuê xe",
     eyebrow: "Di chuyển",
     title: "Thuê xe du lịch",
@@ -29,6 +32,7 @@ const serviceCards: ServiceCard[] = [
   },
   {
     key: "visa",
+    filterKey: "documents",
     label: "Visa",
     eyebrow: "Giấy tờ",
     title: "Tư vấn visa",
@@ -39,6 +43,7 @@ const serviceCards: ServiceCard[] = [
   },
   {
     key: "flight",
+    filterKey: "air",
     label: "Vé máy bay",
     eyebrow: "Bay",
     title: "Vé máy bay",
@@ -47,6 +52,13 @@ const serviceCards: ServiceCard[] = [
     tone: "bg-blush",
     eyebrowTone: "text-lake",
   },
+]
+
+const serviceFilters: { key: ServiceFilterKey; label: string }[] = [
+  { key: "all", label: "Tất cả" },
+  { key: "transport", label: "Di chuyển" },
+  { key: "documents", label: "Giấy tờ" },
+  { key: "air", label: "Bay" },
 ]
 
 function parseQuery(query: string): { key: FormService; tour: string } {
@@ -66,6 +78,7 @@ function scrollToForm() {
 export default function ServicesPage({ query = "" }: { query?: string }) {
   const parsed = parseQuery(query)
   const [activeKey, setActiveKey] = useState<FormService>(parsed.key)
+  const [activeFilter, setActiveFilter] = useState<ServiceFilterKey>("all")
   const [tourTitle, setTourTitle] = useState("")
 
   useEffect(() => {
@@ -93,6 +106,11 @@ export default function ServicesPage({ query = "" }: { query?: string }) {
     if (scroll) scrollToForm()
   }
 
+  const visibleServiceCards =
+    activeFilter === "all"
+      ? serviceCards
+      : serviceCards.filter((card) => card.filterKey === activeFilter)
+
   return (
     <div className="bg-air pb-24 pt-[104px] text-ink lg:pt-[128px]">
       <div className="page-container">
@@ -109,8 +127,29 @@ export default function ServicesPage({ query = "" }: { query?: string }) {
           Ngoài tour, chúng tôi lo giúp xe, giấy tờ và chuyến bay. Chọn dịch vụ, điền một form, tư vấn viên liên hệ lại trong ngày.
         </p>
 
-        <ul className="m-0 mt-12 grid list-none gap-4 p-0 md:grid-cols-2 md:gap-6 xl:grid-cols-3 xl:gap-8">
-          {serviceCards.map((card) => {
+        <div role="group" aria-label="Lọc dịch vụ" className="mt-1 flex flex-wrap gap-2">
+          {serviceFilters.map((filter) => {
+            const selected = filter.key === activeFilter
+            return (
+              <button
+                key={filter.key}
+                type="button"
+                aria-pressed={selected}
+                onClick={() => setActiveFilter(filter.key)}
+                className={`min-h-11 rounded-button px-5 text-[14px] font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest ${
+                  selected
+                    ? "bg-forest text-paper"
+                    : "border border-line bg-paper text-ink hover:border-forest"
+                }`}
+              >
+                {filter.label}
+              </button>
+            )
+          })}
+        </div>
+
+        <ul className="m-0 mt-0 grid list-none gap-4 p-0 md:grid-cols-2 md:gap-6 xl:grid-cols-3 xl:gap-8">
+          {visibleServiceCards.map((card) => {
             const selected = card.key === activeKey
             return (
               <li key={card.key} className="flex">
